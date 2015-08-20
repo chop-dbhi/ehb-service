@@ -1,0 +1,15 @@
+*.pyc
+*.DS_Store
+.project
+.pydevproject
+.coverage
+*.log*
+htmlcov/
+MANIFEST
+dist
+_site/
+_static/
+settings/
+.project_config.json
+*.db
+*.env

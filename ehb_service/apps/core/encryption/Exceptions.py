@@ -1,0 +1,2 @@
+class CheckSumFailure(Exception):
+    pass

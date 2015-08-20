@@ -1,0 +1,957 @@
+[
+  {
+    "pk": 1,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "logentry",
+      "name": "log entry",
+      "app_label": "admin"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "permission",
+      "name": "permission",
+      "app_label": "auth"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "group",
+      "name": "group",
+      "app_label": "auth"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "user",
+      "name": "user",
+      "app_label": "auth"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "contenttype",
+      "name": "content type",
+      "app_label": "contenttypes"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "session",
+      "name": "session",
+      "app_label": "sessions"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "site",
+      "name": "site",
+      "app_label": "sites"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "apitoken",
+      "name": "API Token",
+      "app_label": "api"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "migrationhistory",
+      "name": "migration history",
+      "app_label": "south"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "organization",
+      "name": "organization",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "subject",
+      "name": "subject",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 12,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "groupehbkey",
+      "name": "group ehb key",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 13,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "group",
+      "name": "group",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "subjectgroup",
+      "name": "subject group",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "externalsystem",
+      "name": "external system",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "core.externalsystem",
+    "fields": {
+      "name": "Faux Nautilus",
+      "url": "http://mockservice:8090/nautilus/api/",
+      "description":"",
+      "created": "2013-12-05T15:17:16.100",
+      "modified": "2013-12-05T15:17:16.100"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "core.externalsystem",
+    "fields": {
+      "name": "Faux Redcap",
+      "url": "http://redcap/api/",
+      "description":"",
+      "created": "2013-12-05T15:17:16.100",
+      "modified": "2013-12-05T15:17:16.100"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "core.organization",
+    "fields": {
+      "subject_id_label": "Record ID",
+      "modified": "2013-12-05T15:17:16.100",
+      "name": "Awesome Children's Hospital",
+      "created": "2013-12-05T15:17:16.100"
+    }
+  },
+  {
+    "pk": 16,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "externalrecordlabel",
+      "name": "external record label",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 17,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "externalrecord",
+      "name": "external record",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 18,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "relation",
+      "name": "relation",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 19,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "externalrecordrelation",
+      "name": "external record relation",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 20,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "externalrecordgroup",
+      "name": "external record group",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 21,
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "model": "machineclient",
+      "name": "machine client",
+      "app_label": "core"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "sites.site",
+    "fields": {
+      "domain": "example.com",
+      "name": "example.com"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "south.migrationhistory",
+    "fields": {
+      "applied": "2014-11-08T15:34:30.815",
+      "app_name": "core",
+      "migration": "0001_initial"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "south.migrationhistory",
+    "fields": {
+      "applied": "2014-11-08T15:34:30.867",
+      "app_name": "core",
+      "migration": "0002_auto__add_relation__del_field_externalrecordrelation_desc__add_field_e"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "south.migrationhistory",
+    "fields": {
+      "applied": "2014-11-08T15:34:30.897",
+      "app_name": "core",
+      "migration": "0003_auto__del_field_relation_label__del_field_relation_familial__add_field"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "south.migrationhistory",
+    "fields": {
+      "applied": "2014-11-08T15:34:30.929",
+      "app_name": "core",
+      "migration": "0004_auto__add_externalrecordlabel__chg_field_externalrecordrelation_id__ad"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_migrationhistory",
+      "name": "Can add migration history",
+      "content_type": 1
+    }
+  },
+  {
+    "pk": 1,
+    "model": "core.groupehbkey",
+    "fields": {
+      "modified": "2015-01-09T14:42:51.618",
+      "key": "XLBBMYCUMG858UMY",
+      "created": "2015-01-09T14:42:51.618"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "core.groupehbkey",
+    "fields": {
+      "modified": "2015-01-09T14:47:20.216",
+      "key": "1IIUOMGQ90AVW5Q2",
+      "created": "2015-01-09T14:47:20.216"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "core.groupehbkey",
+    "fields": {
+      "modified": "2015-01-09T14:47:58.251",
+      "key": "NXB546EUZSDLZKGR",
+      "created": "2015-01-09T14:47:58.251"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "core.group",
+    "fields": {
+      "ehb_key": 1,
+      "name": "BRP:M0536B4E2DDLA7W6:C381K1T9G5SCOS5Z:123456",
+      "created": "2015-01-09T14:42:51.622",
+      "description": "A BRP Protocol Subject Record Group",
+      "modified": "2015-01-09T14:42:51.622",
+      "is_locking": true,
+      "client_key": "$sha256$DLZQD742KD6P$cb68968dea478d66617f7b71c9cb264cbf4ed10c81342c9e27ae57fd6e554ff5"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "core.group",
+    "fields": {
+      "ehb_key": 2,
+      "name": "BRP:M0536B4E2DDLA7W6",
+      "created": "2015-01-09T14:47:20.220",
+      "description": "A BRP Protocol Group",
+      "modified": "2015-01-09T14:47:20.220",
+      "is_locking": true,
+      "client_key": "$sha256$9CYZNUDORI7E$389379486d189d15b5fbf1f300f4923259b454934075ffd2184acfd049b19ead"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "core.group",
+    "fields": {
+      "ehb_key": 3,
+      "name": "BRP:M0536B4E2DDLA7W6:C381K1T9G5SCOS5Z:558855",
+      "created": "2015-01-09T14:47:58.254",
+      "description": "A BRP Protocol Subject Record Group",
+      "modified": "2015-01-09T14:47:58.254",
+      "is_locking": true,
+      "client_key": "$sha256$HAYK4KE7BUWB$19d20d1a8766e02130d41603b2c237b8cd266ef4fbc791d99bbadf3a61063a2e"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "core.subjectgroup",
+    "fields": {
+      "subjects": [],
+      "group": 2,
+      "modified": "2015-01-09T14:47:58.287",
+      "created": "2015-01-09T14:47:58.287"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "core.externalrecordlabel",
+    "fields": {
+      "modified": "2013-12-05T15:17:16.100",
+      "created": "2013-12-05T15:17:16.100",
+      "label": "Initial"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "core.externalrecordlabel",
+    "fields": {
+      "modified": "2013-12-05T15:17:16.100",
+      "created": "2013-12-05T15:17:16.100",
+      "label": "Follow Up"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_migrationhistory",
+      "name": "Can change migration history",
+      "content_type": 1
+    }
+  },
+  {
+    "pk": 3,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_migrationhistory",
+      "name": "Can delete migration history",
+      "content_type": 1
+    }
+  },
+  {
+    "pk": 4,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_logentry",
+      "name": "Can add log entry",
+      "content_type": 2
+    }
+  },
+  {
+    "pk": 5,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_logentry",
+      "name": "Can change log entry",
+      "content_type": 2
+    }
+  },
+  {
+    "pk": 6,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_logentry",
+      "name": "Can delete log entry",
+      "content_type": 2
+    }
+  },
+  {
+    "pk": 7,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_permission",
+      "name": "Can add permission",
+      "content_type": 3
+    }
+  },
+  {
+    "pk": 8,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_permission",
+      "name": "Can change permission",
+      "content_type": 3
+    }
+  },
+  {
+    "pk": 9,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_permission",
+      "name": "Can delete permission",
+      "content_type": 3
+    }
+  },
+  {
+    "pk": 10,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_group",
+      "name": "Can add group",
+      "content_type": 4
+    }
+  },
+  {
+    "pk": 11,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_group",
+      "name": "Can change group",
+      "content_type": 4
+    }
+  },
+  {
+    "pk": 12,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_group",
+      "name": "Can delete group",
+      "content_type": 4
+    }
+  },
+  {
+    "pk": 13,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_user",
+      "name": "Can add user",
+      "content_type": 5
+    }
+  },
+  {
+    "pk": 14,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_user",
+      "name": "Can change user",
+      "content_type": 5
+    }
+  },
+  {
+    "pk": 15,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_user",
+      "name": "Can delete user",
+      "content_type": 5
+    }
+  },
+  {
+    "pk": 16,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_contenttype",
+      "name": "Can add content type",
+      "content_type": 6
+    }
+  },
+  {
+    "pk": 17,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_contenttype",
+      "name": "Can change content type",
+      "content_type": 6
+    }
+  },
+  {
+    "pk": 18,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_contenttype",
+      "name": "Can delete content type",
+      "content_type": 6
+    }
+  },
+  {
+    "pk": 19,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_session",
+      "name": "Can add session",
+      "content_type": 7
+    }
+  },
+  {
+    "pk": 20,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_session",
+      "name": "Can change session",
+      "content_type": 7
+    }
+  },
+  {
+    "pk": 21,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_session",
+      "name": "Can delete session",
+      "content_type": 7
+    }
+  },
+  {
+    "pk": 22,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_site",
+      "name": "Can add site",
+      "content_type": 8
+    }
+  },
+  {
+    "pk": 23,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_site",
+      "name": "Can change site",
+      "content_type": 8
+    }
+  },
+  {
+    "pk": 24,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_site",
+      "name": "Can delete site",
+      "content_type": 8
+    }
+  },
+  {
+    "pk": 25,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_revision",
+      "name": "Can add revision",
+      "content_type": 9
+    }
+  },
+  {
+    "pk": 26,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_revision",
+      "name": "Can change revision",
+      "content_type": 9
+    }
+  },
+  {
+    "pk": 27,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_revision",
+      "name": "Can delete revision",
+      "content_type": 9
+    }
+  },
+  {
+    "pk": 28,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_datacategory",
+      "name": "Can add data category",
+      "content_type": 10
+    }
+  },
+  {
+    "pk": 29,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_datacategory",
+      "name": "Can change data category",
+      "content_type": 10
+    }
+  },
+  {
+    "pk": 30,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_datacategory",
+      "name": "Can delete data category",
+      "content_type": 10
+    }
+  },
+  {
+    "pk": 31,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_datafield",
+      "name": "Can add data field",
+      "content_type": 11
+    }
+  },
+  {
+    "pk": 32,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_datafield",
+      "name": "Can change data field",
+      "content_type": 11
+    }
+  },
+  {
+    "pk": 33,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_datafield",
+      "name": "Can delete data field",
+      "content_type": 11
+    }
+  },
+  {
+    "pk": 34,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "view_datafield",
+      "name": "Can view datafield",
+      "content_type": 11
+    }
+  },
+  {
+    "pk": 35,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_dataconcept",
+      "name": "Can add data concept",
+      "content_type": 12
+    }
+  },
+  {
+    "pk": 36,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_dataconcept",
+      "name": "Can change data concept",
+      "content_type": 12
+    }
+  },
+  {
+    "pk": 37,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_dataconcept",
+      "name": "Can delete data concept",
+      "content_type": 12
+    }
+  },
+  {
+    "pk": 38,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "view_dataconcept",
+      "name": "Can view dataconcept",
+      "content_type": 12
+    }
+  },
+  {
+    "pk": 39,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_dataconceptfield",
+      "name": "Can add data concept field",
+      "content_type": 13
+    }
+  },
+  {
+    "pk": 40,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_dataconceptfield",
+      "name": "Can change data concept field",
+      "content_type": 13
+    }
+  },
+  {
+    "pk": 41,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_dataconceptfield",
+      "name": "Can delete data concept field",
+      "content_type": 13
+    }
+  },
+  {
+    "pk": 42,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_datacontext",
+      "name": "Can add data context",
+      "content_type": 14
+    }
+  },
+  {
+    "pk": 43,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_datacontext",
+      "name": "Can change data context",
+      "content_type": 14
+    }
+  },
+  {
+    "pk": 44,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_datacontext",
+      "name": "Can delete data context",
+      "content_type": 14
+    }
+  },
+  {
+    "pk": 45,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_dataview",
+      "name": "Can add data view",
+      "content_type": 15
+    }
+  },
+  {
+    "pk": 46,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_dataview",
+      "name": "Can change data view",
+      "content_type": 15
+    }
+  },
+  {
+    "pk": 47,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_dataview",
+      "name": "Can delete data view",
+      "content_type": 15
+    }
+  },
+  {
+    "pk": 48,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_dataquery",
+      "name": "Can add data query",
+      "content_type": 16
+    }
+  },
+  {
+    "pk": 49,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_dataquery",
+      "name": "Can change data query",
+      "content_type": 16
+    }
+  },
+  {
+    "pk": 50,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_dataquery",
+      "name": "Can delete data query",
+      "content_type": 16
+    }
+  },
+  {
+    "pk": 51,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_externalrecord",
+      "name": "Can delete external record",
+      "content_type": 17
+    }
+  },
+  {
+    "pk": 52,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_relation",
+      "name": "Can add relation",
+      "content_type": 18
+    }
+  },
+  {
+    "pk": 53,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_relation",
+      "name": "Can change relation",
+      "content_type": 18
+    }
+  },
+  {
+    "pk": 54,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_relation",
+      "name": "Can delete relation",
+      "content_type": 18
+    }
+  },
+  {
+    "pk": 55,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_externalrecordrelation",
+      "name": "Can add external record relation",
+      "content_type": 19
+    }
+  },
+  {
+    "pk": 56,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_externalrecordrelation",
+      "name": "Can change external record relation",
+      "content_type": 19
+    }
+  },
+  {
+    "pk": 57,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_externalrecordrelation",
+      "name": "Can delete external record relation",
+      "content_type": 19
+    }
+  },
+  {
+    "pk": 58,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_externalrecordgroup",
+      "name": "Can add external record group",
+      "content_type": 20
+    }
+  },
+  {
+    "pk": 59,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_externalrecordgroup",
+      "name": "Can change external record group",
+      "content_type": 20
+    }
+  },
+  {
+    "pk": 60,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_externalrecordgroup",
+      "name": "Can delete external record group",
+      "content_type": 20
+    }
+  },
+  {
+    "pk": 61,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "add_machineclient",
+      "name": "Can add machine client",
+      "content_type": 21
+    }
+  },
+  {
+    "pk": 62,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "change_machineclient",
+      "name": "Can change machine client",
+      "content_type": 21
+    }
+  },
+  {
+    "pk": 63,
+    "model": "auth.permission",
+    "fields": {
+      "codename": "delete_machineclient",
+      "name": "Can delete machine client",
+      "content_type": 21
+    }
+  },
+  {
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+      "username": "cbmi",
+      "first_name": "CBMi",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": true,
+      "is_staff": true,
+      "last_login": "2014-11-08T15:35:12.754",
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$10000$Tt4eFjHaX5Ux$UrmPLHWNVNjFwgV2MORgxBfqO1HKu4GBV7TuxDCyVUQ=",
+      "email": "cbmisupport@email.chop.edu",
+      "date_joined": "2014-05-10T07:03:20.380"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "api.apitoken",
+    "fields": {
+      "token": "66dda58a8f51f2465c99d8ca7186c30e",
+      "created": "2014-05-10T07:03:20.380",
+      "user": 1,
+      "modified": "2014-05-10T07:03:20.380",
+      "revoked": false
+    }
+  }
+]

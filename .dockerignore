@@ -1,0 +1,4 @@
+*.env
+docs/ehb-technical-manual.pdf
+_site/
+logs/*.*

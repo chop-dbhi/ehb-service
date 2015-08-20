@@ -1,0 +1,35 @@
+# This file collects all required third-party applications that are needed
+# to run this project. Later you can install all these apps in a row
+# using pip. Example::
+#
+#     pip install -U -r requirements.txt
+
+# Core requirements
+Django>=1.5,<1.6
+south
+uWSGI
+django-environ
+restlib2==0.3.9
+
+# Database bindings - uncomment any of the below libraries depending on the
+# database that will be used for the project. Since Django 1.2, multi-database
+# support has been added, therefore Django can connect to multiple databases
+# if the data model is spread out across multiple databases. Note: SQLite
+# is supported natively by Python 2.5+
+
+psycopg2
+# python-mysql
+# cx_Oracle
+
+# Cache backend support
+# python-memcached
+
+# For LDAP supoort, install python-ldap. If the PyPi version does not
+# install properly, try using the one in the src/ directory
+python-ldap
+
+#encryption algorithms
+pycrypto==2.3
+
+# Testing
+mock
