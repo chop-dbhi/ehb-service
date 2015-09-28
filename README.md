@@ -21,6 +21,8 @@ a part of its more comprehensive EHR data extraction and management services.
 
 ehb-service uses [django-environ](https://github.com/joke2k/django-environ) to handle configuration values for the application.
 
+A default user is created with the login `admin@email.chop.edu` and a password of `Chopchop1234`
+
 The following environment variables need to be set. If you prefer storing your configuration values in a file -- create a file in the root director of the application i.e. `local.env`. ehb-service will look for a `.env` file in the root that corresponds to the `APP_ENV` environment variable. So, if `APP_ENV=local` ehb-service will look for `local.env` in the root of the application.
 
 Otherwise, you will want to set the following values:

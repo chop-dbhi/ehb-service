@@ -7,5 +7,23 @@
   "created": "2013-12-05T15:17:16.100",
   "label": ""
 }
+},
+{
+  "pk": 1,
+  "model": "auth.user",
+  "fields": {
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "is_active": true,
+    "is_superuser": true,
+    "is_staff": true,
+    "last_login": "2014-01-27T16:22:38.537",
+    "groups": [],
+    "user_permissions": [],
+    "password": "pbkdf2_sha256$10000$fe8KOhXyKFJt$nB8tFGivcvxNQJOdzk1igm4iA4dA00k4KB6bYYDBRfA=",
+    "email": "admin@email.chop.edu",
+    "date_joined": "2014-01-27T16:22:15.193"
+  }
 }
 ]

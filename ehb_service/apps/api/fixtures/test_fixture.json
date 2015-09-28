@@ -817,7 +817,7 @@
     "pk": 1,
     "model": "auth.user",
     "fields": {
-      "username": "riverat2",
+      "username": "admin",
       "first_name": "",
       "last_name": "",
       "is_active": true,
@@ -826,8 +826,8 @@
       "last_login": "2014-01-27T16:22:38.537",
       "groups": [],
       "user_permissions": [],
-      "password": "pbkdf2_sha256$10000$R5KqQPx6P8AW$rZGm+xq60BWkANBDVmPF0cUFSKkMOlt7E4OW7bUPWFo=",
-      "email": "riverat2@email.chop.edu",
+      "password": "pbkdf2_sha256$10000$fe8KOhXyKFJt$nB8tFGivcvxNQJOdzk1igm4iA4dA00k4KB6bYYDBRfA=",
+      "email": "cbmisupport@email.chop.edu",
       "date_joined": "2014-01-27T16:22:15.193"
     }
   },
