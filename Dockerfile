@@ -1,5 +1,5 @@
 
-FROM python:2.7.8-wheezy
+FROM python:2.7.10
 
 MAINTAINER Tyler Rivera <riverat2@email.chop.edu>
 
