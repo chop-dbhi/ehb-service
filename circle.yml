@@ -1,0 +1,25 @@
+
+machine:
+    environment:
+        APP_ENV: "test"
+        LDAP_DEBUG: 0
+        LDAP_PREBINDDN:
+        LDAP_SEARCHDN:
+        LDAP_SEARCH_FILTER:
+        LDAP_SERVER_URI:
+        LDAP_PREBINDPW:
+        LDAP_SERVER_URI:
+        DEBUG: 1
+        SECRET_KEY: "test"
+        DATABASE_URL: sqlite:///ehb_service.db
+        EMAIL_HOST: localhost
+        EMAIL_PORT: 25
+        EMAIL_DOMAIN: example.com
+        EHB_USE_ENCRYPTION: 0
+        EHB_KMS_SECRET: "secretsecret"
+        EHB_CLIENT_KEY_SEED: 1
+        EHB_GROUP_KEY_SEED: 1
+
+test:
+    override:
+        - ./test.sh
