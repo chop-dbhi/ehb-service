@@ -39,6 +39,8 @@ ENV APP_ENV test
 ADD . /opt/app
 ADD test.env_example /opt/app/test.env
 
+WORKDIR /opt/app/
+
 RUN pip install -r /opt/app/requirements.txt
 
 CMD "/opt/app/scripts/run.sh"
