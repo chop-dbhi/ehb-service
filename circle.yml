@@ -1,25 +1,20 @@
 
 machine:
-    environment:
-        APP_ENV: "test"
-        LDAP_DEBUG: 0
-        LDAP_PREBINDDN:
-        LDAP_SEARCHDN:
-        LDAP_SEARCH_FILTER:
-        LDAP_SERVER_URI:
-        LDAP_PREBINDPW:
-        LDAP_SERVER_URI:
-        DEBUG: 1
-        SECRET_KEY: "test"
-        DATABASE_URL: sqlite:///ehb_service.db
-        EMAIL_HOST: localhost
-        EMAIL_PORT: 25
-        EMAIL_DOMAIN: example.com
-        EHB_USE_ENCRYPTION: 0
-        EHB_KMS_SECRET: "secretsecret"
-        EHB_CLIENT_KEY_SEED: 1
-        EHB_GROUP_KEY_SEED: 1
+    services:
+        - docker
+
+dependencies:
+    override:
+        - docker info
+        - docker build -t dbhi/ehb-service .
 
 test:
     override:
-        - ./test.sh
+        - docker run dbhi/ehb-service /bin/bash - /opt/app/test.sh
+
+deployment:
+    hub:
+        branch: master
+        commands:
+            - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+            - docker push dbhi/ehb-service
