@@ -33,4 +33,84 @@
         "modified": "2015-09-28T15:19:01.575",
         "revoked": false
     }
+}, {
+    "pk": 1,
+    "model": "core.organization",
+    "fields": {
+        "subject_id_label": "Record ID",
+        "modified": "2015-09-29T12:01:11.191",
+        "name": "Amazing Children's Hospital",
+        "created": "2015-09-29T12:01:11.191"
+    }
+}, {
+    "pk": 1,
+    "model": "core.subject",
+    "fields": {
+        "first_name": "1cb8732a09cd99f685ee72e65ed302e0eab5382b",
+        "last_name": "05f3ece52ac8d5fc36044e1032feb6f4082ca464",
+        "created": "2015-09-29T12:09:05.202",
+        "dob": "64472c8cdd896c18f671a61c605f898d67edfad9",
+        "modified": "2015-09-29T12:09:05.202",
+        "organization_subject_id": "62b8609c0c55f17c34c7181b2cdab8aa50d2b636",
+        "organization": 1
+    }
+}, {
+    "pk": 1,
+    "model": "core.groupehbkey",
+    "fields": {
+        "modified": "2015-09-29T12:01:41.687",
+        "key": "MKDKB9W48SLSFM4A",
+        "created": "2015-09-29T12:01:41.687"
+    }
+}, {
+    "pk": 2,
+    "model": "core.groupehbkey",
+    "fields": {
+        "modified": "2015-09-29T12:09:05.245",
+        "key": "S891XSB0XD1NKRPF",
+        "created": "2015-09-29T12:09:05.245"
+    }
+}, {
+    "pk": 1,
+    "model": "core.group",
+    "fields": {
+        "ehb_key": 1,
+        "name": "BRP:M0536B4E2DDLA7W6",
+        "created": "2015-09-29T12:01:41.692",
+        "description": "A BRP Protocol Group",
+        "modified": "2015-09-29T12:01:41.692",
+        "is_locking": true,
+        "client_key": "$sha256$7JO5ZNRMQ5TK$d0408e9f33467eebc3ef84a85acdcc2cfce54b2f581be98301cdb236886dac42"
+    }
+}, {
+    "pk": 2,
+    "model": "core.group",
+    "fields": {
+        "ehb_key": 2,
+        "name": "BRP:M0536B4E2DDLA7W6:C381K1T9G5SCOS5Z:42424242",
+        "created": "2015-09-29T12:09:05.249",
+        "description": "A BRP Protocol Subject Record Group",
+        "modified": "2015-09-29T12:09:05.249",
+        "is_locking": true,
+        "client_key": "$sha256$IFSRK83EPWCV$a3cb0de87907fc399852d6104da187b1030d4f362f52539c905490b4989b5420"
+    }
+}, {
+    "pk": 1,
+    "model": "core.subjectgroup",
+    "fields": {
+        "subjects": [1],
+        "group": 1,
+        "modified": "2015-09-29T12:09:05.270",
+        "created": "2015-09-29T12:09:05.270"
+    }
+}, {
+    "pk": 1,
+    "model": "core.externalsystem",
+    "fields": {
+        "url": "https://redcap.chop.edu/api/",
+        "description": "CHOP's REDCap Instance",
+        "modified": "2015-09-29T12:03:50.196",
+        "name": "REDCap",
+        "created": "2015-09-29T12:03:50.196"
+    }
 }]
