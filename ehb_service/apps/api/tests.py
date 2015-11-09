@@ -446,7 +446,7 @@ class TestSubject(TestCase):
         self.assertEqual(j['first_name'], 'John')
         self.assertEqual(j['last_name'], 'Doe')
         self.assertEqual(j['dob'], '2000-01-01')
-        self.assertEqual(j['organization_id'], '3')
+        self.assertEqual(j['organization'], 3)
         self.assertEqual(j['organization_subject_id'], '123456')
 
     @patch('api.resources.subject.log')
@@ -468,7 +468,7 @@ class TestSubject(TestCase):
         self.assertEqual(j['first_name'], 'John')
         self.assertEqual(j['last_name'], 'Doe')
         self.assertEqual(j['dob'], '2000-01-01')
-        self.assertEqual(j['organization_id'], '3')
+        self.assertEqual(j['organization'], 3)
         self.assertEqual(j['organization_subject_id'], '123456')
 
     @patch('api.resources.subject.log')
@@ -947,7 +947,7 @@ class TestExternalRecord(TestCase):
         j = json.loads(response.content)
         ex_recs = j[0]['external_record']
         for each in ex_recs:
-            self.assertEqual(each['external_system_id'], '1')
+            self.assertEqual(each['external_system'], 1)
         self.assertEqual(len(ex_recs), 2)
 
     def test_er_query_by_esname(self):
@@ -960,7 +960,7 @@ class TestExternalRecord(TestCase):
         j = json.loads(response.content)
         ex_recs = j[0]['external_record']
         for each in ex_recs:
-            self.assertEqual(each['external_system_id'], '1')
+            self.assertEqual(each['external_system'], 1)
         self.assertEqual(len(ex_recs), 2)
 
     def test_er_query_by_esurl(self):
@@ -973,7 +973,7 @@ class TestExternalRecord(TestCase):
         j = json.loads(response.content)
         ex_recs = j[0]['external_record']
         for each in ex_recs:
-            self.assertEqual(each['external_system_id'], '1')
+            self.assertEqual(each['external_system'], 1)
         self.assertEqual(len(ex_recs), 2)
 
     def test_er_query_by_path(self):
@@ -1030,7 +1030,7 @@ class TestExternalRecord(TestCase):
 
     def test_er_query_bad_params(self):
         '''
-        TODO; we're returning all external records
+        TODO: we're returning all external records
         '''
         # response = self.client.post(
         #     '/api/externalrecord/query/',
@@ -1090,7 +1090,7 @@ class TestExternalRecord(TestCase):
         # pre_record_id = er.record_id (11/11/14)
         er_data = er.responseFieldDict()
         er_data['record_id'] = 'NEWID'
-        er_data['external_system'] = '3'
+        er_data['external_system'] = 3
         er_data['relation'] = "2"
         er_data['path'] = 'New Path'
         er_data['label'] = '1'
