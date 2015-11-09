@@ -37,7 +37,7 @@ class SubjectResource(Resource):
                 if subs.__len__() == 1:
                     s = subs[0]
                 else:
-                    log.error("Subject not found in Organization[{0}] with provided Organization ID")
+                    log.error("Subject not found in Organization: {0} with provided Organization ID".format(org))
                     return HttpResponse(status=codes.not_found)
             except Organization.DoesNotExist:
                 log.error("Subject not found. Given Organization does not exist")
