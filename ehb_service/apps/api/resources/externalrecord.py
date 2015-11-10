@@ -190,9 +190,9 @@ class ExternalRecordResource(Resource):
                     args['path'] = path
 
                 if label:
-                    args['label'] = label
+                    args['label_id'] = int(label)
                 else:
-                    args['label'] = '1'
+                    args['label_id'] = 1
 
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
 

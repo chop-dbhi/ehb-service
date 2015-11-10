@@ -101,6 +101,19 @@ class Subject(CreatedModified):
         except Organization.DoesNotExist:
             pass  # The Organization field validation will handle this
 
+    def responseFieldDict(self):
+        response = {}
+        response['created'] = self.created.strftime('%Y-%m-%d %H:%M:%S.%f')
+        response['modified'] = self.modified.strftime('%Y-%m-%d %H:%M:%S.%f')
+        response['first_name'] = self.first_name
+        response['last_name'] = self.last_name
+        response['organization'] = self.organization_id
+        response['id'] = self.id
+        response['organization_subject_id'] = self.organization_subject_id
+        response['dob'] = self.dob.strftime('%Y-%m-%d')
+
+        return response
+
     def __unicode__(self):
         return "{0}, {1} : {2} : {3}".format(
             self.last_name,
@@ -347,16 +360,18 @@ class ExternalRecord(CreatedModified):
 
     def responseFieldDict(self):
         response = {}
-
-        for k in self.__dict__.keys():
-            if not k.startswith('_'):
-                response[k] = (str(self.__dict__.get(k)))
-
+        response['created'] = self.created.strftime('%Y-%m-%d %H:%M:%S.%f')
+        response['modified'] = self.modified.strftime('%Y-%m-%d %H:%M:%S.%f')
+        response['subject'] = self.subject_id
+        response['external_system'] = self.external_system_id
+        response['label'] = self.label_id
+        response['id'] = self.id
+        response['record_id'] = self.record_id
+        response['path'] = self.path
         try:
             response['relation_id'] = self.relation.desc
         except:
             response['relation_id'] = 'Proband'
-
         return response
 
     def __unicode__(self):
@@ -404,6 +419,7 @@ class ExternalRecordRelation(CreatedModified):
             self.related_record.external_system.name
         )
 
+
 class ExternalRecordGroup(CreatedModified):
 
     external_records = models.ManyToManyField(ExternalRecord)
@@ -411,6 +427,7 @@ class ExternalRecordGroup(CreatedModified):
 
     class Meta(CreatedModified.Meta):
         ordering = ['group']
+
 
 class SubjectValidation(models.Model):
 
