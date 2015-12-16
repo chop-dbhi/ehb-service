@@ -20,7 +20,8 @@ class TokenMiddleware(object):
     def process_request(self, request):
 
         SITE_ALLOW = [
-            settings.FORCE_SCRIPT_NAME + '/admin/'
+            settings.FORCE_SCRIPT_NAME + '/admin/',
+            settings.FORCE_SCRIPT_NAME + '/'
         ]
 
         if getattr(request, 'user', None) and request.user.is_authenticated():

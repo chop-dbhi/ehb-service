@@ -1,9 +1,3 @@
-'''
-Created on May 19, 2011
-
-@author: masinoa
-'''
-
 from django.conf.urls import *  # noqa
 
 subject_patterns = patterns(
