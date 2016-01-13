@@ -7,6 +7,15 @@
         "label": ""
     }
 }, {
+    "pk": 2,
+    "model": "core.externalrecordlabel",
+    "fields": {
+        "label": "SSN",
+        "modified": "2016-01-12T12:41:04.167",
+        "created": "2016-01-12T12:41:04.167"
+    }
+},
+{
     "pk": 1,
     "model": "auth.user",
     "fields": {
