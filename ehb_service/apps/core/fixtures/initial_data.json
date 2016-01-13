@@ -114,6 +114,26 @@
         "created": "2015-09-29T12:03:50.196"
     }
 }, {
+    "pk": 2,
+    "model": "core.externalsystem",
+    "fields": {
+        "url": "https://example.com/api/",
+        "description": "Laboratory Information Management System",
+        "modified": "2016-01-10T11:29:58.980",
+        "name": "LIMS",
+        "created": "2016-01-10T11:29:58.980"
+    }
+}, {
+    "pk": 3,
+    "model": "core.externalsystem",
+    "fields": {
+        "url": "http://example.com/noop/",
+        "description": "Placeholder for external IDs",
+        "modified": "2016-01-10T15:35:41.311",
+        "name": "External Identifiers",
+        "created": "2016-01-10T15:35:41.311"
+    }
+}, {
     "pk": 1,
     "model": "core.externalrecord",
     "fields": {
