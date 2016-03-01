@@ -1183,6 +1183,18 @@ class TestExternalRecordLink(TestCase):
         self.assertEqual(link['description'], 'Parent of')
         self.assertEqual(link['external_record']['id'], 2)
 
+    def test_create_new_external_record_link(self):
+        response = self.client.post(
+            '/api/externalrecord/id/2/links/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json',
+            data='{"related_record":4,"relation_type":1}')
+        self.assertEqual(response.status_code, 200)
+        res = json.loads(response.content)
+        self.assertTrue(res['success'])
+
+
+
 
 class TestOrganization(TestCase):
 
