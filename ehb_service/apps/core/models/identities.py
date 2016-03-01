@@ -6,6 +6,7 @@ from core.encryption.encryptionFields import EncryptCharField, EncryptDateField
 import random
 import string
 import hashlib
+import json
 
 __all__ = ('Subject', 'ExternalSystem', 'ExternalRecord', 'ExternalRecordRelation', 'SubjectValidation')
 
@@ -368,10 +369,6 @@ class ExternalRecord(CreatedModified):
         response['id'] = self.id
         response['record_id'] = self.record_id
         response['path'] = self.path
-        try:
-            response['relation_id'] = self.relation.desc
-        except:
-            response['relation_id'] = 'Proband'
         return response
 
     def __unicode__(self):
@@ -407,6 +404,15 @@ class ExternalRecordRelation(CreatedModified):
     external_record = models.OneToOneField(ExternalRecord, related_name='external_record', default=None, null=True)
     related_record = models.OneToOneField(ExternalRecord, related_name='related_record', default=None, null=True)
     relation_type = models.ForeignKey(Relation)
+
+    def to_dict(self):
+        return {
+          'id': self.id,
+          'external_record': self.external_record.responseFieldDict(),
+          'related_record': self.related_record.responseFieldDict(),
+          'type': self.relation_type.typ,
+          'relation_description': self.relation_type.desc
+        }
 
     def __unicode__(self):
         return "{0}, {1} ({5}) related to {2}, {3} ({6}) -- Type: {4}".format(

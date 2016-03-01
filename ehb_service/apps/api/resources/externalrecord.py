@@ -4,13 +4,15 @@ import logging
 from restlib2.resources import Resource
 from restlib2.http import codes
 from django.http import HttpResponse
-
-from core.models.identities import ExternalRecord, ExternalRecordLabel, Subject, ExternalSystem
 from core.forms import ExternalRecordForm
-from api.helpers import FormHelpers
 from constants import ErrorConstants
+from api.helpers import FormHelpers
+
+from core.models.identities import ExternalRecord, \
+ExternalRecordRelation, ExternalRecordLabel, Subject, ExternalSystem
 
 log = logging.getLogger(__name__)
+
 
 class ExternalRecordQuery(Resource):
 
@@ -289,3 +291,24 @@ class ExternalRecordLabelResource(Resource):
                 "label": label.label
             })
         return json.dumps(response)
+
+
+class ExternalRecordRelationResource(Resource):
+    '''
+    Provide a resource to provide related ExternalRecords.
+    '''
+    supported_accept_type = ['application/json']
+    model = 'core.models.identities.ExternalRecordRelation'
+
+    def get(self, request, pk):
+        response = []
+        relations = ExternalRecordRelation.objects.filter(external_record=pk)
+        data = []
+        for relation in relations:
+            r = relation.to_dict()
+            data.append({
+                'external_record': r['related_record'],
+                'type': r['type'],
+                'description': r['relation_description'],
+            })
+        return json.dumps(data)
