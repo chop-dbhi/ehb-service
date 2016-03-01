@@ -328,7 +328,9 @@ class ExternalRecordRelationResource(Resource):
         response = []
 
         if content_type == "application/json":
-            form = ExternalRecordRelationForm(request.data)
+            s = request.data
+            s['external_record'] = pk
+            form = ExternalRecordRelationForm(s)
             args = {}
             args['external_record'] = request.data.get('external_record')
             args['related_record'] = request.data.get('related_record')
