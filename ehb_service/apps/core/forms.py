@@ -7,7 +7,8 @@ import re
 
 from django.forms import ModelForm
 from django.forms.util import ErrorList
-from models.identities import Subject, ExternalRecord, ExternalSystem, Organization, Group
+from models.identities import Subject, ExternalRecord, ExternalSystem, \
+    Organization, Group, ExternalRecordRelation
 
 class SubjectForm(ModelForm):
 
@@ -32,13 +33,21 @@ class ExternalRecordForm(ModelForm):
     class Meta:
         model = ExternalRecord
 
+
+class ExternalRecordRelationForm(ModelForm):
+    class Meta:
+        model = ExternalRecordRelation
+
+
 class OrganizationForm(ModelForm):
     class Meta:
         model = Organization
 
+
 class GroupForm(ModelForm):
     class Meta:
         model = Group
+
 
 class ExternalSystemForm(ModelForm):
     class Meta:

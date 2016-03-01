@@ -4,12 +4,12 @@ import logging
 from restlib2.resources import Resource
 from restlib2.http import codes
 from django.http import HttpResponse
-from core.forms import ExternalRecordForm
+from core.forms import ExternalRecordForm, ExternalRecordRelationForm
 from constants import ErrorConstants
 from api.helpers import FormHelpers
 
 from core.models.identities import ExternalRecord, \
-ExternalRecordRelation, ExternalRecordLabel, Subject, ExternalSystem
+    ExternalRecordRelation, ExternalRecordLabel, Subject, ExternalSystem
 
 log = logging.getLogger(__name__)
 
@@ -312,3 +312,26 @@ class ExternalRecordRelationResource(Resource):
                 'description': r['relation_description'],
             })
         return json.dumps(data)
+
+    def post(self, request, pk):
+        '''
+        This method is intended for adding new ExternalRecordRelation records
+        {
+            "external_record": 1,
+            "related_record": 2,
+            "relation_type": 1
+        }
+        '''
+
+        content_type = request.META.get("CONTENT_TYPE")
+
+        response = []
+
+        if content_type == "application/json":
+            form = ExternalRecordRelationForm(request.data)
+            args = {}
+            args['external_record'] = request.data.get('external_record')
+            args['related_record'] = request.data.get('related_record')
+            args['relation_type'] = request.data.get('relation_type')
+            r = FormHelpers.processFormJsonResponse(form, response, invalid_dict=args, valid_dict=args)
+            return json.dumps(r)
