@@ -51,4 +51,6 @@ urlpatterns = patterns(
     url(r'^externalrecord/', include(externalRecord_patterns, namespace='externalrecord')),
     url(r'^organization/', include(organization_patterns, namespace='organization')),
     url(r'^group/', include(group_patterns, namespace='group')),
+    url(r'^links/$', 'api.resources.relation.RelationResource'),
+
 )

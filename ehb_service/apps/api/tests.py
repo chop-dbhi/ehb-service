@@ -1204,6 +1204,21 @@ class TestExternalRecordLink(TestCase):
         self.assertTrue(res['success'])
 
 
+class TestRelationResource(TestCase):
+
+    fixtures = ['test_fixture.json']
+
+    def test_get_relations(self):
+        response = self.client.get(
+            '/api/links/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        res = json.loads(response.content)
+        self.assertEqual(len(res), 2)
+
+
 class TestOrganization(TestCase):
 
     fixtures = ['test_fixture.json']

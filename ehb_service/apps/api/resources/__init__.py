@@ -4,3 +4,4 @@ from externalrecord import *  # noqa
 from organization import *  # noqa
 from constants import *  # noqa
 from group import *  # noqa
+from relation import *  # noqa

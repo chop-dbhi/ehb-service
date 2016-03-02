@@ -395,6 +395,13 @@ class Relation(CreatedModified):
     )
     desc = models.CharField(max_length=255, verbose_name="Descriptor", null=True, blank=True)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'typ': self.typ,
+            'desc': self.desc
+        }
+
     def __unicode__(self):
         return "<{0}> {1}".format(self.typ, self.desc)
 
