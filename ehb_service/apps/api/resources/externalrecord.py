@@ -317,7 +317,6 @@ class ExternalRecordRelationResource(Resource):
         '''
         This method is intended for adding new ExternalRecordRelation records
         {
-            "external_record": 1,
             "related_record": 2,
             "relation_type": 1
         }
@@ -337,3 +336,24 @@ class ExternalRecordRelationResource(Resource):
             args['relation_type'] = request.data.get('relation_type')
             r = FormHelpers.processFormJsonResponse(form, response, invalid_dict=args, valid_dict=args)
             return json.dumps(r)
+
+    def delete(self, request, pk):
+        '''
+        This method deletes the specified ExternalRecordRelation based on the following
+        provided object:
+            {
+                "related_record": 2,
+                "relation_type": 1
+            }
+        '''
+        try:
+            s = request.data
+            record = ExternalRecordRelation.objects.get(
+                external_record=pk,
+                related_record=s['related_record'],
+                relation_type=s['relation_type'])
+            record.delete()
+        except ExternalRecordRelation.DoesNotExist:
+            return (json.dumps({'error': 'Record relation does not exist', 'success': False}))
+
+        return (json.dumps({"success": True}))

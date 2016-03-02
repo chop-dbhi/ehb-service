@@ -1193,7 +1193,15 @@ class TestExternalRecordLink(TestCase):
         res = json.loads(response.content)
         self.assertTrue(res['success'])
 
-
+    def test_delete_external_record_link(self):
+        response = self.client.delete(
+            '/api/externalrecord/id/1/links/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json',
+            data='{"related_record":2,"relation_type":1}')
+        self.assertEqual(response.status_code, 200)
+        res = json.loads(response.content)
+        self.assertTrue(res['success'])
 
 
 class TestOrganization(TestCase):
