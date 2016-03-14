@@ -386,6 +386,7 @@ class Relation(CreatedModified):
         max_length=255,
         verbose_name="Relation Type",
         choices=[
+            ('generic', 'Generic'),
             ('label', 'Label'),
             ('file', 'File'),
             ('familial', 'Familial'),
