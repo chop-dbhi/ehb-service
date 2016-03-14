@@ -29,6 +29,7 @@ externalRecord_patterns = patterns(
     'api.resources.externalrecord',
     url(r'^$', 'ExternalRecordResource'),
     url(r'^id/(?P<pk>\d+)/$', 'ExternalRecordResource'),
+    url(r'^id/(?P<pk>\d+)/links/$', 'ExternalRecordRelationResource'),
     url(r'^query/$', 'ExternalRecordQuery'),
     url(r'^labels/$', 'ExternalRecordLabelResource'),
     url(r'^labels/(?P<pk>\d+)/$', 'ExternalRecordLabelResource'),
@@ -50,4 +51,6 @@ urlpatterns = patterns(
     url(r'^externalrecord/', include(externalRecord_patterns, namespace='externalrecord')),
     url(r'^organization/', include(organization_patterns, namespace='organization')),
     url(r'^group/', include(group_patterns, namespace='group')),
+    url(r'^links/$', 'api.resources.relation.RelationResource'),
+
 )

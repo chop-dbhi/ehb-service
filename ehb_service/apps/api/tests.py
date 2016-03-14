@@ -74,7 +74,6 @@ class TestGroup(TestCase):
             content_type='application/json',
             data=json.dumps([req]))
 
-
     def test_delete_group_by_id(self):
         pre_count = Group.objects.count()
         response = self.client.delete(
@@ -260,7 +259,7 @@ class TestGroup(TestCase):
 
     def test_add_record_to_group(self):
         # we only need to pass a list of pks being added to the group to add it
-        er =  Group.objects.get(pk=6).externalrecordgroup_set.all()
+        er = Group.objects.get(pk=6).externalrecordgroup_set.all()
         response = self.client.post(
             '/api/group/id/6/records/',
             HTTP_API_TOKEN='secretkey123',
@@ -1165,6 +1164,59 @@ class TestExternalRecord(TestCase):
             content_type='application/json')
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 404)
+
+
+class TestExternalRecordLink(TestCase):
+
+    fixtures = ['test_fixture.json']
+
+    def test_get_external_links(self):
+        response = self.client.get(
+            '/api/externalrecord/id/1/links/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        links = json.loads(response.content)
+        self.assertEqual(len(links), 1)
+        link = links[0]
+        self.assertEqual(link['type'], 'familial')
+        self.assertEqual(link['description'], 'Parent of')
+        self.assertEqual(link['external_record']['id'], 2)
+
+    def test_create_new_external_record_link(self):
+        response = self.client.post(
+            '/api/externalrecord/id/2/links/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json',
+            data='{"related_record":4,"relation_type":1}')
+        self.assertEqual(response.status_code, 200)
+        res = json.loads(response.content)
+        self.assertTrue(res['success'])
+
+    def test_delete_external_record_link(self):
+        response = self.client.delete(
+            '/api/externalrecord/id/1/links/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json',
+            data='{"related_record":2,"relation_type":1}')
+        self.assertEqual(response.status_code, 200)
+        res = json.loads(response.content)
+        self.assertTrue(res['success'])
+
+
+class TestRelationResource(TestCase):
+
+    fixtures = ['test_fixture.json']
+
+    def test_get_relations(self):
+        response = self.client.get(
+            '/api/links/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        res = json.loads(response.content)
+        self.assertEqual(len(res), 2)
 
 
 class TestOrganization(TestCase):

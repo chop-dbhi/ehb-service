@@ -154,4 +154,44 @@
         "external_system": 1,
         "subject": 1
     }
+}, {
+    "pk": 2,
+    "model": "core.externalrecord",
+    "fields": {
+        "created": "2015-09-29T13:51:16.189",
+        "modified": "2015-09-29T13:51:16.190",
+        "label": 1,
+        "record_id": "S891XSB0XD1NKRPF:XM5VUKTNY",
+        "path": "Demo",
+        "external_system": 1,
+        "subject": 1
+    }
+}, {
+    "pk": 1,
+    "model": "core.relation",
+    "fields": {
+        "typ": "familial",
+        "desc": "Parent of",
+        "created": "2015-09-29T13:51:16.189",
+        "modified": "2015-09-29T13:51:16.190"
+    }
+}, {
+    "pk": 2,
+    "model": "core.relation",
+    "fields": {
+        "typ": "diagnosis",
+        "desc": "Associated Diagnosis",
+        "created": "2015-09-29T13:51:16.189",
+        "modified": "2015-09-29T13:51:16.190"
+    }
+}, {
+    "pk": 1,
+    "model": "core.externalrecordrelation",
+    "fields": {
+        "external_record": 1,
+        "related_record": 2,
+        "created": "2015-09-29T13:51:16.189",
+        "modified": "2015-09-29T13:51:16.190",
+        "relation_type": 1
+    }
 }]
