@@ -30,6 +30,7 @@ externalRecord_patterns = patterns(
     url(r'^$', 'ExternalRecordResource'),
     url(r'^id/(?P<pk>\d+)/$', 'ExternalRecordResource'),
     url(r'^id/(?P<pk>\d+)/links/$', 'ExternalRecordRelationResource'),
+    url(r'^id/(?P<pk>\d+)/links/(?P<link>\d+)/$', 'ExternalRecordRelationResource'),
     url(r'^query/$', 'ExternalRecordQuery'),
     url(r'^labels/$', 'ExternalRecordLabelResource'),
     url(r'^labels/(?P<pk>\d+)/$', 'ExternalRecordLabelResource'),

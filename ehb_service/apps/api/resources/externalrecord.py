@@ -300,9 +300,14 @@ class ExternalRecordRelationResource(Resource):
     supported_accept_type = ['application/json']
     model = 'core.models.identities.ExternalRecordRelation'
 
-    def get(self, request, pk):
+    def get(self, request, pk, link=None):
+
         response = []
-        relations = ExternalRecordRelation.objects.filter(external_record=pk)
+        if link:
+            relations = ExternalRecordRelation.objects.filter(external_record=pk, pk=link)
+        else:
+            relations = ExternalRecordRelation.objects.filter(external_record=pk)
+
         data = []
         for relation in relations:
             r = relation.to_dict()
@@ -310,8 +315,12 @@ class ExternalRecordRelationResource(Resource):
                 'external_record': r['related_record'],
                 'type': r['type'],
                 'description': r['relation_description'],
+                'id': r['id']
             })
-        return json.dumps(data)
+        if link:
+            return json.dumps(data[0])
+        else:
+            return json.dumps(data)
 
     def post(self, request, pk):
         '''
@@ -337,21 +346,14 @@ class ExternalRecordRelationResource(Resource):
             r = FormHelpers.processFormJsonResponse(form, response, invalid_dict=args, valid_dict=args)
             return json.dumps(r)
 
-    def delete(self, request, pk):
+    def delete(self, request, pk, link):
         '''
-        This method deletes the specified ExternalRecordRelation based on the following
-        provided object:
-            {
-                "related_record": 2,
-                "relation_type": 1
-            }
+        This method deletes the specified ExternalRecordRelation based id passed
+        via the URL
         '''
+
         try:
-            s = request.data
-            record = ExternalRecordRelation.objects.get(
-                external_record=pk,
-                related_record=s['related_record'],
-                relation_type=s['relation_type'])
+            record = ExternalRecordRelation.objects.get(pk=link)
             record.delete()
         except ExternalRecordRelation.DoesNotExist:
             return (json.dumps({'error': 'Record relation does not exist', 'success': False}))
