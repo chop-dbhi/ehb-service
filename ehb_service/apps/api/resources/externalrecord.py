@@ -4,6 +4,7 @@ import logging
 from restlib2.resources import Resource
 from restlib2.http import codes
 from django.http import HttpResponse
+from django.db.models import Q
 from core.forms import ExternalRecordForm, ExternalRecordRelationForm
 from constants import ErrorConstants
 from api.helpers import FormHelpers
@@ -306,17 +307,20 @@ class ExternalRecordRelationResource(Resource):
         if link:
             relations = ExternalRecordRelation.objects.filter(external_record=pk, pk=link)
         else:
-            relations = ExternalRecordRelation.objects.filter(external_record=pk)
+            relations = ExternalRecordRelation.objects.filter(Q(external_record=pk) | Q(related_record=pk))
 
         data = []
         for relation in relations:
             r = relation.to_dict()
-            data.append({
+            d = {
                 'external_record': r['related_record'],
                 'type': r['type'],
                 'description': r['relation_description'],
                 'id': r['id']
-            })
+            }
+            if (r['related_record']['id'] == int(pk)):
+                d['external_record'] = r['external_record']
+            data.append(d)
         if link:
             return json.dumps(data[0])
         else:
