@@ -409,8 +409,8 @@ class Relation(CreatedModified):
 
 class ExternalRecordRelation(CreatedModified):
     id = models.AutoField(primary_key=True)
-    external_record = models.OneToOneField(ExternalRecord, related_name='external_record', default=None, null=True)
-    related_record = models.OneToOneField(ExternalRecord, related_name='related_record', default=None, null=True)
+    external_record = models.ForeignKey(ExternalRecord, related_name='external_record', default=None, null=True)
+    related_record = models.ForeignKey(ExternalRecord, related_name='related_record', default=None, null=True)
     relation_type = models.ForeignKey(Relation)
 
     def to_dict(self):

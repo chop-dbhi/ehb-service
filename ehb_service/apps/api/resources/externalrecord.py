@@ -342,12 +342,16 @@ class ExternalRecordRelationResource(Resource):
         if content_type == "application/json":
             s = request.data
             s['external_record'] = pk
-            form = ExternalRecordRelationForm(s)
+            # Check if this already exists
             args = {}
             args['external_record'] = request.data.get('external_record')
             args['related_record'] = request.data.get('related_record')
             args['relation_type'] = request.data.get('relation_type')
+            if len(ExternalRecordRelation.objects.filter(external_record=args['external_record'], related_record=args['related_record'], relation_type=args['relation_type'])) > 0:
+                return json.dumps({'success': False, 'error': 'Record relation already exists'})
+            form = ExternalRecordRelationForm(s)
             r = FormHelpers.processFormJsonResponse(form, response, invalid_dict=args, valid_dict=args)
+
             return json.dumps(r)
 
     def delete(self, request, pk, link):
