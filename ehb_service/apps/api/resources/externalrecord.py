@@ -312,11 +312,15 @@ class ExternalRecordRelationResource(Resource):
         data = []
         for relation in relations:
             r = relation.to_dict()
+            primary = False
+            if int(pk) == r['external_record']['id']:
+                primary = True
             d = {
                 'external_record': r['related_record'],
                 'type': r['type'],
                 'description': r['relation_description'],
-                'id': r['id']
+                'id': r['id'],
+                'primary': primary
             }
             if (r['related_record']['id'] == int(pk)):
                 d['external_record'] = r['external_record']
