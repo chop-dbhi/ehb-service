@@ -88,10 +88,9 @@ class ExternalSystemSubjects(ExternalSystemCrossReference):
 
         def process(es, response):
             if not org:
-                qs = es.subjects.all()
+                qs = es.subjects.all().distinct()
             else:
-                qs = es.subjects.filter(organization=org)
-
+                qs = es.subjects.filter(organization=org).distinct()
             for s in qs:
                 r = s.responseFieldDict()
                 response.append(r)
