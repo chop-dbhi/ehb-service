@@ -5,16 +5,16 @@ machine:
 
 dependencies:
     override:
-        - docker info
-        - docker build -t dbhi/ehb-service .
+        - pip install -r requirements.txt
 
 test:
     override:
-        - docker run dbhi/ehb-service /bin/bash - /opt/app/test.sh
+        - ./test.sh
 
 deployment:
     hub:
         branch: master
         commands:
+            - docker build -t dbhi/ehb-service .
             - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
             - docker push dbhi/ehb-service
