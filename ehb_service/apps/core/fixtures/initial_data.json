@@ -104,6 +104,18 @@
         "client_key": "$sha256$IFSRK83EPWCV$a3cb0de87907fc399852d6104da187b1030d4f362f52539c905490b4989b5420"
     }
 }, {
+    "pk": 3,
+    "model": "core.group",
+    "fields": {
+        "ehb_key": 3,
+        "name": "BRP:Z000000001111111",
+        "created": "2015-09-29T12:09:05.249",
+        "description": "A BRP Protocol Subject Record Group",
+        "modified": "2015-09-29T12:09:05.249",
+        "is_locking": true,
+        "client_key": "$sha256$IFSRK83EPWCV$a3cb0de87907fc399852d6104da187b1030d4f362f52539c905490b4989b5420"
+    }
+}, {
     "pk": 1,
     "model": "core.subjectgroup",
     "fields": {
