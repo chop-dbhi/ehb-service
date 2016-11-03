@@ -111,6 +111,7 @@ class Subject(CreatedModified):
         response['organization'] = self.organization_id
         response['id'] = self.id
         response['organization_subject_id'] = self.organization_subject_id
+        response['organization_id_label'] = self.organization.subject_id_label
         response['dob'] = self.dob.strftime('%Y-%m-%d')
 
         return response
