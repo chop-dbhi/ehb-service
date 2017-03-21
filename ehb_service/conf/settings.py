@@ -21,7 +21,7 @@ LDAP = {
     'SEARCHDN': env('LDAP_SEARCHDN'),
     'SEARCH_FILTER': env('LDAP_SEARCH_FILTER'),
     'SERVER_URI': env('LDAP_SERVER_URI'),
-    'PREBINDPW': env('LDAP_PREBINDDN')
+    'PREBINDPW': env('LDAP_PREBINDPW')
 }
 EMAIL_HOST = env('EMAIL_HOST', default='localhost')
 EMAIL_PORT = env('EMAIL_PORT', default=25)
