@@ -1,7 +1,7 @@
 version: '2'
 services:
   ehb1:
-      image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:master
+      image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:latest
       container_name: ehb-service-1
       env_file: ./production.env
       restart: always
@@ -9,7 +9,7 @@ services:
         - redis
 
   ehb2:
-      image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:master
+      image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:latest
       container_name: ehb-service-2
       env_file: ./production.env
       restart: always
