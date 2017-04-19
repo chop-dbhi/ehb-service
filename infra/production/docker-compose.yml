@@ -1,11 +1,5 @@
 version: '2'
 services:
-  v1:
-      image: ehb-service:v1
-      container_name: ehb-service-v1
-      env_file: ./production-v1.env
-      restart: always
-
   ehb1:
       image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:master
       container_name: ehb-service-1
@@ -35,7 +29,6 @@ services:
           - "80:80"
           - "443:443"
       depends_on:
-          - v1:ehb-service-v1
           - ehb1
           - ehb2
       restart: always
