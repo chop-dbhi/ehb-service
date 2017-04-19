@@ -24,7 +24,7 @@ RUN apt-get install -y\
 RUN pip install "Django>=1.5,<1.6"
 RUN pip install south
 RUN pip install uWSGI
-RUN pip install django-environ
+RUN pip install "django-environ==0.4.1"
 RUN pip install "restlib2==0.3.9"
 RUN pip install psycopg2
 RUN pip install python-ldap
