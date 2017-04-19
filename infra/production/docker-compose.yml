@@ -1,0 +1,41 @@
+version: '2'
+services:
+  v1:
+      image: ehb-service:v1
+      container_name: ehb-service-v1
+      env_file: ./production-v1.env
+      restart: always
+
+  ehb1:
+      image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:master
+      container_name: ehb-service-1
+      env_file: ./production.env
+      restart: always
+      depends_on:
+        - redis
+
+  ehb2:
+      image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:master
+      container_name: ehb-service-2
+      env_file: ./production.env
+      restart: always
+      depends_on:
+        - redis
+
+  redis:
+    image: redis:3.2.8
+
+  app:
+      image: nginx:1.7
+      container_name: nginx
+      volumes:
+          - /opt/apps/nginx/default.conf:/etc/nginx/conf.d/default.conf
+          - /opt/apps/nginx/certs:/etc/nginx/ssl
+      ports:
+          - "80:80"
+          - "443:443"
+      depends_on:
+          - v1:ehb-service-v1
+          - ehb1
+          - ehb2
+      restart: always

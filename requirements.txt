@@ -22,7 +22,7 @@ psycopg2
 # cx_Oracle
 
 # Cache backend support
-# python-memcached
+django-redis-sessions
 
 # For LDAP supoort, install python-ldap. If the PyPi version does not
 # install properly, try using the one in the src/ directory

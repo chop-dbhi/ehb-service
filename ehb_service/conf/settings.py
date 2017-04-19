@@ -52,6 +52,11 @@ EHB_PROPS = {
     }
 }
 FORCE_SCRIPT_NAME = env('FORCE_SCRIPT_NAME', default='')
+
+SESSION_ENGINE = 'redis_sessions.session'
+SESSION_REDIS_HOST = env('REDIS_HOST', default='localhost')
+SESSION_REDIS_PORT = env('REDIS_PORT', default=6379)
+
 SESSION_COOKIE_NAME = 'ehb_sessionid'
 
 if FORCE_SCRIPT_NAME:
