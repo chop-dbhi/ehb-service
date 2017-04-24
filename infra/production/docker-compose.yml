@@ -18,6 +18,7 @@ services:
 
   redis:
     image: redis:3.2.8
+    restart: always
 
   app:
       image: nginx:1.7
