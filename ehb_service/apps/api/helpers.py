@@ -57,9 +57,12 @@ class FormHelpers(object):
             elif e == 'Organization with this Name already exists.':
                 v = ErrorConstants.ERROR_ORGANIZATION_NAME_EXISTS
             elif e == 'Group with this Group Name already exists.':
+                log.error("Subject with this Group Name already exists in the EHB.")
                 v = ErrorConstants.ERROR_GROUP_NAME_EXISTS
             elif e == 'Subject identifier does not meet validation rules for this organization.':
+                log.error("Subject identifier does not meet validation rules for this organization.")
                 v = ErrorConstants.ERROR_SUBJECT_ID_NOT_VALID
+                log.error("Subject id not valid")
             else:
                 v = ErrorConstants.ERROR_UNKNOWN
 
