@@ -59,6 +59,7 @@ class SubjectGroupAdmin(admin.ModelAdmin):
     # need to overide this search query to decrypt subject field
     search_fields = ['group__name']
     list_display = ['group']
+    readonly_fields = ['subjects', 'group']
 
 admin.site.register(SubjectGroup, SubjectGroupAdmin)
 
