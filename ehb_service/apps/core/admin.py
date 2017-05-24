@@ -61,6 +61,10 @@ class SubjectGroupAdmin(admin.ModelAdmin):
     list_display = ['group']
     readonly_fields = ['subjects', 'group']
 
+    def has_delete_permission(self, request, obj=None):
+        '''prevent item level deletes'''
+        return False
+
 admin.site.register(SubjectGroup, SubjectGroupAdmin)
 
 class ExternalRecordGroupAdmin(admin.ModelAdmin):
