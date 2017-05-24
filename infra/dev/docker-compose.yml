@@ -24,6 +24,7 @@ services:
           options:
               gelf-address: "udp://127.0.0.1:5000"
               tag: "ehb-dev"
+
         ports:
             - "32789:8000"
         depends_on:
