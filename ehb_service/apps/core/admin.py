@@ -14,7 +14,8 @@ from models.identities import (
     Organization,
     ExternalRecordRelation,
     Relation,
-    ExternalRecordLabel
+    ExternalRecordLabel,
+    PedigreeRelation
 )
 from models.clients import MachineClient
 from django.contrib import admin
@@ -91,7 +92,16 @@ class GroupAdmin(admin.ModelAdmin):
         '''prevent item level deletes'''
         return False
 
+
 admin.site.register(Group, GroupAdmin)
+
+
+class PedigreeRelationAdmin(admin.ModelAdmin):
+    list_filter = ['subject', 'relation', 'related_subject']
+
+
+admin.site.register(PedigreeRelation)
+
 
 class MachineClientAdmin(admin.ModelAdmin):
     list_filter = ['ip_address', 'host_name']

@@ -455,3 +455,15 @@ class SubjectValidation(models.Model):
 
     class Meta:
         app_label = u'core'
+
+
+class PedigreeRelationshipDef(models.Model):
+    valid_values = models.CharField(max_length=50)
+    value_Meaning_name = models.CharField(max_length=50)
+    value_meaning_description = models.CharField(max_length=50)
+
+
+class PedigreeRelation(models.Model):
+    subject = models.ForeignKey(Subject)
+    relation = models.ForeignKey(PedigreeRelationshipDef)
+    related_subject = models.ForeignKey(Subject)
