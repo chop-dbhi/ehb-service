@@ -1,0 +1,31 @@
+version: '2'
+services:
+    redis:
+        image: redis:3.0.5
+        restart: always
+
+    logstash:
+        image: logstash:5.3
+        ports:
+            - "5000:5000/udp"
+        volumes:
+            - ../../logstash.conf:/config-dir/logstash.conf
+        restart: always
+        command: logstash -f /config-dir/logstash.conf
+
+    ehb:
+        image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:dev
+        container_name: ehb_dev
+        restart: always
+        environment:
+            - REDIS_HOST=redis
+        logging:
+          driver: gelf
+          options:
+              gelf-address: "udp://127.0.0.1:5000"
+              tag: "ehb-dev"
+
+        ports:
+            - "32789:8000"
+        depends_on:
+            - redis

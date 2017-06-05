@@ -21,7 +21,8 @@ from django.contrib import admin
 
 class SubjectAdmin(admin.ModelAdmin):
     list_filter = ['organization', 'created', 'modified']
-    search_fields = ['organization', 'last_name', 'organization_subject_id']
+    # Search Field does not work due to encryption. need to override query
+    search_fields = ['organization__name', 'last_name', 'organization_subject_id']
     list_display = ['last_name', 'first_name', 'organization', 'organization_subject_id']
 
 admin.site.register(Subject, SubjectAdmin)
@@ -40,6 +41,8 @@ admin.site.register(ExternalSystem, ExternalSystemAdmin)
 class ExternalRecordAdmin(admin.ModelAdmin):
     list_filter = ['external_system', 'created']
     list_display = ['subject', 'external_system', 'path', 'record_id']
+    # need to overide this search query to decrypt subject field
+    search_fields = ['subject__last_name']
     raw_id_fields = ['subject', 'external_system']
 
 admin.site.register(ExternalRecord, ExternalRecordAdmin)
@@ -53,14 +56,21 @@ admin.site.register(Organization, OrganizationAdmin)
 
 class SubjectGroupAdmin(admin.ModelAdmin):
     list_filter = ['group']
-    search_fields = ['group']
+    # need to overide this search query to decrypt subject field
+    search_fields = ['group__name']
     list_display = ['group']
+    readonly_fields = ['subjects', 'group']
+
+    def has_delete_permission(self, request, obj=None):
+        '''prevent item level deletes'''
+        return False
 
 admin.site.register(SubjectGroup, SubjectGroupAdmin)
 
 class ExternalRecordGroupAdmin(admin.ModelAdmin):
     list_filter = ['group']
-    search_fields = ['group']
+    # need to overide this search query to decrypt subject field
+    search_fields = ['group__name']
     list_display = ['group']
 
 admin.site.register(ExternalRecordGroup, ExternalRecordGroupAdmin)
