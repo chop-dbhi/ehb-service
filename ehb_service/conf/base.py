@@ -105,7 +105,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'api.middleware.TokenMiddleware'
+    'api.middleware.TokenMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware'
 #    'django.middleware.cache.FetchFromCacheMiddleware',
 )
