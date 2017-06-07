@@ -27,30 +27,36 @@ class SubjectForm(ModelForm):
                     self._errors["subject"] = ErrorList(["Subject identifier does not meet validation rules for this organization."])
         return self.cleaned_data
     class Meta:
+        fields = "__all__"
         model = Subject
 
 class ExternalRecordForm(ModelForm):
     class Meta:
+        fields = "__all__"
         model = ExternalRecord
 
 
 class ExternalRecordRelationForm(ModelForm):
     class Meta:
+        fields = "__all__"
         model = ExternalRecordRelation
 
 
 class OrganizationForm(ModelForm):
     class Meta:
+        fields = "__all__"
         model = Organization
 
 
 class GroupForm(ModelForm):
     class Meta:
+        fields = "__all__"
         model = Group
 
 
 class ExternalSystemForm(ModelForm):
     class Meta:
+        fields = "__all__"
         model = ExternalSystem
 
     def save(self, commit=True):
