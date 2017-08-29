@@ -30,7 +30,6 @@ INSTALLED_APPS = (
 #------------------------------------
 # ADMINISTRATIVE
 #------------------------------------
-SEND_BROKEN_LINK_EMAILS = True
 
 INTERNAL_IPS = ('127.0.0.1', '::1')
 
@@ -106,7 +105,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'api.middleware.TokenMiddleware'
+    'api.middleware.TokenMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware'
 #    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 

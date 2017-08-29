@@ -21,7 +21,7 @@ RUN apt-get install -y\
     zlib1g-dev\
     postgresql-client
 
-RUN pip install "Django>=1.5,<1.6"
+RUN pip install "Django>=1.6,<1.7"
 RUN pip install south
 RUN pip install uWSGI
 RUN pip install "django-environ==0.4.1"

@@ -9,7 +9,7 @@ def unique_token(token):
 
 class ApiTokenManager(models.Manager):
     def get_active_tokens(self):
-        return self.get_query_set().select_related('user')\
+        return self.get_queryset().select_related('user')\
             .filter(user__is_active=True, revoked=False)
 
     def get_active_token(self, token):
