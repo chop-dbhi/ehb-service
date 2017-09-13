@@ -3,6 +3,7 @@ import re
 import binascii
 import random
 import string
+import logging
 
 from django import forms
 from django.db import models
@@ -12,6 +13,7 @@ from south.modelsinspector import add_introspection_rules
 
 from core.encryption.Factories import FactoryEncryptionServices as efac
 
+log = logging.getLogger(__name__)
 
 class BaseField(models.Field):
 
@@ -97,15 +99,21 @@ class BaseField(models.Field):
         """Converts the input value into the expected Python data type, raising
         django.core.exceptions.ValidationError if the data can't be converted.
         Returns the converted value. Subclasses should override this."""
+        log.debug('in BaseField.to_python - input value: {0}'.format(value))
+        log.debug('in BaseField.to_python - len(value.strip()) = {0}'.format(len(value.strip())))
         if len(value.strip()) == 0:
             return value
+        log.debug('in BaseField.to_python - self.use_encryption: {0}'.format(self.use_encryption))
         if self.use_encryption:
             key = self.akms.get_key()
+            log.debug('in BaseField.to_python - self._is_encrypted: {0}'.format(self._is_encrypted(value, key)))
             if self._is_encrypted(value, key):
                 return force_unicode(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
             else:
+                log.debug('in BaseField.to_python - value if use_encrypted and _is_encrypted is true: {0}'.format(value))
                 return value
         else:
+            log.debug('in BaseField.to_python - value if use_encryption is false: {0}'.format(value))
             return value
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
@@ -117,7 +125,10 @@ class BaseField(models.Field):
 
         https://docs.djangoproject.com/en/dev/ref/unicode/
         '''
-
+        log.debug('BaseField.get_db_prep_value - input value: {0}'.format(value))
+        log.debug('BaseField.get_db_prep_value - input connection: {0}'.format(connection))
+        log.debug('BaseField.get_db_prep_value - input prepared: {0}'.format(prepared))
+        log.debug('BaseField.get_db_prep_value - len(value.strip()) : {0}'.format(len(value.strip())))
         if len(value.strip()) == 0:
             return value
 
@@ -127,6 +138,7 @@ class BaseField(models.Field):
             key = self.akms.get_key()
 
             if value and not self._is_encrypted(value, key):
+                log.debug("BaseField.get_db_prep_value - input value is not encrypted")
                 pad_length = self._padding_length(value)
                 if pad_length > 0:
                     value += self._split_byte() + self._semi_random_padding_string(pad_length-1)
@@ -134,9 +146,10 @@ class BaseField(models.Field):
 
             if len(value) % 2 != 0:
                 # Some encryption services add a checksum byte which throws off the pad_length
+                log.debug("BaseField.get_db_prep_value - input value is encrypted using checksum")
                 value += self._split_byte()
             value = binascii.b2a_hex(value)
-
+        log.debug('BaseField.get_db_prep_value - return 'value': {0}'.format(value))
         return value
 
 
@@ -155,8 +168,13 @@ class EncryptCharField(BaseField):
         return super(EncryptCharField, self).formfield(**defaults)
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
+        log.debug('EncryptCharField.get_db_prep_value - input value: {0}'.format(value))
+        log.debug('EncryptCharField.get_db_prep_value - input connection: {0}'.format(connection))
+        log.debug('EncryptCharField.get_db_prep_value - input prepared: {0}'.format(prepared))
+        log.debug('EncryptCharField.get_db_prep_value - self.use_encryption: {0}'.format(self.use_encryption))
         if self.use_encryption:
             key = self.akms.get_key()
+            log.debug('EncryptCharField.get_db_prep_value - self._is_encrypted(value, key): {0}'.format(self._is_encrypted(value, key)))
             if value and not self._is_encrypted(value, key):
                 if len(value) > self.user_specified_max_length:
                     raise ValueError(
@@ -186,6 +204,7 @@ class EncryptDateField(BaseField):
         return super(EncryptDateField, self).formfield(**defaults)
 
     def to_python(self, value):
+        log.debug('in EncryptDateField.to_python - input value: {0}'.format(value))
         dv = None
 
         if value in fields.EMPTY_VALUES:
@@ -195,12 +214,15 @@ class EncryptDateField(BaseField):
         else:
             input_text = super(EncryptDateField, self).to_python(value)
             dv = datetime.date(*[int(x) for x in input_text.split(':')])
-
+        log.debug('in EncryptDateField.to_python - return value dv: {0}'.format(dv))
         return dv
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
+        log.debug('EncryptDateField.get_db_prep_value - input value: {0}'.format(value))
+        log.debug('EncryptDateField.get_db_prep_value - input connection: {0}'.format(connection))
+        log.debug('EncryptDateField.get_db_prep_value - input prepared: {0}'.format(prepared))
         dt = value.strftime('%Y:%m:%d') if value else None
-
+        log.debut('EncryptDateField.get_db_prep_value - dt: {0}'.format(dt))
         return super(EncryptDateField, self).get_db_prep_value(dt, connection=connection, prepared=prepared)
 
 # Basic Introspection rules so South plays nice

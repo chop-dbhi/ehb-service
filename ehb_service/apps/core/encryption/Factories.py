@@ -1,4 +1,8 @@
+import logging
+
 from django.conf import settings
+
+log = logging.getLogger(__name__)
 
 class FactoryEncryptionServices(object):
 
@@ -13,6 +17,7 @@ class FactoryEncryptionServices(object):
 
     @staticmethod
     def _active_service_loader(service_dict):
+        log.debug('FactoryEncryptionServices._active_service_loader - input service_dict: {0}'.format(service_dict))
         if service_dict:
             mn = service_dict.get('module', None)
             cn = service_dict.get('class', None)
@@ -20,6 +25,7 @@ class FactoryEncryptionServices(object):
                 _class = FactoryEncryptionServices._load_class(mn, cn)
                 kwargs = service_dict.get('kwargs', None)
                 service = _class()
+                log.debug('FactoryEncryptionServices._active_service_loader - kwargs: {0}'.format(kwargs))
                 if kwargs:
                     service.configure(**kwargs)
                 return service
