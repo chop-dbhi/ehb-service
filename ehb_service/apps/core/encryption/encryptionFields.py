@@ -149,7 +149,7 @@ class BaseField(models.Field):
                 log.debug("BaseField.get_db_prep_value - input value is encrypted using checksum")
                 value += self._split_byte()
             value = binascii.b2a_hex(value)
-        log.debug('BaseField.get_db_prep_value - return 'value': {0}'.format(value))
+        log.debug('BaseField.get_db_prep_value - return value: {0}'.format(value))
         return value
 
 
