@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 class AESEncryption(EncryptionService):
 
     def configure(self, **kwargs):
-        log.debug('AESEncryption.configure - input kwargs: {0}'.format(kwargs)
+        log.debug('AESEncryption.configure - input kwargs: {0}'.format(kwargs))
         self.mode = kwargs.get('mode', AES.MODE_CFB)
         log.debug('AESEncryption.configure - self.mode: {0}'.format(self.mode))
         self.auto_correct_key_length = kwargs.get('auto_correct_key_length', True)
