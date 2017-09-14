@@ -100,13 +100,15 @@ class BaseField(models.Field):
         django.core.exceptions.ValidationError if the data can't be converted.
         Returns the converted value. Subclasses should override this."""
         log.debug('in BaseField.to_python - input value: {0}'.format(value))
-        log.debug('in BaseField.to_python - len(value.strip()) = {0}'.format(len(value.strip())))
+        length = len(value.strip()
+        log.debug('in BaseField.to_python - len(value.strip()) = {0}'.format(length))
         if len(value.strip()) == 0:
             return value
         log.debug('in BaseField.to_python - self.use_encryption: {0}'.format(self.use_encryption))
         if self.use_encryption:
             key = self.akms.get_key()
-            log.debug('in BaseField.to_python - self._is_encrypted: {0}'.format(self._is_encrypted(value, key)))
+            encrypted = self._is_encrypted(value, key)
+            log.debug('in BaseField.to_python - self._is_encrypted: {0}'.format(encrypted))
             if self._is_encrypted(value, key):
                 return force_unicode(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
             else:
@@ -128,7 +130,8 @@ class BaseField(models.Field):
         log.debug('BaseField.get_db_prep_value - input value: {0}'.format(value))
         log.debug('BaseField.get_db_prep_value - input connection: {0}'.format(connection))
         log.debug('BaseField.get_db_prep_value - input prepared: {0}'.format(prepared))
-        log.debug('BaseField.get_db_prep_value - len(value.strip()) : {0}'.format(len(value.strip())))
+        length = len(value.strip())
+        log.debug('BaseField.get_db_prep_value - len(value.strip()) : {0}'.format(length))
         if len(value.strip()) == 0:
             return value
 
@@ -174,7 +177,8 @@ class EncryptCharField(BaseField):
         log.debug('EncryptCharField.get_db_prep_value - self.use_encryption: {0}'.format(self.use_encryption))
         if self.use_encryption:
             key = self.akms.get_key()
-            log.debug('EncryptCharField.get_db_prep_value - self._is_encrypted(value, key): {0}'.format(self._is_encrypted(value, key)))
+            encrypted = self._is_encrypted(value, key)
+            log.debug('EncryptCharField.get_db_prep_value - self._is_encrypted(value, key): {0}'.format(encrypted))
             if value and not self._is_encrypted(value, key):
                 if len(value) > self.user_specified_max_length:
                     raise ValueError(

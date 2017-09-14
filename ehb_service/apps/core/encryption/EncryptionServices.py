@@ -57,7 +57,6 @@ class AESEncryption(EncryptionService):
             key = self._correct_key_length(key)
 
         enc = AES.new(key, self.mode)
-        log.debug('in decrypt - enc: {0}'.format(enc))
         data = enc.decrypt(edata)
         log.debug('in decrypt - decrypted data: {0}'.format(data))
         log.debug('in decrypt - use_checksum: {0}'.format(self.use_checksum))
