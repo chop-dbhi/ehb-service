@@ -226,7 +226,7 @@ class EncryptDateField(BaseField):
         log.debug('EncryptDateField.get_db_prep_value - input connection: {0}'.format(connection))
         log.debug('EncryptDateField.get_db_prep_value - input prepared: {0}'.format(prepared))
         dt = value.strftime('%Y:%m:%d') if value else None
-        log.debut('EncryptDateField.get_db_prep_value - dt: {0}'.format(dt))
+        log.debug('EncryptDateField.get_db_prep_value - dt: {0}'.format(dt))
         return super(EncryptDateField, self).get_db_prep_value(dt, connection=connection, prepared=prepared)
 
 # Basic Introspection rules so South plays nice
