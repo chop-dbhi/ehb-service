@@ -100,7 +100,7 @@ class BaseField(models.Field):
         django.core.exceptions.ValidationError if the data can't be converted.
         Returns the converted value. Subclasses should override this."""
         log.debug('in BaseField.to_python - input value: {0}'.format(value))
-        length = len(value.strip()
+        length = len(value.strip())
         log.debug('in BaseField.to_python - len(value.strip()) = {0}'.format(length))
         if len(value.strip()) == 0:
             return value
