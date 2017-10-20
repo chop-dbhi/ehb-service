@@ -20,8 +20,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # third-party
     'restlib2',
-    'south',
-
     'core',
     'api',
 
