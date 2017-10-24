@@ -3,36 +3,32 @@ from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-
+from core.models.identities import ExternalRecord, ExternalRecordLabel
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Removing unique constraint on 'ExternalRecordRelation', fields ['related_record']
-        db.delete_unique(u'core_externalrecordrelation', ['related_record_id'])
+        # Adding model 'ExternalRecordLabel'
+        db.create_table(u'core_externalrecordlabel', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, auto_now_add=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('label', self.gf('django.db.models.fields.CharField')(max_length=100)),
+        ))
+        db.send_create_signal(u'core', ['ExternalRecordLabel'])
 
-        # Removing unique constraint on 'ExternalRecordRelation', fields ['external_record']
-        db.delete_unique(u'core_externalrecordrelation', ['external_record_id'])
+        # Adding field 'ExternalRecord.label'
+        db.add_column(u'core_externalrecord', 'label',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['core.ExternalRecordLabel'], null=True),
+                      keep_default=False)
 
-
-        # Changing field 'ExternalRecordRelation.external_record'
-        db.alter_column(u'core_externalrecordrelation', 'external_record_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['core.ExternalRecord']))
-
-        # Changing field 'ExternalRecordRelation.related_record'
-        db.alter_column(u'core_externalrecordrelation', 'related_record_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['core.ExternalRecord']))
 
     def backwards(self, orm):
+        # Deleting model 'ExternalRecordLabel'
+        db.delete_table(u'core_externalrecordlabel')
 
-        # Changing field 'ExternalRecordRelation.external_record'
-        db.alter_column(u'core_externalrecordrelation', 'external_record_id', self.gf('django.db.models.fields.related.OneToOneField')(unique=True, null=True, to=orm['core.ExternalRecord']))
-        # Adding unique constraint on 'ExternalRecordRelation', fields ['external_record']
-        db.create_unique(u'core_externalrecordrelation', ['external_record_id'])
-
-
-        # Changing field 'ExternalRecordRelation.related_record'
-        db.alter_column(u'core_externalrecordrelation', 'related_record_id', self.gf('django.db.models.fields.related.OneToOneField')(unique=True, null=True, to=orm['core.ExternalRecord']))
-        # Adding unique constraint on 'ExternalRecordRelation', fields ['related_record']
-        db.create_unique(u'core_externalrecordrelation', ['related_record_id'])
+        # Deleting field 'ExternalRecord.label'
+        db.delete_column(u'core_externalrecord', 'label_id')
 
 
     models = {
@@ -41,7 +37,7 @@ class Migration(SchemaMigration):
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'external_system': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.ExternalSystem']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'label': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': u"orm['core.ExternalRecordLabel']", 'blank': 'True'}),
+            'label': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': u"orm['core.ExternalRecordLabel']", 'null': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
             'path': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'record_id': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
@@ -65,10 +61,10 @@ class Migration(SchemaMigration):
         u'core.externalrecordrelation': {
             'Meta': {'object_name': 'ExternalRecordRelation'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'external_record': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'external_record'", 'null': 'True', 'to': u"orm['core.ExternalRecord']"}),
+            'external_record': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'external_record'", 'unique': 'True', 'to': u"orm['core.ExternalRecord']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
-            'related_record': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'related_record'", 'null': 'True', 'to': u"orm['core.ExternalRecord']"}),
+            'related_record': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'related_record'", 'unique': 'True', 'to': u"orm['core.ExternalRecord']"}),
             'relation_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Relation']"})
         },
         u'core.externalsystem': {
@@ -103,7 +99,7 @@ class Migration(SchemaMigration):
             'Meta': {'unique_together': "(('ip_address', 'host_name'),)", 'object_name': 'MachineClient'},
             'host_name': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ip_address': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'})
+            'ip_address': ('django.db.models.fields.GenericIPAddressField', [], {'max_length': '15'})
         },
         u'core.organization': {
             'Meta': {'ordering': "['name']", 'object_name': 'Organization'},
@@ -116,7 +112,7 @@ class Migration(SchemaMigration):
         u'core.relation': {
             'Meta': {'object_name': 'Relation'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'desc': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'desc': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
             'typ': ('django.db.models.fields.CharField', [], {'default': "'Label'", 'max_length': '255'})
@@ -139,12 +135,6 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
             'subjects': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['core.Subject']", 'symmetrical': 'False'})
-        },
-        u'core.subjectvalidation': {
-            'Meta': {'object_name': 'SubjectValidation'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'organization': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Organization']"}),
-            'regex': ('django.db.models.fields.CharField', [], {'max_length': '70'})
         }
     }
 

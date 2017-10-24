@@ -8,7 +8,6 @@ from django import forms
 from django.db import models
 from django.forms import fields
 from django.utils.encoding import force_unicode, smart_str
-from south.modelsinspector import add_introspection_rules
 
 from core.encryption.Factories import FactoryEncryptionServices as efac
 
@@ -117,9 +116,11 @@ class BaseField(models.Field):
 
         https://docs.djangoproject.com/en/dev/ref/unicode/
         '''
-
-        if len(value.strip()) == 0:
-            return value
+        try:
+            if len(value.strip()) == 0:
+                return value
+        except:
+            pass
 
         value = smart_str(value, encoding='utf-8', strings_only=False, errors='strict')
         if self.use_encryption:
@@ -143,6 +144,16 @@ class BaseField(models.Field):
 class EncryptCharField(BaseField):
 
     __metaclass__ = models.SubfieldBase
+
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 80
+        super(EncryptCharField, self).__init__(*args, **kwargs)
+
+    # need this for migration to work with custom field
+    def deconstruct(self):
+        name, path, args, kwargs = super(EncryptCharField, self).deconstruct()
+        del kwargs["max_length"]
+        return name, path, args, kwargs
 
     def get_internal_type(self):
         return 'CharField'
@@ -176,6 +187,12 @@ class EncryptDateField(BaseField):
         kwargs['max_length'] = 10  # YYYY:MM:DD format
         super(EncryptDateField, self).__init__(*args, **kwargs)
 
+    # this is to get migration to work with this custom field
+    def deconstruct(self):
+        name, path, args, kwargs = super(EncryptDateField, self).deconstruct()
+        del kwargs["max_length"]
+        return name, path, args, kwargs
+
     def get_internal_type(self):
         return 'CharField'
 
@@ -202,22 +219,3 @@ class EncryptDateField(BaseField):
         dt = value.strftime('%Y:%m:%d') if value else None
 
         return super(EncryptDateField, self).get_db_prep_value(dt, connection=connection, prepared=prepared)
-
-# Basic Introspection rules so South plays nice
-rule_char = [
-    (
-        (models.CharField,),
-        [],
-        {},
-    )
-]
-rule_date = [
-    (
-        (models.DateField,),
-        [],
-        {},
-    )
-]
-
-add_introspection_rules(rule_char, ["^core\.encryption\.encryptionFields\.EncryptCharField"])
-add_introspection_rules(rule_date, ["^core\.encryption\.encryptionFields\.EncryptDateField"])

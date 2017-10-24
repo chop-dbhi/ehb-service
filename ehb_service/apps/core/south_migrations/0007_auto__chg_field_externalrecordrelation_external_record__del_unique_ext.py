@@ -8,18 +8,31 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'SubjectValidation'
-        db.create_table(u'core_subjectvalidation', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('organization', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Organization'])),
-            ('regex', self.gf('django.db.models.fields.CharField')(max_length=70)),
-        ))
-        db.send_create_signal(u'core', ['SubjectValidation'])
+        # Removing unique constraint on 'ExternalRecordRelation', fields ['related_record']
+        db.delete_unique(u'core_externalrecordrelation', ['related_record_id'])
 
+        # Removing unique constraint on 'ExternalRecordRelation', fields ['external_record']
+        db.delete_unique(u'core_externalrecordrelation', ['external_record_id'])
+
+
+        # Changing field 'ExternalRecordRelation.external_record'
+        db.alter_column(u'core_externalrecordrelation', 'external_record_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['core.ExternalRecord']))
+
+        # Changing field 'ExternalRecordRelation.related_record'
+        db.alter_column(u'core_externalrecordrelation', 'related_record_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['core.ExternalRecord']))
 
     def backwards(self, orm):
-        # Deleting model 'SubjectValidation'
-        db.delete_table(u'core_subjectvalidation')
+
+        # Changing field 'ExternalRecordRelation.external_record'
+        db.alter_column(u'core_externalrecordrelation', 'external_record_id', self.gf('django.db.models.fields.related.OneToOneField')(unique=True, null=True, to=orm['core.ExternalRecord']))
+        # Adding unique constraint on 'ExternalRecordRelation', fields ['external_record']
+        db.create_unique(u'core_externalrecordrelation', ['external_record_id'])
+
+
+        # Changing field 'ExternalRecordRelation.related_record'
+        db.alter_column(u'core_externalrecordrelation', 'related_record_id', self.gf('django.db.models.fields.related.OneToOneField')(unique=True, null=True, to=orm['core.ExternalRecord']))
+        # Adding unique constraint on 'ExternalRecordRelation', fields ['related_record']
+        db.create_unique(u'core_externalrecordrelation', ['related_record_id'])
 
 
     models = {
@@ -52,10 +65,10 @@ class Migration(SchemaMigration):
         u'core.externalrecordrelation': {
             'Meta': {'object_name': 'ExternalRecordRelation'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'external_record': ('django.db.models.fields.related.OneToOneField', [], {'default': 'None', 'related_name': "'external_record'", 'unique': 'True', 'null': 'True', 'to': u"orm['core.ExternalRecord']"}),
+            'external_record': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'external_record'", 'null': 'True', 'to': u"orm['core.ExternalRecord']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
-            'related_record': ('django.db.models.fields.related.OneToOneField', [], {'default': 'None', 'related_name': "'related_record'", 'unique': 'True', 'null': 'True', 'to': u"orm['core.ExternalRecord']"}),
+            'related_record': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'related_record'", 'null': 'True', 'to': u"orm['core.ExternalRecord']"}),
             'relation_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Relation']"})
         },
         u'core.externalsystem': {
@@ -90,7 +103,7 @@ class Migration(SchemaMigration):
             'Meta': {'unique_together': "(('ip_address', 'host_name'),)", 'object_name': 'MachineClient'},
             'host_name': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ip_address': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'})
+            'ip_address': ('django.db.models.fields.GenericIPAddressField', [], {'max_length': '15'})
         },
         u'core.organization': {
             'Meta': {'ordering': "['name']", 'object_name': 'Organization'},
