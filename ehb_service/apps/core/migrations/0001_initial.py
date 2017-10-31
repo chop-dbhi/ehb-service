@@ -125,7 +125,7 @@ class Migration(SchemaMigration):
         # Adding model 'MachineClient'
         db.create_table(u'core_machineclient', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('ip_address', self.gf('django.db.models.fields.IPAddressField')(max_length=15)),
+            ('ip_address', self.gf('django.db.models.fields.GenericIPAddressField')(max_length=15)),
             ('host_name', self.gf('django.db.models.fields.CharField')(default='', max_length=255, blank=True)),
         ))
         db.send_create_signal(u'core', ['MachineClient'])
@@ -234,7 +234,7 @@ class Migration(SchemaMigration):
             'Meta': {'unique_together': "(('ip_address', 'host_name'),)", 'object_name': 'MachineClient'},
             'host_name': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ip_address': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'})
+            'ip_address': ('django.db.models.fields.GenericIPAddressField', [], {'max_length': '15'})
         },
         u'core.organization': {
             'Meta': {'ordering': "['name']", 'object_name': 'Organization'},

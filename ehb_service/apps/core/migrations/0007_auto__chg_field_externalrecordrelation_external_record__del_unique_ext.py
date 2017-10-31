@@ -103,7 +103,7 @@ class Migration(SchemaMigration):
             'Meta': {'unique_together': "(('ip_address', 'host_name'),)", 'object_name': 'MachineClient'},
             'host_name': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ip_address': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'})
+            'ip_address': ('django.db.models.fields.GenericIPAddressField', [], {'max_length': '15'})
         },
         u'core.organization': {
             'Meta': {'ordering': "['name']", 'object_name': 'Organization'},
