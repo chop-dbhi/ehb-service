@@ -26,7 +26,8 @@ INSTALLED_APPS = (
     'api',
 
 )
-
+# this is to prevent the tests from using SOUTH
+SOUTH_TESTS_MIGRATE = False
 #------------------------------------
 # ADMINISTRATIVE
 #------------------------------------
