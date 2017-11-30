@@ -424,15 +424,11 @@ class ExternalRecordRelation(CreatedModified):
         }
 
     def __unicode__(self):
-        return "{0}, {1} ({5}) related to {2}, {3} ({6}) -- Type: {4}".format(
-            self.external_record.subject.last_name,
-            self.external_record.subject.first_name,
-            self.related_record.subject.last_name,
-            self.related_record.subject.first_name,
-            self.relation_type,
-            self.external_record.external_system.name,
-            self.related_record.external_system.name
-        )
+        return "{0} related to {1}, -- Type: {2}".format(
+              self.external_record,
+              self.related_record,
+              self.relation_type,
+              )
 
 
 class ExternalRecordGroup(CreatedModified):
