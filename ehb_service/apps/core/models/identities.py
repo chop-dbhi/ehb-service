@@ -373,10 +373,11 @@ class ExternalRecord(CreatedModified):
         return response
 
     def __unicode__(self):
-        return "{0}, {1} IN {2}".format(
+        return "{0}, {1} IN {2} ID {3}".format(
             self.subject.last_name,
             self.subject.first_name,
-            self.external_system.name
+            self.external_system.name,
+            self.record_id
         )
 
 
