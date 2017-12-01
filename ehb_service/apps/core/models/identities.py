@@ -337,7 +337,7 @@ class ExternalRecord(CreatedModified):
     # This is the record id for this subject in the the external system
     rec_verb = "Record ID in External System"
     # The unique record identifier for the external_system + path
-    record_id = models.CharField(max_length=50, verbose_name=rec_verb)
+    record_id = models.CharField(db_index=True, max_length=50, verbose_name=rec_verb)
     # To track pedigree
     # relation = models.ForeignKey(ExternalRecordRelation, verbose_name="Record Relationship (Pedigree)", null=True)
     label = models.ForeignKey(ExternalRecordLabel, verbose_name="Label", default=1, blank=True)
@@ -469,7 +469,6 @@ class PedigreeSubjectRelation(CreatedModified):
           'subject_2': self.subject_2.responseFieldDict(),
           'subject_1_role': self.subject_1_role.responseFieldDict(),
           'subject_2_role': self.subject_2_role.responseFieldDict()
-
         }
 
     def __unicode__(self):
