@@ -1,5 +1,13 @@
 version: '2'
 services:
+    postgres:
+      image: postgres:9.4
+      container_name: brp_dev_pg
+      environment:
+        - POSTGRES_DB=ehb_dev
+      volumes:
+          - /opt/apps/postgres/data:/var/lib/postgresql/data
+      restart: always
     redis:
         image: redis:3.0.5
         restart: always
@@ -14,8 +22,8 @@ services:
         command: logstash -f /config-dir/logstash.conf
 
     ehb:
-        image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:dev
-        container_name: ehb_dev
+        image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:BRP_import_logging-7b6341b
+        container_name: ehb_db_qa
         restart: always
         environment:
             - REDIS_HOST=redis
