@@ -13,4 +13,4 @@ python ./bin/manage.py collectstatic --noinput
 #         exec /usr/local/bin/uwsgi --chdir /opt/app/ --die-on-term --uwsgi-socket 0.0.0.0:8000 -p 2 -b 32768 -T --master --max-requests 5000 --static-map $FORCE_SCRIPT_NAME/static=/opt/app/_site/static --static-map /static=/usr/local/lib/python2.7/site-packages/django/contrib/admin/static --module wsgi:application
 #     fi
 # fi
-exec /usr/local/bin/uwsgi --chdir /opt/app/ --die-on-term --uwsgi-socket 0.0.0.0:8000 -p 2 -b 32768 -T --master --max-requests 5000 --static-map $FORCE_SCRIPT_NAME/static=/opt/app/_site/static --static-map /static=/usr/local/lib/python2.7/site-packages/django/contrib/admin/static --module wsgi:application
+# exec /usr/local/bin/uwsgi --chdir /opt/app/ --die-on-term --uwsgi-socket 0.0.0.0:8000 -p 2 -b 32768 -T --master --max-requests 5000 --static-map $FORCE_SCRIPT_NAME/static=/opt/app/_site/static --static-map /static=/usr/local/lib/python2.7/site-packages/django/contrib/admin/static --module wsgi:application
