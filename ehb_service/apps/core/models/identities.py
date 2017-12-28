@@ -432,6 +432,29 @@ class ExternalRecordRelation(CreatedModified):
               )
 
 
+class PedigreeSubjectRelation(CreatedModified):
+    id = models.AutoField(primary_key=True)
+    subject = models.ForeignKey(Subject, related_name='subject', default=None, null=True)
+    related_subject = models.ForeignKey(Subject, related_name='related_subject', default=None, null=True)
+    relation_type = models.ForeignKey(Relation)
+
+    def to_dict(self):
+        return {
+          'id': self.id,
+          'subject': self.external_record.responseFieldDict(),
+          'related_subject': self.related_record.responseFieldDict(),
+          'type': self.relation_type.typ,
+          'relation_description': self.relation_type.desc
+        }
+
+    def __unicode__(self):
+        return "{0} related to {1}, -- Type: {2}".format(
+              self.subject,
+              self.related_subject,
+              self.relation_type,
+              )
+
+
 class ExternalRecordGroup(CreatedModified):
 
     external_records = models.ManyToManyField(ExternalRecord)
