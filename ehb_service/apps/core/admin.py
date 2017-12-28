@@ -14,7 +14,8 @@ from models.identities import (
     Organization,
     ExternalRecordRelation,
     Relation,
-    ExternalRecordLabel
+    ExternalRecordLabel,
+    PedigreeSubjectRelation
 )
 from models.clients import MachineClient
 from django.contrib import admin
@@ -30,6 +31,7 @@ admin.site.register(SubjectValidation)
 admin.site.register(ExternalRecordRelation)
 admin.site.register(Relation)
 admin.site.register(ExternalRecordLabel)
+admin.site.register(PedigreeSubjectRelation)
 
 class ExternalSystemAdmin(admin.ModelAdmin):
     list_filter = ['created', 'modified']
