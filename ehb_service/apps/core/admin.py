@@ -15,7 +15,8 @@ from models.identities import (
     ExternalRecordRelation,
     Relation,
     ExternalRecordLabel,
-    PedigreeSubjectRelation
+    PedigreeSubjectRelation,
+    PedigreeRelationshipRole
 )
 from models.clients import MachineClient
 from django.contrib import admin
@@ -32,6 +33,7 @@ admin.site.register(ExternalRecordRelation)
 admin.site.register(Relation)
 admin.site.register(ExternalRecordLabel)
 admin.site.register(PedigreeSubjectRelation)
+admin.site.register(PedigreeRelationshipRole)
 
 class ExternalSystemAdmin(admin.ModelAdmin):
     list_filter = ['created', 'modified']

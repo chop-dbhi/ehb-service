@@ -432,26 +432,50 @@ class ExternalRecordRelation(CreatedModified):
               )
 
 
+class PedigreeRelationshipRole(CreatedModified):
+    id = models.AutoField(primary_key=True)
+    role = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return "{0}".format(self.role)
+
+
 class PedigreeSubjectRelation(CreatedModified):
     id = models.AutoField(primary_key=True)
-    subject = models.ForeignKey(Subject, related_name='subject', default=None, null=True)
-    related_subject = models.ForeignKey(Subject, related_name='related_subject', default=None, null=True)
-    relation_type = models.ForeignKey(Relation)
+    subject_1 = models.ForeignKey(Subject,
+                                  related_name='subject_1',
+                                  default=None,
+                                  null=True)
+    subject_2 = models.ForeignKey(Subject,
+                                  related_name='subject_2',
+                                  default=None,
+                                  null=True)
+    subject_1_role = models.ForeignKey(PedigreeRelationshipRole,
+                                       related_name='subject_1_role',
+                                       default=None,
+                                       null=True)
+    subject_2_role = models.ForeignKey(PedigreeRelationshipRole,
+                                       related_name='subject_2_role',
+                                       default=None,
+                                       null=True)
+    protocol_id = models.CharField(max_length=100)
 
     def to_dict(self):
         return {
           'id': self.id,
-          'subject': self.external_record.responseFieldDict(),
-          'related_subject': self.related_record.responseFieldDict(),
-          'type': self.relation_type.typ,
-          'relation_description': self.relation_type.desc
+          'subject_1': self.external_record.responseFieldDict(),
+          'subject_2': self.related_record.responseFieldDict(),
+          'subject_1_role': self.subject_1_role.responseFieldDict(),
+          'subject_2_role': self.subject_2_role.responseFieldDict()
+
         }
 
     def __unicode__(self):
-        return "{0} related to {1}, -- Type: {2}".format(
-              self.subject,
-              self.related_subject,
-              self.relation_type,
+        return "{0} is {1} to {2}, {3}".format(
+              self.subject_1,
+              self.subject_1_role,
+              self.subject_2,
+              self.subject_2_role
               )
 
 
