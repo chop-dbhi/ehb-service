@@ -935,4 +935,13 @@
       "content_type": 16
     }
   }
+  {
+    "pk":1,
+    "model": "core.PedigreeRelationshipRole",
+    "fields": {
+      "id": 1,
+      "role": "brother"
+    }
+  }
+
 ]

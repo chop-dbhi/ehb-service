@@ -4,7 +4,7 @@ Run via Django's manage.py tool: `./bin/manage.py test api`
 import json
 
 from django.test import TestCase
-from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem
+from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem, PedigreeSubjectRelation
 
 from mock import patch
 
@@ -1374,3 +1374,25 @@ class TestOrganization(TestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertTrue(mock_log.error.called)
+
+    def test_pedigree_add(self):
+        pre_count = PedigreeSubjectRelation.objects.count()
+        pedigree = {
+            'subject_1': '2',
+            'subject_2': '3',
+            'subject_1_role': '1',
+            'subject_2_role': '1',
+            'protocol_id': '1',
+        }
+        response = self.client.post(
+            'api/pedigree/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json'
+            data=json.dumps([pedigree]))
+
+    post_count = PedigreeSubjectRelation.objects.count()
+    self.assertEqual(response.status_code, 200)
+    j = json.loads(response.content)
+    r = j[0]
+    self.assertTrue(r['success'])
+    self.assertTrue(pre_count < post_count)
