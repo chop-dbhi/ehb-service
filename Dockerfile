@@ -1,5 +1,5 @@
 
-FROM python:2.7.10
+FROM python:2.7.14
 
 MAINTAINER Tyler Rivera <riverat2@email.chop.edu>
 
