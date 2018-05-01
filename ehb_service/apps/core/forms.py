@@ -8,7 +8,7 @@ import re
 from django.forms import ModelForm
 from django.forms.util import ErrorList
 from models.identities import Subject, ExternalRecord, ExternalSystem, \
-    Organization, Group, ExternalRecordRelation
+    Organization, Group, ExternalRecordRelation, PedigreeSubjectRelation
 
 class SubjectForm(ModelForm):
 
@@ -92,3 +92,22 @@ class ExternalSystemForm(ModelForm):
             return m
         except Exception as err:
             print err'''
+
+
+class PedigreeSubjectRelationForm(ModelForm):
+    def clean(self):
+        validation = {}
+        validation['subject_1'] = self.cleaned_data.get('subject_1')
+        validation['subject_2'] = self.cleaned_data.get('subject_2')
+        validation['subject_1_role'] = self.cleaned_data.get('subject_1_role')
+        validation['subject_1_role'] = self.cleaned_data.get('subject_2_role')
+
+        for item in validation:
+            if not item:
+                self._errors[item] = ErrorList(
+                    ["Subject does not meet validation rules for this organization."]
+                )
+
+    class Meta:
+        fields = "__all__"
+        model = PedigreeSubjectRelation
