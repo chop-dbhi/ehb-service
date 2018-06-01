@@ -53,7 +53,7 @@ class XGroupResource(ClientKeyResource):
 
             # First need to check that if this group is locked also check client_key
             if grp.is_locking and not grp.verify_client_key(self.client_key(request)):
-                log.error("Cannot verify client key on a locked group")
+                log.error("Cannot verify client key on a locked group") # Forbids group access with bad client key.
                 return HttpResponse(status=codes.forbidden)
 
             try:
@@ -86,11 +86,11 @@ class XGroupResource(ClientKeyResource):
             X_grp = None
 
             try:
-                X_grp = XGroup.objects.get(group=grp)
+                X_grp = XGroup.objects.get(group=grp) # Tries to get group that is supplied via api.
             except XGroup.DoesNotExist:
-                log.warning("Sub group {0} does not exist so its being created.".format(grp))
-                X_grp = XGroup(group=grp)
-                X_grp.save()
+                log.warning("Sub group {0} does not exist so it's being created.".format(grp))
+                X_grp = XGroup(group=grp) # Defines Group object with supplied information.
+                X_grp.save() # Saves Group
 
             # Add each X in the request data to the group if the X exists
             X = self.XModel()
