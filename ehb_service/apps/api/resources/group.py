@@ -49,7 +49,7 @@ class XGroupResource(ClientKeyResource):
         XGroup = self.XGroupModel()
 
         try:
-            grp = Group.objects.get(pk=pk)
+            grp = Group.objects.get(pk=pk) # Initial attempt to get group information based no primary key supplied in API.
 
             # First need to check that if this group is locked also check client_key
             if grp.is_locking and not grp.verify_client_key(self.client_key(request)):
@@ -58,23 +58,23 @@ class XGroupResource(ClientKeyResource):
 
             try:
                 response = []
-                X_grp = XGroup.objects.get(group=grp)
+                X_grp = XGroup.objects.get(group=grp) # Tries to get supplied group. 
                 for x in self.XGroupItems(X_grp).all():
                     response.append(x.responseFieldDict())
-                return json.dumps(response)
+                return json.dumps(response) # Returns json response of group. 
             except XGroup.DoesNotExist:
-                log.error("No records found for group [{0}].".format(pk))
+                log.error("No records found for group [{0}].".format(pk)) # If no group records exist, not found return error. 
                 return HttpResponse(status=codes.not_found)
 
         except Group.DoesNotExist:
-            log.error("Group [{0}] does not exist.".format(pk))
+            log.error("Group [{0}] does not exist.".format(pk)) # Returns error (cannot find group).
             return HttpResponse(status=codes.not_found)
 
     def post(self, request, pk):
         response = []
 
         try:
-            grp = Group.objects.get(pk=pk)
+            grp = Group.objects.get(pk=pk) # Tries to get group supplied in post request.
 
             # First need to check that if this group is locked. If it is also check client_key
             if grp.is_locking and not grp.verify_client_key(self.client_key(request)):
@@ -104,7 +104,7 @@ class XGroupResource(ClientKeyResource):
                     log.error("Unable to add {0} to the group as it x_id:{0} does not exist".format(x_id))
                     response.append({'id': x_id, 'success': False, 'errors': ErrorConstants.ERROR_ID_NOT_FOUND})
 
-            return json.dumps(response)
+            return json.dumps(response) # Returns group information if success. 
 
         except Group.DoesNotExist:
             log.error("Group {0} does not exist".format(pk))
@@ -112,7 +112,7 @@ class XGroupResource(ClientKeyResource):
 
     def delete(self, request, grp_pk, x_pk):
         try:
-            grp = Group.objects.get(pk=grp_pk)
+            grp = Group.objects.get(pk=grp_pk) # Tries to get group supplied in delete.
 
             # First need to check that if this group is locked. If it is also check client_key
             if grp.is_locking and not grp.verify_client_key(self.client_key(request)):
@@ -124,17 +124,17 @@ class XGroupResource(ClientKeyResource):
             X_grp = None
 
             try:
-                X_grp = XGroup.objects.get(group=grp)
+                X_grp = XGroup.objects.get(group=grp) # Group cannot be found.
             except XGroup.DoesNotExist:
-                log.error("Sub group {0} does not exist.".format(grp))
+                log.error("Sub group {0} does not exist.".format(grp)) # Return error. Group cannot be found.
                 return HttpResponse(status=codes.not_found)
 
             # Remove subject from Group
-            X = self.XModel()
+            X = self.XModel() # Create group model.
 
             try:
-                x = X.objects.get(pk=x_pk)
-                self.XGroupItems(X_grp).remove(x)
+                x = X.objects.get(pk=x_pk) # Get group that was supplied. 
+                self.XGroupItems(X_grp).remove(x) # Delete group supplied.
                 return HttpResponse(status=codes.ok)
             except X.DoesNotExist:
                 log.error('Unable to delete record from group. Record does not exist')
