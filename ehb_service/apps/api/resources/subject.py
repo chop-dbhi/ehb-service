@@ -25,12 +25,12 @@ class SubjectResource(Resource):
 
         if pk:
             try:
-                s = Subject.objects.get(pk=pk)
+                s = Subject.objects.get(pk=pk) # Tries to get subject based on primary key.
             except Subject.DoesNotExist:
                 log.error("Subject[{0}] not found".format(pk))
                 return HttpResponse(status=codes.not_found)
 
-        if orgpk and org_sub_id:
+        if orgpk and org_sub_id: # Tries to get subject based on organizationa and org_sub_id, if pk not supplied.
             try:
                 org = Organization.objects.get(pk=orgpk)
                 subs = Subject.objects.filter(organization=org).filter(organization_subject_id=org_sub_id)
