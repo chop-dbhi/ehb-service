@@ -266,7 +266,7 @@ class Group(CreatedModified):
 
 class SubjectGroup(CreatedModified):
 
-    subjects = models.ManyToManyField(Subject)
+    subjects = models.ManyToManyField(Subject) # Generates a tertiary table between Subject and Subject Group.
 
     group = models.ForeignKey(Group, unique=True)
 
