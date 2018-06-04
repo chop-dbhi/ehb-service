@@ -144,9 +144,9 @@ class GroupEhbKey(GroupPropsKey):
     key = EncryptCharField(max_length=255, unique=True, verbose_name='EHB KEY', editable=False, blank=True)
 
     def _make_random_key(self, seed, ja, l, chars=string.ascii_uppercase + string.digits):
-        random.seed(seed)
-        random.jumpahead(ja * 50)
-        return ''.join(random.choice(chars) for idx in range(l))
+        random.seed(seed) # Init psudo-number random generator.
+        random.jumpahead(ja * 50) # Mersenne Twister helper. Deprecated in Python 3.X
+        return ''.join(random.choice(chars) for idx in range(l)) # Generates random string using random settings.
 
     def _set_key(self):
         '''Generate a unique key'''
@@ -158,17 +158,17 @@ class GroupEhbKey(GroupPropsKey):
             uk = ''
             idx = 0
             max_idx = 1e6
-            while idx < max_idx:
+            while idx < max_idx: 
                 uk = self._make_random_key(seed=seed, ja=jump + idx, l=ehb_key_length)
                 if not GroupEhbKey.objects.all():
                     idx = max_idx
                 else:
-                    grps_using_uk = GroupEhbKey.objects.filter(key=uk)
-                    if grps_using_uk.count() == 0:
+                    grps_using_uk = GroupEhbKey.objects.filter(key=uk) # Looks for groups using key. 
+                    if grps_using_uk.count() == 0: # If none found, set idx. 
                         idx = max_idx
                     else:
                         idx += 1 
-            self.key = uk
+            self.key = uk # Sets unique key.
 
     def _ehb_key_seed(self, default=123456789):
         return self.ehb_prop('EHB_GROUP_EHB_KEYS', 'seed', default)
