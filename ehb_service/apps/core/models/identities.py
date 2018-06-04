@@ -151,8 +151,8 @@ class GroupEhbKey(GroupPropsKey):
     def _set_key(self):
         '''Generate a unique key'''
         if not self.pk:
-            ehb_key_length = self._ehb_key_length()
-            seed = self._ehb_key_seed()
+            ehb_key_length = self._ehb_key_length() # Defined in configuration file. 
+            seed = self._ehb_key_seed() # Defined in configuration file. 
             jump = GroupEhbKey.objects.count()
             # Generate a new key, overriding any key that was used to create this object
             uk = ''
@@ -167,7 +167,7 @@ class GroupEhbKey(GroupPropsKey):
                     if grps_using_uk.count() == 0:
                         idx = max_idx
                     else:
-                        idx += 1
+                        idx += 1 
             self.key = uk
 
     def _ehb_key_seed(self, default=123456789):
