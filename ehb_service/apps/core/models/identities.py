@@ -254,7 +254,7 @@ class Group(CreatedModified):
         salt = self._make_salt(jump=jump)
         prefix = '$sha256$' + salt + '$'
         if self.client_key and not self.client_key.startswith(prefix):
-            self.client_key = '$sha256$'+salt+'$'+self._hash_value(salt + self.client_key)
+            self.client_key = '$sha256$'+salt+'$'+self._hash_value(salt + self.client_key) #
         super(Group, self).save()
 
     class Meta(CreatedModified.Meta):
