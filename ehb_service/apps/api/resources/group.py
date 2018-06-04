@@ -98,7 +98,7 @@ class XGroupResource(ClientKeyResource):
             for x_id in request.data:
                 try:
                     x = X.objects.get(pk=x_id)
-                    self.XGroupItems(X_grp).add(x)
+                    self.XGroupItems(X_grp).add(x) # Adds either external record or object to model.
                     response.append({'id': x_id, 'success': True})
                 except X.DoesNotExist:
                     log.error("Unable to add {0} to the group as it x_id:{0} does not exist".format(x_id))
