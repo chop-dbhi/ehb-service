@@ -47,6 +47,10 @@ class SubjectResource(Resource):
             return sfunc(s)
 
     def get(self, request, **kwargs):
+<<<<<<< HEAD
+=======
+        print "we're in get"
+>>>>>>> 3e7c48e... added api.rst file
         def onSuccess(s):
             r = s.responseFieldDict()
             return json.dumps(r)
