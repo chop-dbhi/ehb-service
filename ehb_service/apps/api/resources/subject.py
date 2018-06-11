@@ -47,7 +47,6 @@ class SubjectResource(Resource):
             return sfunc(s)
 
     def get(self, request, **kwargs):
-        
         def onSuccess(s):
             r = s.responseFieldDict()
             return json.dumps(r)
