@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from restlib2.resources import Resource
 
 from core.models.identities import Relation, PedigreeSubjectRelation
-from core.forms import
+from core.forms import SubjectForm
 
 
 class RelationResource(Resource):
