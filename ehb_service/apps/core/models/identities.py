@@ -434,7 +434,6 @@ class ExternalRecordRelation(CreatedModified):
               )
 
 
-
 class PedigreeSubjectRelation(CreatedModified):
     id = models.AutoField(primary_key=True)
     subject_1 = models.ForeignKey(Subject,
