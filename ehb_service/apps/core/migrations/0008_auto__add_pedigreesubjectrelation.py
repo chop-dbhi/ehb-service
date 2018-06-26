@@ -13,16 +13,22 @@ class Migration(SchemaMigration):
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, auto_now_add=True, blank=True)),
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('subject_1', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='subject_1', null=True, to=orm['core.Subject'])),
-            ('subject_2', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='subject_2', null=True, to=orm['core.Subject'])),
-            ('subject_1_role', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='subject_1_role', null=True, to=orm['core.Relation'])),
-            ('subject_2_role', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='subject_2_role', null=True, to=orm['core.Relation'])),
+            ('subject', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='subject', null=True, to=orm['core.Subject'])),
+            ('related_subject', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='related_subject', null=True, to=orm['core.Subject'])),
+            ('subject_role', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='subject_role', null=True, to=orm['core.Relation'])),
+            ('related_subject_role', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='related_subject_role', null=True, to=orm['core.Relation'])),
             ('protocol_id', self.gf('django.db.models.fields.CharField')(max_length=100)),
         ))
         db.send_create_signal(u'core', ['PedigreeSubjectRelation'])
 
+        # Adding index on 'ExternalRecord', fields ['record_id']
+        db.create_index(u'core_externalrecord', ['record_id'])
+
 
     def backwards(self, orm):
+        # Removing index on 'ExternalRecord', fields ['record_id']
+        db.delete_index(u'core_externalrecord', ['record_id'])
+
         # Deleting model 'PedigreeSubjectRelation'
         db.delete_table(u'core_pedigreesubjectrelation')
 
@@ -36,7 +42,7 @@ class Migration(SchemaMigration):
             'label': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': u"orm['core.ExternalRecordLabel']", 'blank': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
             'path': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'record_id': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'record_id': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'}),
             'subject': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Subject']"})
         },
         u'core.externalrecordgroup': {
@@ -111,10 +117,10 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
             'protocol_id': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'subject_1': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'subject_1'", 'null': 'True', 'to': u"orm['core.Subject']"}),
-            'subject_1_role': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'subject_1_role'", 'null': 'True', 'to': u"orm['core.Relation']"}),
-            'subject_2': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'subject_2'", 'null': 'True', 'to': u"orm['core.Subject']"}),
-            'subject_2_role': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'subject_2_role'", 'null': 'True', 'to': u"orm['core.Relation']"})
+            'related_subject': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'related_subject'", 'null': 'True', 'to': u"orm['core.Subject']"}),
+            'related_subject_role': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'related_subject_role'", 'null': 'True', 'to': u"orm['core.Relation']"}),
+            'subject': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'subject'", 'null': 'True', 'to': u"orm['core.Subject']"}),
+            'subject_role': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'subject_role'", 'null': 'True', 'to': u"orm['core.Relation']"})
         },
         u'core.relation': {
             'Meta': {'object_name': 'Relation'},
