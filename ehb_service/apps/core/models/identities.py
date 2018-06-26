@@ -465,8 +465,8 @@ class PedigreeSubjectRelation(CreatedModified):
     def to_dict(self):
         return {
           'id': self.id,
-          'subject_1': self.external_record.responseFieldDict(),
-          'subject_2': self.related_record.responseFieldDict(),
+          'subject_1': self.subject_1.responseFieldDict(),
+          'subject_2': self.related_subject.responseFieldDict(),
           'subject_1_role': self.subject_1_role.responseFieldDict(),
           'subject_2_role': self.subject_2_role.responseFieldDict()
 
