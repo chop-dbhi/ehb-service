@@ -434,13 +434,6 @@ class ExternalRecordRelation(CreatedModified):
               )
 
 
-class PedigreeRelationshipRole(CreatedModified):
-    id = models.AutoField(primary_key=True)
-    role = models.CharField(max_length=100)
-
-    def __unicode__(self):
-        return "{0}".format(self.role)
-
 
 class PedigreeSubjectRelation(CreatedModified):
     id = models.AutoField(primary_key=True)
@@ -452,11 +445,11 @@ class PedigreeSubjectRelation(CreatedModified):
                                   related_name='subject_2',
                                   default=None,
                                   null=True)
-    subject_1_role = models.ForeignKey(PedigreeRelationshipRole,
+    subject_1_role = models.ForeignKey(Relation,
                                        related_name='subject_1_role',
                                        default=None,
                                        null=True)
-    subject_2_role = models.ForeignKey(PedigreeRelationshipRole,
+    subject_2_role = models.ForeignKey(Relation,
                                        related_name='subject_2_role',
                                        default=None,
                                        null=True)
