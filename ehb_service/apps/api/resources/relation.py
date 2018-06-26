@@ -4,12 +4,11 @@ from restlib2.resources import Resource
 from django.db.models import Q
 
 from core.models.identities import Relation, PedigreeSubjectRelation
-<<<<<<< HEAD
+
 from core.forms import PedigreeSubjectRelationForm
 from api.helpers import FormHelpers
-=======
-from core.forms import
->>>>>>> adding functionality to add a subject relationship through the ehb api
+from core.forms import SubjectForm
+
 
 
 class RelationResource(Resource):
