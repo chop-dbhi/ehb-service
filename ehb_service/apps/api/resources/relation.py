@@ -4,6 +4,7 @@ from restlib2.resources import Resource
 
 from core.models.identities import Relation, PedigreeSubjectRelation
 from core.forms import SubjectForm
+from api.helpers import FormHelpers
 
 
 class RelationResource(Resource):
