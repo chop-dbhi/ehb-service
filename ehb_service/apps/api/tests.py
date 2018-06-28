@@ -1215,7 +1215,7 @@ class TestRelationResource(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         res = json.loads(response.content)
-        self.assertEqual(len(res), 2)
+        self.assertEqual(len(res), 3)
 
 
 class TestOrganization(TestCase):
@@ -1381,18 +1381,19 @@ class TestOrganization(TestCase):
             'subject_1': '2',
             'subject_2': '3',
             'subject_1_role': '1',
-            'subject_2_role': '1',
-            'protocol_id': '1',
+            'subject_2_role': '3',
+            'protocol_id': '1'
         }
         response = self.client.post(
-            'api/pedigree/',
+            '/api/pedigree/',
             HTTP_API_TOKEN='secretkey123',
-            content_type='application/json'
-            data=json.dumps([pedigree]))
+            content_type='application/json',
+            data=json.dumps([pedigree])
+        )
 
-    post_count = PedigreeSubjectRelation.objects.count()
-    self.assertEqual(response.status_code, 200)
-    j = json.loads(response.content)
-    r = j[0]
-    self.assertTrue(r['success'])
-    self.assertTrue(pre_count < post_count)
+        post_count = PedigreeSubjectRelation.objects.count()
+        self.assertEqual(response.status_code, 200)
+        j = json.loads(response.content)
+        r = j[0]
+        self.assertTrue(r['success'])
+        self.assertTrue(pre_count < post_count)
