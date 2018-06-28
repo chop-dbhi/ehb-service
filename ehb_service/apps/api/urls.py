@@ -65,7 +65,7 @@ urlpatterns = patterns(
     url(r'^group/', include(group_patterns,
         namespace='group')),
     url(r'^links/$', 'api.resources.relation.RelationResource'),
-    url(r'^pedigree/$', include(pedigreeRelationship_patterns,
+    url(r'^pedigree/', include(pedigreeRelationship_patterns,
         namespace='pedigree')),
 
 )
