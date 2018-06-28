@@ -1,6 +1,7 @@
 import json
 from django.http import HttpResponse
 from restlib2.resources import Resource
+from django.db.models import Q
 
 from core.models.identities import Relation, PedigreeSubjectRelation
 from core.forms import PedigreeSubjectRelationForm
@@ -21,16 +22,37 @@ class RelationResource(Resource):
 
 
 class PedigreeSubjectRelationResource(Resource):
-    supported_accept_types = ['application/json']
+    supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.PedigreeSubjectRelation'
 
-    def get(self, request, protocol):
-        relationships = PedigreeSubjectRelation.objects.get(protocol=protocol)
-        d = []
-        for relationship in relationships:
-            d.append(relationships.to_dict())
+    def relationships_by_protocol(self, protocol_id):
+        return PedigreeSubjectRelation.objects.filter(protocol_id=protocol_id)
 
-        return (json.dumps(d))
+    def relationships_by_subject(self, subject_id):
+        relationships_subs = PedigreeSubjectRelation.objects.filter(
+                                Q(subject_1=subject_id) |
+                                Q(subject_2=subject_id))
+        return relationships_subs
+
+    def append_query_to_dict(self, query):
+        dict = []
+        for item in query:
+            dict.append(item.to_dict())
+        return dict
+
+    def get(self, request, **kwargs):
+        protocol_id = kwargs.pop("protocol_id", None)
+        subject_id = kwargs.pop("subject_id", None)
+        # get list of relationships based on protocol id
+        if protocol_id:
+            relationships = self.relationships_by_protocol(protocol_id)
+        if subject_id:
+            print("we are in subject_id")
+            relationships = self.relationships_by_subject(subject_id)
+
+        relationship_dictionary = self.append_query_to_dict(relationships)
+
+        return (json.dumps(relationship_dictionary))
 
     def put(self, request):
         """This method is intended for updating an existing protocol relationship"""

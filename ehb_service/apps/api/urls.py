@@ -48,7 +48,8 @@ group_patterns = patterns(
 pedigreeRelationship_patterns = patterns(
     'api.resources.relation',
     url(r'^$', 'PedigreeSubjectRelationResource'),
-    url(r'^id/(?P<pk>\d+)/$', 'PedigreeSubjectRelationResource'),
+    url(r'^protocol_id/(?P<protocol_id>\d+)/$', 'PedigreeSubjectRelationResource'),
+    url(r'^subject_id/(?P<subject_id>\d+)/$', 'PedigreeSubjectRelationResource'),
     #url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'PedigreeSubjectRelationResource'),
 )
 

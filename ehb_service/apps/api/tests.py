@@ -1375,6 +1375,8 @@ class TestOrganization(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertTrue(mock_log.error.called)
 
+##### for the pedigree feature #####
+
     def test_pedigree_add(self):
         pre_count = PedigreeSubjectRelation.objects.count()
         pedigree = {
@@ -1397,3 +1399,24 @@ class TestOrganization(TestCase):
         r = j[0]
         self.assertTrue(r['success'])
         self.assertTrue(pre_count < post_count)
+
+    def test_get_relationships_for_protocol(self):
+        relationship_count = PedigreeSubjectRelation.objects.filter(protocol_id=1).count()
+        response = self.client.get(
+            '/api/pedigree/protocol_id/1/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        j = json.loads(response.content)
+        self.assertEqual(len(j), relationship_count)
+
+    def test_get_relationships_for_subject(self):
+        relationship_count = PedigreeSubjectRelation.objects.filter(subject_1=3).count()
+        relationship_count += PedigreeSubjectRelation.objects.filter(subject_2=3).count()
+        response = self.client.get(
+            '/api/pedigree/subject_id/3/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        j = json.loads(response.content)
+        self.assertEqual(len(j), relationship_count)
