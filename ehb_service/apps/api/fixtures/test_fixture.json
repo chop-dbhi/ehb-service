@@ -333,6 +333,19 @@
           "modified": "2015-09-29T13:51:16.190"
       }
   },{
+      "pk": 2,
+      "model": "core.PedigreeSubjectRelation",
+      "fields":{
+          "subject_1": 3,
+          "subject_2": 4,
+          "subject_1_role": 1,
+          "subject_2_role": 3,
+          "protocol_id": 1,
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+
+  },{
       "pk": 1,
       "model": "core.externalrecordrelation",
       "fields": {
