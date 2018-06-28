@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from restlib2.resources import Resource
 
 from core.models.identities import Relation, PedigreeSubjectRelation
-from core.forms import SubjectForm
+from core.forms import PedigreeSubjectRelationForm
 from api.helpers import FormHelpers
 
 
@@ -44,11 +44,13 @@ class PedigreeSubjectRelationResource(Resource):
         if content_type == "application/json":
 
             for relationship in request.data:
-                form = SubjectForm(relationship)
+                form = PedigreeSubjectRelationForm(relationship)
                 args = {
                     'subject_1': relationship.get('subject_1'),
-                    'subject_2': relationship.get('subject_2')
+                    'subject_2': relationship.get('subject_2'),
+                    'subject_1_role': relationship.get('subject_1_role'),
+                    'subject_2_role': relationship.get('subject_2_role'),
+                    'protocol_id': relationship.get('protocol_id')
                 }
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
-
             return json.dumps(response)

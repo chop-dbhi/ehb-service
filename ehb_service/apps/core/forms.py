@@ -107,6 +107,7 @@ class PedigreeSubjectRelationForm(ModelForm):
                 self._errors[item] = ErrorList(
                     ["Subject does not meet validation rules for this organization."]
                 )
+        return self.cleaned_data
 
     class Meta:
         fields = "__all__"
