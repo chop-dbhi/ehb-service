@@ -323,7 +323,16 @@
           "created": "2015-09-29T13:51:16.189",
           "modified": "2015-09-29T13:51:16.190"
       }
-  }, {
+  },{
+      "pk": 3,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial",
+          "desc": "Child of",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  },{
       "pk": 1,
       "model": "core.externalrecordrelation",
       "fields": {
