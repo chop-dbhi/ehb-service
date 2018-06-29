@@ -1402,7 +1402,8 @@ class TestOrganization(TestCase):
         self.assertTrue(pre_count < post_count)
 
     def test_get_relationships_for_protocol(self):
-        relationship_count = PedigreeSubjectRelation.objects.filter(protocol_id=1).count()
+        relationship_count = PedigreeSubjectRelation.objects.filter(
+                                protocol_id=1).count()
         response = self.client.get(
             '/api/pedigree/protocol_id/1/',
             HTTP_API_TOKEN='secretkey123',
@@ -1412,7 +1413,9 @@ class TestOrganization(TestCase):
         self.assertEqual(len(j), relationship_count)
 
     def test_get_relationships_for_subject(self):
-        relationship_count = PedigreeSubjectRelation.objects.filter(Q(subject_1=3 )| Q(subject_2=3)).count()
+        relationship_count = PedigreeSubjectRelation.objects.filter(
+                                    Q(subject_1=3) |
+                                    Q(subject_2=3)).count()
         response = self.client.get(
             '/api/pedigree/subject_id/3/',
             HTTP_API_TOKEN='secretkey123',

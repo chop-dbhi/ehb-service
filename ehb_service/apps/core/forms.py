@@ -10,12 +10,14 @@ from django.forms.util import ErrorList
 from models.identities import Subject, ExternalRecord, ExternalSystem, \
     Organization, Group, ExternalRecordRelation, PedigreeSubjectRelation
 
+
 class SubjectForm(ModelForm):
 
     def clean(self):
         # Run subject validation if it exists
         org = self.cleaned_data.get('organization')
-        # If there is no org simply return data. Error will be caught downstream
+        # If there is no org simply return data.
+        # Error will be caught downstream
         if not org:
             return self.cleaned_data
         validations = org.subjectvalidation_set.all()
@@ -26,9 +28,11 @@ class SubjectForm(ModelForm):
                 if not valid:
                     self._errors["subject"] = ErrorList(["Subject identifier does not meet validation rules for this organization."])
         return self.cleaned_data
+
     class Meta:
         fields = "__all__"
         model = Subject
+
 
 class ExternalRecordForm(ModelForm):
     class Meta:
@@ -67,9 +71,9 @@ class ExternalSystemForm(ModelForm):
             m.save()
         return m
 
-    '''This version of save as well as new is_valid and errors methods will be needed
-     if the POST method for ExternalSystemResource is going to support the
-     addition of ExternalRecords at the time a new ExternalSystem is created
+    '''This version of save as well as new is_valid and errors methods will be
+    needed if the POST method for ExternalSystemResource is going to support
+    the addition of ExternalRecords at the time a new ExternalSystem is created
      def save(self,commit=True):
 
         try:
@@ -85,7 +89,8 @@ class ExternalSystemForm(ModelForm):
                     if sid != None and rid !=None:
                         try:
                             s=Subject.objects.get(pk=sid)
-                            er = ExternalRecord(subject=s,external_system=m, record_id=rid)
+                            er = ExternalRecord(
+                                subject=s,external_system=m, record_id=rid)
                             er.save()
                         except Exception:
                             pass
