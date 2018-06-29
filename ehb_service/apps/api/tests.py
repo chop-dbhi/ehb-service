@@ -2,6 +2,7 @@
 Run via Django's manage.py tool: `./bin/manage.py test api`
 """
 import json
+from django.db.models import Q
 
 from django.test import TestCase
 from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem, PedigreeSubjectRelation
@@ -1411,8 +1412,7 @@ class TestOrganization(TestCase):
         self.assertEqual(len(j), relationship_count)
 
     def test_get_relationships_for_subject(self):
-        relationship_count = PedigreeSubjectRelation.objects.filter(subject_1=3).count()
-        relationship_count += PedigreeSubjectRelation.objects.filter(subject_2=3).count()
+        relationship_count = PedigreeSubjectRelation.objects.filter(Q(subject_1=3 )| Q(subject_2=3)).count()
         response = self.client.get(
             '/api/pedigree/subject_id/3/',
             HTTP_API_TOKEN='secretkey123',
