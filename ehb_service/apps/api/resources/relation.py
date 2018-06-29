@@ -46,8 +46,8 @@ class PedigreeSubjectRelationResource(Resource):
         # get list of relationships based on protocol id
         if protocol_id:
             relationships = self.relationships_by_protocol(protocol_id)
+        # get list of relationships based on subject id
         if subject_id:
-            print("we are in subject_id")
             relationships = self.relationships_by_subject(subject_id)
 
         relationship_dictionary = self.append_query_to_dict(relationships)
