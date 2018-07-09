@@ -997,6 +997,38 @@ POST to create a group
     }
     ]
 
+POST to add subject to group
+----------------------------
+**URL**:
+
+.. http:post:: api/group/id/(int: group_id)/subjects/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    POST /api/group/
+    Host: example.com
+    Content-Type: application/json
+    Api-token: (api token)
+    Group-Client-Key: (client key for subj group)
+    Body:
+    [
+    6738
+    ]
+
+**Example Response**:
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+
+    [
+    {"id": 6738, "success": true}
+    ]
+
 PUT to modify a group
 ---------------------
 **URL**:
