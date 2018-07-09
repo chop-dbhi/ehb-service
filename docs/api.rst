@@ -9,6 +9,7 @@ The API calls listed below are formatted such that:
 - 'Example Response' are the exact contents outputted by the API.
 
 Example Request Header
+
 +-------------------------+------------------+--------------------------------------------+
 | Key                     | Value            | Description                                |
 +=========================+==================+============================================+
@@ -19,7 +20,7 @@ Example Request Header
 | Accept OR Content-Type  | application/json | GET and DELETE requests will use Accept;   |
 |                         |                  | POST and PUT requests will use Content-Type|
 +-------------------------+------------------+--------------------------------------------+
-| Body                    |                                                               |
+| Body                    |                  |                                            |
 +-------------------------+------------------+--------------------------------------------+
 
 .. contents:: Contents
