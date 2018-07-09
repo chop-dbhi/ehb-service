@@ -244,7 +244,7 @@ GET a list of subjects in a subject group
 
 .. sourcecode:: http
 
-    GET /api/group/id/451/subjects/
+    GET /api/group/id/9624/subjects/
     Host: example.com
     Accept: application/json
     Api-token:
@@ -257,6 +257,20 @@ GET a list of subjects in a subject group
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
+
+    [
+    {
+      "first_name": "Alexander",
+      "last_name": "Gonzalez",
+      "created": "2016-11-22 13:56:51.581028",
+      "dob": "1990-07-01",
+      "modified": "2016-11-22 13:56:51.581049",
+      "organization_id_label": "Medical Record Number",
+      "organization_subject_id": "Test1",
+      "organization": 2,
+      "id": 6738
+      }
+      ]
 
 
 POST to add subject to group
@@ -290,6 +304,35 @@ POST to add subject to group
     [
     {"id": 6738, "success": true}
     ]
+
+DELETE a subject from Subject Group
+-----------------------------------------
+
+**URL**:
+
+.. http:delete:: api/group/id/(int: group_id)/subjects/id/(int: subject)id)/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    DELETE /api/group/id/9624/subjects/id/6738/
+    Host: example.com
+    Accept: application/json
+    Api-token:
+    GROUP-CLIENT-KEY:
+
+**Example Response**:
+
+.. sourcecode:: http
+
+    HTTP/1.1 204 OK
+    Vary: Accept
+    Content-Type: application/json
+
+    (no return content)
+
+
 
 
 
