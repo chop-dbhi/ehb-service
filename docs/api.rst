@@ -20,8 +20,8 @@ GET a subject's info with id
 
 .. sourcecode:: http
 
-    GET /api/subject/id/5856
     Host: example.com
+    GET /api/subject/id/5856/
     Accept: application/json
     Api-token:
 
@@ -50,14 +50,14 @@ GET a subject's info with organization ID and MRN
 
 **URL**:
 
-.. http:get:: /api/subject/organization/(int: organization_id)/osid/(int: os_id)
+.. http:get:: /api/subject/organization/(int: organization_primary_key)/osid/(str: organization_subject_record_id)
 
 **Example Request**:
 
 .. sourcecode:: http
 
-      GET /api/subject/organization/2/osid/testtest123
       Host: example.com
+      GET /api/subject/organization/2/osid/testtest123
       Accept: application/json
       Api-token:
 
@@ -85,14 +85,14 @@ DELETE a subject with subject_id
 --------------------------------
 
 **URL**:
-.. http:delete:: api/subject/id/(int: subject_id)/
+.. http:delete:: api/subject/id/(int: subject_primary_key)/
 
 **Example Request**:
 
 .. sourcecode:: http
 
-    DELETE /api/subject/id/5856
     Host: example.com
+    DELETE /api/subject/id/5856
     Accept: application/json
     Api-token:
 
