@@ -14,7 +14,7 @@ GET a subject's info with id
 
 **URL**:
 
-.. http:get:: /api/subject/id/(int: subject_id)/
+.. http:get:: /api/subject/id/(int: subject_primary_key)/
 
 **Example Request**:
 
