@@ -5,6 +5,7 @@ EHB SERVICE API
 The eHB Service provides a RESTful API for retrieving and updating data in the application.
 
 The API calls listed below are formatted such that:
+
 - 'Example Request' includes all of the necessary user inputs for a successful API call.
 - 'Example Response' are the exact contents outputted by the API.
 
