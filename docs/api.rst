@@ -619,58 +619,6 @@ GET a list of subjects in the external system
       }
     ]
 
-GET a list of subjects in the external system
----------------------------------------------
-
-**URL**:
-
-.. http:get:: /api/externalsystem/id/(int: externalsystem_id)/organization/(int: organization_id)/subjects/
-
-**Example Request**:
-
-.. sourcecode:: http
-
-    GET /api/externalsystem/id/6/organization/2/subjects
-    Host: example.com
-    Accept: application/json
-    Api-token:
-
-**Example Response**:
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Vary: Accept
-    Content-Type: application/json
-
-    [
-    {
-        "first_name": "dec 2",
-        "last_name": "2013",
-        "created": "2013-12-02 15:54:18.670585",
-        "dob": "2013-12-02",
-        "modified": "2013-12-04 13:56:10.352651",
-        "organization_id_label": "Medical Record Number",
-        "organization_subject_id": "2343243",
-        "organization": 2,
-        "id": 801
-    },
-    {
-        "first_name": "Tyler",
-        "last_name": "Test",
-        "created": "2013-07-17 08:38:06.668080",
-        "dob": "2010-07-01",
-        "modified": "2013-09-10 12:09:11.946897",
-        "organization_id_label": "Medical Record Number",
-        "organization_subject_id": "11251125",
-        "organization": 2,
-        "id": 681
-    },
-    ]
-
-|
-|
-
 GET a list of records in an external system
 -------------------------------------------
 **URL**:
@@ -873,6 +821,48 @@ POST (query) to obtain external system info
         }
      }
     ]
+
+PUT to modify External System(s)
+-----------------------------------
+
+**URL**:
+.. http:put:: /api/externalsystem/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    PUT /api/externalsystem/
+    Host: example.com
+    Content-Type: application/json
+    Api-token:
+
+    [
+       {
+          "id": 20,
+          "external_system": {
+             "description": "new description"
+          }
+       }
+    ]
+
+
+**Example Response**:
+
+.. sourcecode:: http
+
+  HTTP/1.1 200 OK
+  Vary: Accept
+  Content-Type: application/json
+
+  [
+     {
+        "created": "2018-7-9 13:14:17",
+        "id": "20",
+        "success": true,
+        "modified": "2018-7-9 13:20:3"
+     }
+  ]
 
 DELETE an external system
 -------------------------
