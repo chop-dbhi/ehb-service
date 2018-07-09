@@ -4,6 +4,24 @@ EHB SERVICE API
 
 The eHB Service provides a RESTful API for retrieving and updating data in the application.
 
+The API calls listed below are formatted such that:
+- 'Example Request' includes all of the necessary user inputs for a successful API call.
+- 'Example Response' are the exact contents outputted by the API.
+
+Example Request Header
++-------------------------+------------------+--------------------------------------------+
+| Key                     | Value            | Description                                |
++=========================+==================+============================================+
+| Host                    | example.com      | EHB host URL                               |
++-------------------------+------------------+--------------------------------------------+
+| URL                     | /api/api_call/   | API call URL                               |
++-------------------------+------------------+--------------------------------------------+
+| Accept OR Content-Type  | application/json | GET and DELETE requests will use Accept;   |
+|                         |                  | POST and PUT requests will use Content-Type|
++-------------------------+------------------+--------------------------------------------+
+| Body                    |                                                               |
++-------------------------+------------------+--------------------------------------------+
+
 .. contents:: Contents
 
 Subjects
@@ -14,7 +32,7 @@ GET a subject's info with id
 
 **URL**:
 
-.. http:get:: /api/subject/id/(int: subject_primary_key)/
+.. http:get:: /api/subject/id/(int: subject_id)/
 
 **Example Request**:
 
@@ -50,7 +68,7 @@ GET a subject's info with organization ID and MRN
 
 **URL**:
 
-.. http:get:: /api/subject/organization/(int: organization_primary_key)/osid/(str: organization_subject_record_id)
+.. http:get:: /api/subject/organization/(int: organization_id)/osid/(str: organization_subject_record_id)
 
 **Example Request**:
 
@@ -85,7 +103,8 @@ DELETE a subject with subject_id
 --------------------------------
 
 **URL**:
-.. http:delete:: api/subject/id/(int: subject_primary_key)/
+
+.. http:delete:: api/subject/id/(int: subject_id)/
 
 **Example Request**:
 
@@ -120,6 +139,7 @@ DELETE a subject with subject_id
 DELETE a subject with organization_id and MRN
 ---------------------------------------------
 **URL**:
+
 .. http:delete:: api/subject/organization/(int: organization_id)/osid/(int: os_id)/
 
 
