@@ -763,8 +763,8 @@ GET a list of records in external system with specified organization
         },
       ]
 
-POST (query) to obtain??
-------------------------
+POST (query) to obtain external system info
+-------------------------------------------
 **URL**:
 
 .. http:post:: /api/externalsystem/query/
@@ -773,14 +773,14 @@ POST (query) to obtain??
 
 .. sourcecode:: http
 
-      POST /api/externalsystem/query
+      POST /api/externalsystem/query/
       Host: example.com
       Content-Type: application/json
       Api-token:
       Body:
-      [{"name": "Nautilus Test"}]
+      [{"name": "Nautilus"}]
       OR
-      [{"url": "http://nautilus.local:8090/api/"}]
+      [{"url": "http://10.30.9.218:8090/api/"}]
 
 **Example Response**:
 
@@ -791,14 +791,33 @@ POST (query) to obtain??
     Content-Type: application/json
 
     [
-        {
-            "errors": [
-                {
-                    "Query": 9
-                }
-            ],
-            "name": "Nautilus Test"
+     {
+        "externalSystem": {
+           "description": "RESLIMS01 production Nautilus",
+           "created": "2012-06-02 10:36:49.773564",
+           "url": "http://10.30.9.218:8090/api/",
+           "modified": "2014-04-23 11:01:21.261794",
+           "id": "3",
+           "name": "Nautilus"
+        },
+        "name": "Nautilus"
+     }
+    ]
+
+    OR
+
+    [
+     {
+        "url": "http://10.30.9.218:8090/api/",
+        "externalSystem": {
+           "description": "RESLIMS01 production Nautilus",
+           "created": "2012-06-02 10:36:49.773564",
+           "url": "http://10.30.9.218:8090/api/",
+           "modified": "2014-04-23 11:01:21.261794",
+           "id": "3",
+           "name": "Nautilus"
         }
+     }
     ]
 
 DELETE an external system (need to check)
