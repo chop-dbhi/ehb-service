@@ -233,7 +233,63 @@ PUT to modify a subject
 
 Subject Group
 =============
+GET a list of subjects in a subject group
+-----------------------------------------
 
+**URL**:
+
+.. http:get:: api/group/id/(int: group_id)/subjects/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    GET /api/group/id/451/subjects/
+    Host: example.com
+    Accept: application/json
+    Api-token:
+    GROUP-CLIENT-KEY:
+
+**Example Response**:
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+
+
+POST to add subject to group
+----------------------------
+**URL**:
+
+.. http:post:: api/group/id/(int: group_id)/subjects/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    POST /api/group/
+    Host: example.com
+    Content-Type: application/json
+    Api-token: (api token)
+    Group-Client-Key: (client key for subj group)
+    Body:
+    [
+    6738
+    ]
+
+**Example Response**:
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+
+    [
+    {"id": 6738, "success": true}
+    ]
 
 
 
@@ -929,31 +985,6 @@ PUT to modify an external record
 
 Group
 =====
-GET a list of subjects in a group
----------------------------------
-
-**URL**:
-
-.. http:get:: api/group/id/(int: group_id)/subjects/
-
-**Example Request**:
-
-.. sourcecode:: http
-
-    GET /api/group/id/451/subjects/
-    Host: example.com
-    Accept: application/json
-    Api-token:
-    GROUP-CLIENT-KEY:
-
-**Example Response**:
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Vary: Accept
-    Content-Type: application/json
-
 POST to create a group
 -----------------------
 **URL**:
@@ -995,38 +1026,6 @@ POST to create a group
         "modified": "2018-6-7 16:46:58",
         "id": "24"
     }
-    ]
-
-POST to add subject to group
-----------------------------
-**URL**:
-
-.. http:post:: api/group/id/(int: group_id)/subjects/
-
-**Example Request**:
-
-.. sourcecode:: http
-
-    POST /api/group/
-    Host: example.com
-    Content-Type: application/json
-    Api-token: (api token)
-    Group-Client-Key: (client key for subj group)
-    Body:
-    [
-    6738
-    ]
-
-**Example Response**:
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Vary: Accept
-    Content-Type: application/json
-
-    [
-    {"id": 6738, "success": true}
     ]
 
 PUT to modify a group
