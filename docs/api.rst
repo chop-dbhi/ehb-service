@@ -763,6 +763,60 @@ GET a list of records in external system with specified organization
         },
       ]
 
+POST to create External System(s)
+-----------------------------------
+
+**URL**:
+.. http:post:: /api/externalsystem/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+      POST /api/externalsystem/
+      Host: example.com
+      Content-Type: application/json
+      Api-token:
+
+      [
+       {
+          "name": "test",
+          "description": "value",
+          "url": "http://example.com/test/"
+       },
+       {
+          "name": "test2",
+          "description": "value",
+          "url": "http://example.com/test2/"
+       }
+      ]
+
+
+**Example Response**:
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+
+    [
+     {
+        "name": "test",
+        "created": "2018-7-9 13:14:17",
+        "id": "20",
+        "success": true,
+        "modified": "2018-7-9 13:14:17"
+     },
+     {
+        "name": "test2",
+        "created": "2018-7-9 13:14:17",
+        "id": "21",
+        "success": true,
+        "modified": "2018-7-9 13:14:17"
+     }
+    ]
+
 POST (query) to obtain external system info
 -------------------------------------------
 **URL**:
@@ -820,8 +874,8 @@ POST (query) to obtain external system info
      }
     ]
 
-DELETE an external system (need to check)
----------------------------------------
+DELETE an external system
+-------------------------
 **URL**:
 
 .. http:delete:: api/externalsystem/id/(int: externalsystem_id)
