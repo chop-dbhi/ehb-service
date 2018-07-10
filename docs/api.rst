@@ -21,6 +21,10 @@ Example Request Header
 | Accept OR Content-Type  | application/json | GET and DELETE requests will use Accept;   |
 |                         |                  | POST and PUT requests will use Content-Type|
 +-------------------------+------------------+--------------------------------------------+
+| Group-Client-Key        | ex: testck       | This is set by the client and serves as a  |                                         |
+| (for Group and          |                  | password for controlling groups. Client_key|
+| Subject_Group calls)    |                  | is not sent in any response provided by eHB|
++-------------------------+------------------+--------------------------------------------+
 | Body (optional)         |                  | POST and PUT requests to create and edit   |
 |                         |                  | typically require body. Body is typically  |
 |                         |                  | in json.                                   |
