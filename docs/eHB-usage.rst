@@ -30,3 +30,4 @@ from Chop's institutional Review Board:
       * Organization
       * Organization ID
       * Date of birth
+    For more details see 'POST to create a subject' in the API documentation
