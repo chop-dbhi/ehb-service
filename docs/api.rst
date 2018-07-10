@@ -45,19 +45,19 @@ Common user inputs required for the API_URL include:
 +-------------------------+---------------------------------------------------------------+
 | URL Input               | Description                                                   |
 +=========================+===============================================================+
-| (int: subject_id)       | Subject_id is the primary key used to identify every subject  |
+| (int: subject_id)       | This is the primary key used to identify every subject        |
 |                         | stored on the eHB. Can be obtained through API call           |
 |                         | Subject Group::GET, as the value ‘id’.                        |
 +-------------------------+---------------------------------------------------------------+
-| (int: organization_id)  | Organization_id is the primary key used to identify every     |
+| (int: organization_id)  | This is the primary key used to identify every                |
 |                         | organization stored on the eHB. Can be obtained through API   |
 |                         | call Organization::POST(query), as the value 'id'             |
 +-------------------------+---------------------------------------------------------------+
 | (str: os_id)            | This is the organization_subject_id, or MRN of a subject. Can |
-|                         | be obtained through various API calls, including Subject:GET  |
+|                         | be obtained through various API calls, including Subject::GET  |
 +-------------------------+---------------------------------------------------------------+
 | (int: group_id)         | This is the primary key used to identify every group record   |
-|                         | in the eHB. Can be obtained through API call GROUP:GET        |
+|                         | in the eHB. Can be obtained through API call GROUP::GET        |
 +-------------------------+---------------------------------------------------------------+
 | (int: externalrecord_id)| This is the primary key used to identify every external record|
 |                         | in the eHB. Can be obtained through API call ExternalRecord:: |
