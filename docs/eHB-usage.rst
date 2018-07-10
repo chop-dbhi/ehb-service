@@ -19,12 +19,12 @@ from Chop's institutional Review Board:
 
 **Steps:**
     **Assumptions:**
-|    * Organization is already in the eHB. If not see API call…. To create a new organization
-|    * A Subject group has already been created. If not see API call… to create a new subject group.
-|    * System or person making the request has an API token and group client key.
+      * Organization is already in the eHB. If not see API call…. To create a new organization
+      * A Subject group has already been created. If not see API call… to create a new subject group.
+      * System or person making the request has an API token and group client key.
 
     **1 Add a subject to the eHB**
-|    This will only add a subject to the subject table in the eHB, no identifiers are created. The following fields are required:
+    This will only add a subject to the subject table in the eHB, no identifiers are created. The following fields are required:
       * First name
       * Last name
       * Organization
