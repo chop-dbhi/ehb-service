@@ -29,6 +29,7 @@ from Chop's institutional Review Board:
     * System or person making the request has an API token and group client key.
 
 **1 Add a subject to the eHB**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This will only add a subject to the subject table in the eHB, no identifiers are created. The following fields are required:
       * First name
@@ -40,11 +41,13 @@ This will only add a subject to the subject table in the eHB, no identifiers are
 See 'POST to create a subject' in the API documentation.
 
 **2 Add a subject to a protocol or dataset**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
       1. Create a group for a subject on a given Protocol
       2. Add subject to subject group (Subject group name should be stored by the external system)
 
 **3 Add External Identifier for a given Subject**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
       1. if this external ID is only at the subject group level, then create an external record group, else skip to 2
       2. Add Record ID
