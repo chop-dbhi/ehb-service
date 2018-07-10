@@ -43,8 +43,8 @@ See 'POST to create a subject' in the API documentation.
 **2 Add a subject to a protocol or dataset**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  1. Create a group for a subject on a given Protocol
-  2. Add subject to subject group (Subject group name should be stored by the external system)
+1. Create a group for a subject on a given Protocol
+2. Add subject to subject group (Subject group name should be stored by the external system)
 
 **3 Add External Identifier for a given Subject**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
