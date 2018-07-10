@@ -49,3 +49,5 @@ from Chop's institutional Review Board:
 
         1. if this external ID is only at the subject group level, then create an external record group, else skip to 2
         2. Add Record ID
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
