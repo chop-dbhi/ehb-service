@@ -25,17 +25,17 @@ from Chop's institutional Review Board:
 
     **1 Add a subject to the eHB**
     This will only add a subject to the subject table in the eHB, no identifiers are created. The following fields are required:
-      * First name
-      * Last name
-      * Organization
-      * Organization ID
-      * Date of birth
+      - First name
+      - Last name
+      - Organization
+      - Organization ID
+      - Date of birth
     For more details see 'POST to create a subject' in the API documentation
 
     **2 Add a subject to a protocol or dataset**
         1. Create a group for a subject on a given Protocol
         2. Add subject to subject group (Subject group name should be stored by the external system)
 
-    **3 Add External Identifier for a given Subject
+    **3 Add External Identifier for a given Subject**
         1. if this external ID is only at the subject group level, then create an external record group, else skip to 2
         2. Add Record ID
