@@ -24,9 +24,9 @@ from Chop's institutional Review Board:
 **Assumptions**
 ^^^^^^^^^^^^^^^
 
-    * Organization is already in the eHB. If not see API call…. To create a new organization
-    * A Subject group has already been created. If not see API call… to create a new subject group.
-    * System or person making the request has an API token and group client key.
+* Organization is already in the eHB. If not see API call…. To create a new organization
+* A Subject group has already been created. If not see API call… to create a new subject group.
+* System or person making the request has an API token and group client key.
 
 **1 Add a subject to the eHB**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -49,7 +49,7 @@ See 'POST to create a subject' in the API documentation.
 **3 Add External Identifier for a given Subject**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  1. If this external ID is only at the subject group level, then create an external record group, else skip to 2
-  2. Add external Record ID
+1. If this external ID is only at the subject group level, then create an external record group, else skip to 2
+2. Add external Record ID
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
