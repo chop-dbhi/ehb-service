@@ -38,9 +38,12 @@ Common user inputs required for the API_URL include:
 +-------------------------+---------------------------------------------------------------+
 | URL Input               | Description                                                   |
 +=========================+===============================================================+
-| (int: subject_id)       | Subject_id is the primary key used to identify every subject stored on the eHB. Can be obtained through Subject Group::GET, as the value ‘id’.|
+| (int: subject_id)       | Subject_id is the primary key used to identify every subject  |
+|                         | stored on the eHB. Can be obtained through Subject Group::GET,|
+|                         | as the value ‘id’.                                            |
 +-------------------------+---------------------------------------------------------------+
-| (int: organization_id)  |  Organization_id is the primary key used to identify every organization stored on the eHB.|
+| (int: organization_id)  |  Organization_id is the primary key used to identify every    |
+|                         | organization stored on the eHB.                               |
 +-------------------------+---------------------------------------------------------------+
 | (str: os_id)            |                                                               |
 +-------------------------+---------------------------------------------------------------+
