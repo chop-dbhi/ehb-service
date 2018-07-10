@@ -11,6 +11,9 @@ The API calls listed below are formatted such that:
 
 .. contents:: Table of Contents
 
+User Input Details
+===================
+
 Example Request Header Info
 ---------------------------
 
