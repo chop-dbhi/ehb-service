@@ -338,6 +338,49 @@ GET a list of subjects in a subject group
       }
       ]
 
+POST to create a subject group
+------------------------------
+**URL**:
+
+.. http:post:: api/group/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    POST /api/group/
+    Host: example.com
+    Content-Type: application/json
+    Api-token:
+    Body:
+    [
+    {
+      "name": "testforgroupost",
+      "client_key": "hello",
+      "is_locking": "true",
+      "description": "value"
+    }
+    ]
+
+**Example Response**:
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+
+    [
+    {
+        "ehb_key": "UDY8HSLY1MNFB906",
+        "name": "testforgroupost",
+        "success": true,
+        "created": "2018-6-7 16:46:58",
+        "modified": "2018-6-7 16:46:58",
+        "id": "24"
+    }
+    ]
+
 
 POST to add subject to group
 ----------------------------
@@ -397,6 +440,158 @@ DELETE a subject from Subject Group
     (no return content)
 
 
+Group
+=====
+GET to get Group info (group id)
+--------------------------------
+**URL**:
+
+.. http:get:: api/group/?id=(int: group_id)
+
+**Example Request**:
+
+.. sourcecode:: http
+
+  GET /api/group/?id=451
+  Host: example.com
+  Accept: application/json
+
+**Example Response**:
+
+.. sourcecode:: http
+
+  HTTP/1.1 200 OK
+  Vary: Accept
+  Content-Type: application/json
+
+  {
+  "ehb_key": "M4EI66ZYST8KZ2UY",
+  "description": "A BRP Protocol Group",
+  "created": "2012-11-19 13:53:56.945841",
+  "modified": "2012-11-19 13:53:56.945861",
+  "is_locking": "True",
+  "id": "451",
+  "name": "BRP:AV2PD77NXURSHEEI"
+  }
+
+GET to get Group info (group name)
+-----------------------------------
+**URL**:
+
+.. http:get:: api/group/?name=(str: group_name)
+
+**Example Request**:
+
+.. sourcecode:: http
+
+  GET /api/group/?name=BRP:AV2PD77NXURSHEEI
+  Host: example.com
+  Accept: application/json
+
+**Example Response**:
+
+.. sourcecode:: http
+
+  HTTP/1.1 200 OK
+  Vary: Accept
+  Content-Type: application/json
+
+  {
+  "ehb_key": "M4EI66ZYST8KZ2UY",
+  "description": "A BRP Protocol Group",
+  "created": "2012-11-19 13:53:56.945841",
+  "modified": "2012-11-19 13:53:56.945861",
+  "is_locking": "True",
+  "id": "451",
+  "name": "BRP:AV2PD77NXURSHEEI"
+  }
+
+
+POST to create a group
+-----------------------
+**URL**:
+
+.. http:post:: api/group/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+  POST /api/group/
+  Host: example.com
+  Content-Type: application/json
+  Api-token:
+  Body:
+  [
+  {
+    "name": "testforgroupost",
+    "client_key": "hello",
+    "is_locking": "true",
+    "description": "value"
+  }
+  ]
+
+**Example Response**:
+
+.. sourcecode:: http
+
+  HTTP/1.1 200 OK
+  Vary: Accept
+  Content-Type: application/json
+
+  [
+  {
+      "ehb_key": "UDY8HSLY1MNFB906",
+      "name": "testforgroupost",
+      "success": true,
+      "created": "2018-6-7 16:46:58",
+      "modified": "2018-6-7 16:46:58",
+      "id": "24"
+  }
+  ]
+
+PUT to modify a group
+---------------------
+**URL**:
+
+.. http:put:: api/group/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+  PUT /api/group/
+  Host: example.com
+  Content-Type: application/json
+  Api-token:
+  Body:
+  [
+  {
+    "name": "testforgroupost",
+    "client_key": "hello",
+    "is_locking": "true",
+    "description": "value"
+  }
+  ]
+
+**Example Response**:
+
+.. sourcecode:: http
+
+  HTTP/1.1 200 OK
+  Vary: Accept
+  Content-Type: application/json
+
+  [
+  {
+      "ehb_key": "UDY8HSLY1MNFB906",
+      "name": "testforgroupost",
+      "success": true,
+      "created": "2018-6-7 16:46:58",
+      "modified": "2018-6-7 16:46:58",
+      "id": "24"
+  }
+  ]
 
 
 
@@ -1162,158 +1357,5 @@ PUT to modify an external record
         "id": "5",
         "success": true,
         "modified": "2018-6-8 11:57:52"
-    }
-    ]
-
-Group
-=====
-GET to get Group info (group id)
---------------------------------
-**URL**:
-
-.. http:get:: api/group/?id=(int: group_id)
-
-**Example Request**:
-
-.. sourcecode:: http
-
-    GET /api/group/?id=451
-    Host: example.com
-    Accept: application/json
-
-**Example Response**:
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Vary: Accept
-    Content-Type: application/json
-
-    {
-    "ehb_key": "M4EI66ZYST8KZ2UY",
-    "description": "A BRP Protocol Group",
-    "created": "2012-11-19 13:53:56.945841",
-    "modified": "2012-11-19 13:53:56.945861",
-    "is_locking": "True",
-    "id": "451",
-    "name": "BRP:AV2PD77NXURSHEEI"
-    }
-
-GET to get Group info (group name)
------------------------------------
-**URL**:
-
-.. http:get:: api/group/?name=(str: group_name)
-
-**Example Request**:
-
-.. sourcecode:: http
-
-    GET /api/group/?name=BRP:AV2PD77NXURSHEEI
-    Host: example.com
-    Accept: application/json
-
-**Example Response**:
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Vary: Accept
-    Content-Type: application/json
-
-    {
-    "ehb_key": "M4EI66ZYST8KZ2UY",
-    "description": "A BRP Protocol Group",
-    "created": "2012-11-19 13:53:56.945841",
-    "modified": "2012-11-19 13:53:56.945861",
-    "is_locking": "True",
-    "id": "451",
-    "name": "BRP:AV2PD77NXURSHEEI"
-    }
-
-
-POST to create a group
------------------------
-**URL**:
-
-.. http:post:: api/group/
-
-**Example Request**:
-
-.. sourcecode:: http
-
-    POST /api/group/
-    Host: example.com
-    Content-Type: application/json
-    Api-token:
-    Body:
-    [
-    {
-      "name": "testforgroupost",
-      "client_key": "hello",
-      "is_locking": "true",
-      "description": "value"
-    }
-    ]
-
-**Example Response**:
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Vary: Accept
-    Content-Type: application/json
-
-    [
-    {
-        "ehb_key": "UDY8HSLY1MNFB906",
-        "name": "testforgroupost",
-        "success": true,
-        "created": "2018-6-7 16:46:58",
-        "modified": "2018-6-7 16:46:58",
-        "id": "24"
-    }
-    ]
-
-PUT to modify a group
----------------------
-**URL**:
-
-.. http:put:: api/group/
-
-**Example Request**:
-
-.. sourcecode:: http
-
-    PUT /api/group/
-    Host: example.com
-    Content-Type: application/json
-    Api-token:
-    Body:
-    [
-    {
-      "name": "testforgroupost",
-      "client_key": "hello",
-      "is_locking": "true",
-      "description": "value"
-    }
-    ]
-
-**Example Response**:
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Vary: Accept
-    Content-Type: application/json
-
-    [
-    {
-        "ehb_key": "UDY8HSLY1MNFB906",
-        "name": "testforgroupost",
-        "success": true,
-        "created": "2018-6-7 16:46:58",
-        "modified": "2018-6-7 16:46:58",
-        "id": "24"
     }
     ]
