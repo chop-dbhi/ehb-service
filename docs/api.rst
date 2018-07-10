@@ -32,7 +32,9 @@ The API calls listed below are formatted such that:
 +-------------------------+------------------+--------------------------------------------+
 
 **URL Info**
+
 URL format is always HOST_URL/API_URL. (example.com/api/api_call)
+
 Common user inputs required for the API_URL include:
 
 +-------------------------+---------------------------------------------------------------+
