@@ -9,7 +9,10 @@ The API calls listed below are formatted such that:
 - 'Example Request' includes all of the necessary user inputs for a successful API call.
 - 'Example Response' are the exact contents outputted by the API.
 
-**Example Request Header Info**
+.. contents:: Table of Contents
+
+Example Request Header Info
+---------------------------
 
 +-------------------------+------------------+--------------------------------------------+
 | Key                     | Value            | Description                                |
@@ -31,7 +34,8 @@ The API calls listed below are formatted such that:
 |                         |                  | in json.                                   |
 +-------------------------+------------------+--------------------------------------------+
 
-**URL Info**
+URL Info
+--------
 
 URL format is always HOST_URL/API_URL. (example.com/api/api_call)
 
@@ -63,7 +67,7 @@ Common user inputs required for the API_URL include:
 |                         | POST(query) if External System name or URL is known.          |
 +-------------------------+---------------------------------------------------------------+
 
-.. contents:: Table of Contents
+
 
 Subjects
 ========
