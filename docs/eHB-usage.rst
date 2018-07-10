@@ -19,8 +19,6 @@ from Chop's institutional Review Board:
     - **External Record Group:** a group of external records for a subject in a given protocol
     - **Group ID:** each protocol, subject in a protocol, external record group receives a unique group id.
 
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 **Steps:**
 -----------
 
@@ -33,11 +31,11 @@ from Chop's institutional Review Board:
   **1 Add a subject to the eHB**
 
       This will only add a subject to the subject table in the eHB, no identifiers are created. The following fields are required:
-|      * First name
-|      * Last name
-|      * Organization
-|      * Organization ID
-|      * Date of birth
+      * First name
+      * Last name
+      * Organization
+      * Organization ID
+      * Date of birth
       See 'POST to create a subject' in the API documentation.
 
   **2 Add a subject to a protocol or dataset**
