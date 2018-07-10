@@ -27,6 +27,7 @@ from Chop's institutional Review Board:
 * Organization is already in the eHB. If not see 'POST to create an organization' in the API documentation to create a new organization
 * A Subject group has already been created. If not see 'POST to create a subject group' in the API documentation to create a new subject group.
 * System or person making the request has an API token and group client key. See system administrators for this information.
+* External System has been created and PK of system is known.
 
 **1. Add a subject to the eHB**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -51,14 +52,25 @@ See 'POST to create a subject' in the API documentation.
   * description
 * See 'POST to create a group' in the API documentation.
 2. Add subject to subject group (Subject group name should be stored by the external system)
-  * Required Fields:
-    * group_id
-    * subject_id
-  * see 'POST add subject to group' in the API documentation.
+|* Required Fields:
+  * group_id
+  * subject_id
+* see 'POST add subject to group' in the API documentation.
 **3. Add External Identifier for a given Subject**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1. If this external ID is only at the subject group level, then create an external record group, else skip to 2
+|* Required fields:
+  * name
+  * client_key
+  * is_locking
+  * description
+* See 'POST to create a group' in the API documentation.
 2. Add external Record ID
-
+* Required fields:
+  * subject PK
+  * external_system PK
+  * Record id
+  * path
+  * label
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
