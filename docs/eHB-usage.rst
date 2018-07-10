@@ -15,6 +15,7 @@ from Chop's institutional Review Board:
 |    **External Record Group:** a group of external records for a subject in a given protocol
 |    **Group ID:** each protocol, subject in a protocol, external record group receives a unique group id.
 |
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 **Steps:**
