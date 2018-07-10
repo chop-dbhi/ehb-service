@@ -11,11 +11,9 @@ The API calls listed below are formatted such that:
 
 .. contents:: Table of Contents
 
-User Input Details
-===================
 
-Example Request Header Info
----------------------------
+User Input for Example Request
+==============================
 
 +-------------------------+------------------+--------------------------------------------+
 | Key                     | Value            | Description                                |
@@ -37,8 +35,8 @@ Example Request Header Info
 |                         |                  | in json.                                   |
 +-------------------------+------------------+--------------------------------------------+
 
-URL Info
---------
+User Input for URL
+==================
 
 URL format is always HOST_URL/API_URL. (example.com/api/api_call)
 
