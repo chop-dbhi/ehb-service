@@ -9,8 +9,7 @@ The API calls listed below are formatted such that:
 - 'Example Request' includes all of the necessary user inputs for a successful API call.
 - 'Example Response' are the exact contents outputted by the API.
 
-Example Request Header
-
+**Example Request Header Info**
 
 +-------------------------+------------------+--------------------------------------------+
 | Key                     | Value            | Description                                |
@@ -23,7 +22,7 @@ Example Request Header
 |                         |                  | POST and PUT requests will use Content-Type|
 +-------------------------+------------------+--------------------------------------------+
 | Group-Client-Key        | ex: testck       | This is set by the client and serves as a  |
-| (for Group and          |                  | password for controlling groups.           |           
+| (for Group and          |                  | password for controlling groups.           |
 | Subject_Group calls)    |                  | Client_key is not sent in any response     |
 |                         |                  | provided by eHB                            |
 +-------------------------+------------------+--------------------------------------------+
@@ -31,6 +30,20 @@ Example Request Header
 |                         |                  | typically require body. Body is typically  |
 |                         |                  | in json.                                   |
 +-------------------------+------------------+--------------------------------------------+
+
+**URL Info**
+URL format is always HOST_URL/API_URL. (example.com/api/api_call)
+Common user inputs required for the API_URL include:
+
++-------------------------+---------------------------------------------------------------+
+| URL Input               | Description                                                   |
++=========================+===============================================================+
+| (int: subject_id)       | Subject_id is the primary key used to identify every subject stored on the eHB. Can be obtained through Subject Group::GET, as the value ‘id’.|
++-------------------------+---------------------------------------------------------------+
+| (int: organization_id)  |  Organization_id is the primary key used to identify every organization stored on the eHB.|
++-------------------------+---------------------------------------------------------------+
+| (str: os_id)            |                                                               |
++-------------------------+---------------------------------------------------------------+
 
 
 .. contents:: Contents
