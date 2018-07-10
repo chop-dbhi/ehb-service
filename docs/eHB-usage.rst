@@ -45,32 +45,32 @@ See 'POST to create a subject' in the API documentation.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1. Create a group for a subject on a given Protocol
-* Required fields:
-  * name
-  * client_key
-  * is_locking
-  * description
-* See 'POST to create a group' in the API documentation.
+  * Required fields:
+    * name
+    * client_key
+    * is_locking
+    * description
+  * See 'POST to create a group' in the API documentation.
 2. Add subject to subject group (Subject group name should be stored by the external system)
-|* Required Fields:
-  * group_id
-  * subject_id
-* see 'POST add subject to group' in the API documentation.
+  * Required Fields:
+    * group_id
+    * subject_id
+  * see 'POST add subject to group' in the API documentation.
 **3. Add External Identifier for a given Subject**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1. If this external ID is only at the subject group level, then create an external record group, else skip to 2
-|* Required fields:
-  * name
-  * client_key
-  * is_locking
-  * description
-* See 'POST to create a group' in the API documentation.
+  * Required fields:
+    * name
+    * client_key
+    * is_locking
+    * description
+  * See 'POST to create a group' in the API documentation.
 2. Add external Record ID
-* Required fields:
-  * subject PK
-  * external_system PK
-  * Record id
-  * path
-  * label
+  * Required fields:
+    * subject PK
+    * external_system PK
+    * Record id
+    * path
+    * label
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
