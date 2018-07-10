@@ -22,8 +22,9 @@ Example Request Header
 |                         |                  | POST and PUT requests will use Content-Type|
 +-------------------------+------------------+--------------------------------------------+
 | Group-Client-Key        | ex: testck       | This is set by the client and serves as a  |                                         |
-| (for Group and          |                  | password for controlling groups. Client_key|
-| Subject_Group calls)    |                  | is not sent in any response provided by eHB|
+| (for Group and          |                  | password for controlling groups.           |
+|  Subject_Group calls)   |                  | Client_key is not sent in any response     | 
+|                         |                  | provided by eHB                            |
 +-------------------------+------------------+--------------------------------------------+
 | Body (optional)         |                  | POST and PUT requests to create and edit   |
 |                         |                  | typically require body. Body is typically  |
