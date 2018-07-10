@@ -8,13 +8,13 @@ from Chop's institutional Review Board:
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-|**Definitions:**
+**Definitions:**
 |    **External Record Identifier:** An identifier that is linked to  subject, but is generated and stored in a system other than the eHB.
 |    **Subject:** A research subject (could be a patient or a subject from another source)
 |    **Subject Group:** A group of subjects (protocol or a dataset)
 |    **External Record Group:** a group of external records for a subject in a given protocol
 |    **Group ID:** each protocol, subject in a protocol, external record group receives a unique group id.
-
+|
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 **Steps:**
