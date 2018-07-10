@@ -54,6 +54,10 @@ Common user inputs required for the API_URL include:
 | (int: group_id)         | This is the primary key used to identify every group record   |
 |                         | in the eHB. Can be obtained through API call GROUP:GET        |
 +-------------------------+---------------------------------------------------------------+
+| (int: externalrecord_id)| This is the primary key used to indetify every external record|
+|                         | in the eHB. Can be obtained through API call ExternalRecord:: |
+|                         | POST(query)                                                   |
++-------------------------+---------------------------------------------------------------+
 
 .. contents:: Contents
 
@@ -1001,8 +1005,8 @@ GET an external record with label
       }
 
 
-POST (query) to obtain external record
----------------------------------------
+POST (query) to obtain external record info
+-------------------------------------------
 **URL**:
 
 .. http:post:: /api/externalrecord/query/
@@ -1011,8 +1015,8 @@ POST (query) to obtain external record
 
 .. sourcecode:: http
 
-      POST: /api/externalrecord/query
       Host: example.com
+      POST: /api/externalrecord/query/
       Content-Type: application/json
       Api-token:
       Body:
@@ -1021,6 +1025,18 @@ POST (query) to obtain external record
         "subject_id":"2",
         "external_system_id":"2",
         "path":"Test Protocol"
+      },
+      {
+        "subject_org":,
+        "subject_org_id"
+      },
+      {
+        "subject_id":,
+        "external_system_name":,
+      },
+      {
+        "subect_id":,
+        "external_system_url":
       }
       ]
 
