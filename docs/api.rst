@@ -11,6 +11,7 @@ The API calls listed below are formatted such that:
 
 Example Request Header
 
+
 +-------------------------+------------------+--------------------------------------------+
 | Key                     | Value            | Description                                |
 +=========================+==================+============================================+
@@ -30,6 +31,7 @@ Example Request Header
 |                         |                  | typically require body. Body is typically  |
 |                         |                  | in json.                                   |
 +-------------------------+------------------+--------------------------------------------+
+
 
 .. contents:: Contents
 
