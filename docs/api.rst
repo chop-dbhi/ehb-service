@@ -41,15 +41,17 @@ Common user inputs required for the API_URL include:
 | URL Input               | Description                                                   |
 +=========================+===============================================================+
 | (int: subject_id)       | Subject_id is the primary key used to identify every subject  |
-|                         | stored on the eHB. Can be obtained through Subject Group::GET,|
-|                         | as the value ‘id’.                                            |
+|                         | stored on the eHB. Can be obtained through API call           |
+|                         | Subject Group::GET, as the value ‘id’.                        |
 +-------------------------+---------------------------------------------------------------+
-| (int: organization_id)  |  Organization_id is the primary key used to identify every    |
-|                         | organization stored on the eHB.                               |
+| (int: organization_id)  | Organization_id is the primary key used to identify every     |
+|                         | organization stored on the eHB. Can be obtained through API   |
+|                         | call Organization::POST(query), as the value 'id'             |
 +-------------------------+---------------------------------------------------------------+
 | (str: os_id)            |                                                               |
 +-------------------------+---------------------------------------------------------------+
-
+| (int: group_id)         | This is the primary key used to identify every subject_group
+|                         | in the eHB. Can be obtained through
 
 .. contents:: Contents
 
@@ -338,9 +340,7 @@ POST to add subject to group
     Api-token: (api token)
     Group-Client-Key: (client key for subj group)
     Body:
-    [
-    6738
-    ]
+    [6738] # this value is subject_id
 
 **Example Response**:
 
@@ -464,7 +464,7 @@ POST to create an organization
     }
     ]
 
-POST (query) to obtain subjects in an organization
+POST (query) to obtain organization info
 ---------------------------------------------------
 
 **URL**:
@@ -1140,6 +1140,71 @@ PUT to modify an external record
 
 Group
 =====
+GET to get Group info (group id)
+--------------------------------
+**URL**:
+
+.. http:get:: api/group/?id=(int: group_id)
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    GET /api/group/?id=451
+    Host: example.com
+    Accept: application/json
+
+**Example Response**:
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+
+    {
+    "ehb_key": "M4EI66ZYST8KZ2UY",
+    "description": "A BRP Protocol Group",
+    "created": "2012-11-19 13:53:56.945841",
+    "modified": "2012-11-19 13:53:56.945861",
+    "is_locking": "True",
+    "id": "451",
+    "name": "BRP:AV2PD77NXURSHEEI"
+    }
+
+GET to get Group info (group name)
+-----------------------------------
+**URL**:
+
+.. http:get:: api/group/?name=(str: group_name)
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    GET /api/group/?name=BRP:AV2PD77NXURSHEEI
+    Host: example.com
+    Accept: application/json
+
+**Example Response**:
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+
+    {
+    "ehb_key": "M4EI66ZYST8KZ2UY",
+    "description": "A BRP Protocol Group",
+    "created": "2012-11-19 13:53:56.945841",
+    "modified": "2012-11-19 13:53:56.945861",
+    "is_locking": "True",
+    "id": "451",
+    "name": "BRP:AV2PD77NXURSHEEI"
+    }
+
+
 POST to create a group
 -----------------------
 **URL**:
