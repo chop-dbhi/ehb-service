@@ -8,7 +8,6 @@ from Chop's institutional Review Board:
 
     "An honest broker can provide a firewall between the investigator and subjects' identifiable information. For example, an honest broker could generate or receive a dataset and then strip out subject identifiers so that the data was no longer readily identifiable."
 
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 **Definitions:**
 ----------------
