@@ -54,12 +54,16 @@ Common user inputs required for the API_URL include:
 | (int: group_id)         | This is the primary key used to identify every group record   |
 |                         | in the eHB. Can be obtained through API call GROUP:GET        |
 +-------------------------+---------------------------------------------------------------+
-| (int: externalrecord_id)| This is the primary key used to indetify every external record|
+| (int: externalrecord_id)| This is the primary key used to identify every external record|
 |                         | in the eHB. Can be obtained through API call ExternalRecord:: |
 |                         | POST(query)                                                   |
 +-------------------------+---------------------------------------------------------------+
+| (int: externalsystem_id)| This is the primary key used to identify every external system|
+|                         | in the eHB. Can be obtained through API call ExternalSystem:: |
+|                         | POST(query) if External System name or URL is known.          |
++-------------------------+---------------------------------------------------------------+
 
-.. contents:: Contents
+.. contents:: Table of Contents
 
 Subjects
 ========
