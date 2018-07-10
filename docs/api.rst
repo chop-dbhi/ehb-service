@@ -48,10 +48,12 @@ Common user inputs required for the API_URL include:
 |                         | organization stored on the eHB. Can be obtained through API   |
 |                         | call Organization::POST(query), as the value 'id'             |
 +-------------------------+---------------------------------------------------------------+
-| (str: os_id)            |                                                               |
+| (str: os_id)            | This is the organization_subject_id, or MRN of a subject. Can |
+|                         | be obtained through various API calls, including Subject:GET  |
 +-------------------------+---------------------------------------------------------------+
-| (int: group_id)         | This is the primary key used to identify every subject_group
-|                         | in the eHB. Can be obtained through
+| (int: group_id)         | This is the primary key used to identify every group record   |
+|                         | in the eHB. Can be obtained through API call GROUP:GET        |
++-------------------------+---------------------------------------------------------------+
 
 .. contents:: Contents
 
@@ -99,7 +101,7 @@ GET a subject's info with organization ID and MRN
 
 **URL**:
 
-.. http:get:: /api/subject/organization/(int: organization_id)/osid/(str: organization_subject_record_id)
+.. http:get:: /api/subject/organization/(int: organization_id)/osid/(str: os_id)
 
 **Example Request**:
 
