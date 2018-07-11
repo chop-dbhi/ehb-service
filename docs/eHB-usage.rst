@@ -39,7 +39,8 @@ This will only add a subject to the subject table in the eHB, no identifiers are
       * Organization ID
       * Date of birth
 
-See 'POST to create a subject' in the API documentation.
+See 'POST to create a subject' in the API documentation. if you receive error
+code 3, ERROR_SUBJECT_ORG_ID_EXISTS then this subject already exists in the eHB.
 
 **2. Add a subject to a protocol or dataset**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -51,11 +52,13 @@ See 'POST to create a subject' in the API documentation.
     * is_locking
     * description
   * See 'POST to create a group' in the API documentation.
+  * This group name is what is used to connect an external record in step 3.
 2. Add subject to subject group (Subject group name should be stored by the external system)
   * Required Fields:
     * group_id
     * subject_id
   * see 'POST add subject to group' in the API documentation.
+
 **3. Add External Identifier for a given Subject**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
