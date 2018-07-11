@@ -39,8 +39,8 @@ This will only add a subject to the subject table in the eHB, no identifiers are
       * Organization ID
       * Date of birth
 
-See 'POST to create a subject' in the API documentation. if you receive error
-code 3, ERROR_SUBJECT_ORG_ID_EXISTS then this subject already exists in the eHB.
+See 'POST to create a subject' in the API documentation. if you receive successful
+response with error code 3 then this subject already exists in the eHB. 
 
 **2. Add a subject to a protocol or dataset**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
