@@ -40,23 +40,23 @@ This will only add a subject to the subject table in the eHB, no identifiers are
       * Date of birth
 
 See 'POST to create a subject' in the API documentation. if you receive successful
-response with error code 3 then this subject already exists in the eHB. 
+response with error code 3 then this subject already exists in the eHB.
 
 **2. Add a subject to a protocol or dataset**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1. Create a group for a subject on a given Protocol
   * Required fields:
-    * name
-    * client_key
-    * is_locking
-    * description
+    **name**
+    **client_key** receive from eHB administrators;
+    **is_locking** should be true, this means that the item can be changed;
+    **description** should be, "A BRP Protocol Subject Record Group";
   * See 'POST to create a group' in the API documentation.
   * This group name is what is used to connect an external record in step 3.
 2. Add subject to subject group (Subject group name should be stored by the external system)
   * Required Fields:
-    * group_id
-    * subject_id
+    **group_id**
+    **subject_id**
   * see 'POST add subject to group' in the API documentation.
 
 **3. Add External Identifier for a given Subject**
@@ -64,16 +64,16 @@ response with error code 3 then this subject already exists in the eHB.
 
 1. If this external ID is only at the subject group level, then create an external record group, else skip to 2
   * Required fields:
-    * name
-    * client_key
-    * is_locking
-    * description
+    **name**
+    **client_key**
+    **is_locking**
+    **description**
   * See 'POST to create a group' in the API documentation.
 2. Add external Record ID
   * Required fields:
-    * subject PK
-    * external_system PK
-    * Record id
-    * path
-    * label
+    **subject PK**
+    **external_system PK**
+    **Record id**
+    **path**
+    **label**
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
