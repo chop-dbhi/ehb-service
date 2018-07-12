@@ -431,7 +431,7 @@ class ExternalRecordRelation(CreatedModified):
             self.related_record.subject.first_name,
             self.relation_type,
             self.external_record.external_system.name,
- -          self.related_record.external_system.name
+            self.related_record.external_system.name
         )
 
 
