@@ -32,7 +32,7 @@ class SubjectResource(Resource):
                 log.error("Subject[{0}] not found".format(pk))
                 return HttpResponse(status=codes.not_found)
 
-        # search for subjects based on their orginization and
+        # search for subjects based on their orginization and subj ID
         if orgpk and org_sub_id:
             try:
                 org = Organization.objects.get(pk=orgpk)
@@ -53,6 +53,11 @@ class SubjectResource(Resource):
                 for s in ex_record:
                     sub = s.subject.id
                 s = Subject.objects.get(pk=sub)
+                if subs.__len__() == 1:
+                    s = subs[0]
+                else:
+                    log.error("Subject not found with external record id: {0}".format(external_id))
+                    return HttpResponse(status=codes.not_found)
 
             except Organization.DoesNotExist:
                 log.error("Subject not found. Given External Record does not exist")
