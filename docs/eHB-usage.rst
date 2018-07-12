@@ -1,6 +1,8 @@
 **How to use the eHB**
 =======================
 
+API documentation can be found `here <https://github.com/chop-dbhi/ehb-service/blob/issue33_API_Calls_Doc/docs/api.rst>`_.
+
 **What is an Honest Broker**
 ----------------------------
 from Chop's institutional Review Board:
