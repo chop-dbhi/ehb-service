@@ -22,7 +22,7 @@ from Chop's institutional Review Board:
 -----------
 
 These steps are how the BRP and the eHB import tool adds subjects to the eHB.
-The eHB import tool repository can be found _here: https://github.research.chop.edu/dbhi/ehb-import-tool
+The eHB import tool repository can be found `here <https://github.research.chop.edu/dbhi/ehb-import-tool>`_.
 
 **Assumptions**
 ^^^^^^^^^^^^^^^
