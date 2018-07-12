@@ -18,8 +18,11 @@ from Chop's institutional Review Board:
 - **External Record Group:** a group of external records for a subject in a given protocol
 - **Group ID:** each protocol, subject in a protocol, external record group receives a unique group id.
 
-**Steps**
+**Steps to add a subject to a protocol and add external records**
 -----------
+
+These steps are how the BRP and the eHB import tool adds subjects to the eHB.
+The eHB import tool repository can be found _here: https://github.research.chop.edu/dbhi/ehb-import-tool
 
 **Assumptions**
 ^^^^^^^^^^^^^^^
