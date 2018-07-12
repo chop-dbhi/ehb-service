@@ -50,14 +50,12 @@ class SubjectResource(Resource):
         if external_sys and external_id:
             try:
                 ex_record = ExternalRecord.objects.filter(external_system=external_sys).filter(record_id=external_id)
+                if ex_record.__len__() != 1:
+                    log.error("External Record id {0} does not exist".format(ex_record))
+                    return HttpResponse(status=codes.not_found)
                 for s in ex_record:
                     sub = s.subject.id
                 s = Subject.objects.get(pk=sub)
-                if subs.__len__() == 1:
-                    s = subs[0]
-                else:
-                    log.error("Subject not found with external record id: {0}".format(external_id))
-                    return HttpResponse(status=codes.not_found)
 
             except Organization.DoesNotExist:
                 log.error("Subject not found. Given External Record does not exist")
