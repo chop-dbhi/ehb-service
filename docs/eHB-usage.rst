@@ -60,7 +60,7 @@ response with error code 3 then this subject already exists in the eHB.
   * This group name is what is used to connect an external record in step 3.
 2. Add subject to subject group (Subject group name should be stored by the external system)
   * Required Fields:
-    **group_id**
+    **group_id**,
     **subject_id**
   * see 'POST add subject to group' in the API documentation.
 
@@ -108,5 +108,16 @@ This will only add a subject to the subject table in the eHB, no identifiers are
 See 'POST to create a subject' in the API documentation. if you receive successful
 response with error code 3 then this subject already exists in the eHB.
 
+**2. Get subject primary key**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+see 'GET a subject's info with organization ID and MRN' in the API documentation
+
+**3. Get external System primary key**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+see 'POST (query) to obtain external system info' in the API documentation.
+
+**4. Add external record**
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+using items obtained in steps 2 and 3 see 'POST to create an external Record'
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
