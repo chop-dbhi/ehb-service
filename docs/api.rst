@@ -1272,7 +1272,7 @@ POST (query) to obtain external record info
     }
 ]
 
-POST to obtain create an external Record
+POST to create an external Record
 -----------------------------------------
 **URL**:
 
