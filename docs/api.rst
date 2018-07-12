@@ -145,6 +145,32 @@ GET a subject's info with organization ID and MRN
       "id": 5856
       }
 
+GET a subject with external record ID and external system ID
+------------------------------------------------------------
+**URL**:
+
+.. http:get:: /api/subject/externalrecsys/(int: externalsystem_id)/erid/(int: externalrecord_id)
+
+**Example Request**:
+
+.. sourcecode:: http
+
+      Host: example.com
+      GET /api/subject/externalrecsys/19/erid/
+      Accept: application/json
+      Api-token:
+
+**Example Response**:
+
+.. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Vary: Accept
+      Content-Type: application/json
+
+    
+
+
 DELETE a subject with subject_id
 --------------------------------
 
