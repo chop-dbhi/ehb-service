@@ -168,7 +168,7 @@ GET a subject with external record ID and external system ID
       Vary: Accept
       Content-Type: application/json
 
-    
+
 
 
 DELETE a subject with subject_id
@@ -355,7 +355,7 @@ GET a list of subjects in a subject group
       "first_name": "Alexander",
       "last_name": "Gonzalez",
       "created": "2016-11-22 13:56:51.581028",
-      "dob": "1990-07-01",
+      "dob": "1900-07-01",
       "modified": "2016-11-22 13:56:51.581049",
       "organization_id_label": "Medical Record Number",
       "organization_subject_id": "Test1",
@@ -398,7 +398,7 @@ POST to create a subject group
 
     [
     {
-        "ehb_key": "UDY8HSLY1MNFB906",
+        "ehb_key": "ehb_key",
         "name": "testforgroupost",
         "success": true,
         "created": "2018-6-7 16:46:58",
@@ -491,7 +491,7 @@ GET to get Group info (group id)
   Content-Type: application/json
 
   {
-  "ehb_key": "M4EI66ZYST8KZ2UY",
+  "ehb_key": "ehb_key",
   "description": "A BRP Protocol Group",
   "created": "2012-11-19 13:53:56.945841",
   "modified": "2012-11-19 13:53:56.945861",
@@ -523,7 +523,7 @@ GET to get Group info (group name)
   Content-Type: application/json
 
   {
-  "ehb_key": "M4EI66ZYST8KZ2UY",
+  "ehb_key": "ehb_key",
   "description": "A BRP Protocol Group",
   "created": "2012-11-19 13:53:56.945841",
   "modified": "2012-11-19 13:53:56.945861",
@@ -567,7 +567,7 @@ POST to create a group
 
   [
   {
-      "ehb_key": "UDY8HSLY1MNFB906",
+      "ehb_key": "ehb_key",
       "name": "testforgroupost",
       "success": true,
       "created": "2018-6-7 16:46:58",
@@ -610,7 +610,7 @@ PUT to modify a group
 
   [
   {
-      "ehb_key": "UDY8HSLY1MNFB906",
+      "ehb_key": "ehb_key",
       "name": "testforgroupost",
       "success": true,
       "created": "2018-6-7 16:46:58",
@@ -849,7 +849,7 @@ GET an external system's information
       {
       "description": "Test Instance of REDCap",
       "created": "2016-06-10 10:58:05.230277",
-      "url": "https://redcap-test.research.chop.edu/api/",
+      "url": "https://localhost/api/",
       "modified": "2016-06-10 10:58:05.230297",
       "id": "15",
       "name": "REDCap Test"
@@ -1067,7 +1067,7 @@ POST (query) to obtain external system info
       Body:
       [{"name": "Nautilus"}]
       OR
-      [{"url": "http://10.30.9.218:8090/api/"}]
+      [{"url": "http://localhost:8090/api/"}]
 
 **Example Response**:
 
@@ -1080,9 +1080,9 @@ POST (query) to obtain external system info
     [
      {
         "externalSystem": {
-           "description": "RESLIMS01 production Nautilus",
+           "description": "production Nautilus",
            "created": "2012-06-02 10:36:49.773564",
-           "url": "http://10.30.9.218:8090/api/",
+           "url": "http://localhost:8090/api/",
            "modified": "2014-04-23 11:01:21.261794",
            "id": "3",
            "name": "Nautilus"
@@ -1095,11 +1095,11 @@ POST (query) to obtain external system info
 
     [
      {
-        "url": "http://10.30.9.218:8090/api/",
+        "url": "http://localhost:8090/api/",
         "externalSystem": {
-           "description": "RESLIMS01 production Nautilus",
+           "description": "production Nautilus",
            "created": "2012-06-02 10:36:49.773564",
-           "url": "http://10.30.9.218:8090/api/",
+           "url": "http://localhost:8090/api/",
            "modified": "2014-04-23 11:01:21.261794",
            "id": "3",
            "name": "Nautilus"
@@ -1203,7 +1203,7 @@ GET an external record
       "created": "2018-06-04 16:47:40.320305",
       "modified": "2018-06-04 16:47:40.320347",
       "label": 1,
-      "record_id": "QLUBPG4Y0U8Y67TZ:JIEEDIOEP",
+      "record_id": "record_id",
       "path": "CBTTC - Specimen Only",
       "external_system": 2,
       "id": 27871,
@@ -1285,7 +1285,7 @@ POST (query) to obtain external record info
                 "created": "2014-01-28 13:42:41.693000",
                 "modified": "2014-01-28 13:42:41.693000",
                 "label": 1,
-                "record_id": "NXB546EUZSDLZKGR:5EM3AOORG",
+                "record_id": "record_id",
                 "path": "Test Protocol",
                 "external_system": 2,
                 "id": 1,
