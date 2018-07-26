@@ -279,29 +279,10 @@ PUT to modify a subject
       [
        {
           "id": "11",
-          "old_subject": {
-             "first_name": "sdfsd",
-             "last_name": "sdfsdf",
-             "group_name": "",
-             "organization_subject_id": "6665",
-             "organization": 6,
-             "organization_id_label": "Record ID",
-             "dob": "2222-2-2",
-             "id": 11,
-             "modified": "2018-06-06 11:55:49.423644",
-             "created": "2018-06-06 11:55:49.423626"
-          },
           "new_subject": {
-             "first_name": "thisisthe",
-             "last_name": "newname2",
-             "group_name": "",
-             "organization_subject_id": "6665",
-             "organization": 6,
-             "organization_id_label": "Record ID",
-             "dob": "2222-2-2",
-             "id": 11,
-             "modified": "2018-06-06 11:55:49.423644",
-             "created": "2018-06-06 11:55:49.423626"
+             "first_name": "thisisthe", # list the new values for any field you want to modify
+             "last_name": "newname2",   # fields are those returned in get_subject
+             "organization": 6          # must specify organization_id in new_subject for a successful request
           }
         }
         ]
