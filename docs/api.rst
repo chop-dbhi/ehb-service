@@ -191,22 +191,10 @@ DELETE a subject with subject_id
 
 .. sourcecode:: http
 
-    HTTP/1.1 200 OK
+    HTTP/1.1 204 OK
     Vary: Accept
     Content-Type: application/json
 
-    {
-    "first_name": "Test",
-    "last_name": "Sub",
-    "created": "2016-06-03 15:03:16.603638",
-    "dob": "2013-01-01",
-    "modified": "2016-06-03 15:03:16.603664",
-    "organization_id_label": "Medical Record Number",
-    "organization_subject_id": "testtest123",
-    "organization": 2,
-    "id": 5856
-
-    }
 
 DELETE a subject with organization_id and MRN
 ---------------------------------------------
@@ -245,20 +233,10 @@ POST to create a subject
 
 .. sourcecode:: http
 
-      HTTP/1.1 200 OK
+      HTTP/1.1 204 OK
       Vary: Accept
       Content-Type: application/json
 
-      [
-      {
-        "success": true,
-        "created": "2018-6-7 11:23:7",
-        "modified": "2018-6-7 11:23:7",
-        "organization_id": "6",
-        "organization_subject_id": "334",
-        "id": "22"
-        }
-        ]
 
 PUT to modify a subject
 -----------------------
@@ -599,6 +577,31 @@ PUT to modify a group
       "id": "24"
   }
   ]
+
+DELETE to delete a group record
+-------------------------------
+**URL**:
+
+.. http:delete:: api/group/?id=(group_id)
+
+**Example Request**:
+
+.. sourcecode:: http
+
+  PUT /api/group/?id=12640
+  Host: example.com
+  Accept: application/json
+  Api-token:
+  Group-client-key:
+
+
+**Example Response**:
+
+.. sourcecode:: http
+
+  HTTP/1.1 204 OK
+  Vary: Accept
+  Accept: application/json
 
 
 
