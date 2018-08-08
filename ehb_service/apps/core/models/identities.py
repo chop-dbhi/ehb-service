@@ -373,10 +373,11 @@ class ExternalRecord(CreatedModified):
         return response
 
     def __unicode__(self):
-        return "{0}, {1} IN {2}".format(
+        return "{0}, {1} IN {2} ID {3}".format(
             self.subject.last_name,
             self.subject.first_name,
-            self.external_system.name
+            self.external_system.name,
+            self.record_id
         )
 
 
@@ -424,14 +425,10 @@ class ExternalRecordRelation(CreatedModified):
         }
 
     def __unicode__(self):
-        return "{0}, {1} ({5}) related to {2}, {3} ({6}) -- Type: {4}".format(
-            self.external_record.subject.last_name,
-            self.external_record.subject.first_name,
-            self.related_record.subject.last_name,
-            self.related_record.subject.first_name,
+        return "{0} related to {1}, -- Type: {2}".format(
+            self.external_record,
+            self.related_record,
             self.relation_type,
-            self.external_record.external_system.name,
-            self.related_record.external_system.name
         )
 
 
