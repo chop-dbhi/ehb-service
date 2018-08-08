@@ -426,10 +426,10 @@ class ExternalRecordRelation(CreatedModified):
 
     def __unicode__(self):
         return "{0} related to {1}, -- Type: {2}".format(
-            self.external_record,
-            self.related_record,
-            self.relation_type,
-        )
+              self.external_record,
+              self.related_record,
+              self.relation_type,
+              )
 
 
 class ExternalRecordGroup(CreatedModified):
