@@ -1412,3 +1412,30 @@ POST to add subject relationship
     "subject_2_role": 3,
     "id": "8", "subject_2": 8050
     }]
+
+GET relationships for a given subject
+----------------------------
+**URL**:
+
+.. http:post:: api/pedigree/subject_id/10286/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    POST /api/group/
+    Host: example.com
+    Api-token: (api token)
+    Group-Client-Key: (client key for subj group)
+
+**Example Response**:
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+
+    [{
+
+    }]
