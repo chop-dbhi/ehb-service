@@ -1370,6 +1370,9 @@ PUT to modify an external record
     }
     ]
 
+Pedigree
+===============
+
 POST to add subject relationship
 ----------------------------
 **URL**:
@@ -1440,7 +1443,7 @@ GET relationships for a given subject
 
     }]
 
-GET relationships for a given subject
+GET relationships for a given protocol
 ----------------------------
 **URL**:
 
