@@ -1369,3 +1369,46 @@ PUT to modify an external record
         "modified": "2018-6-8 11:57:52"
     }
     ]
+
+    POST to add subject relationship
+    ----------------------------
+    **URL**:
+
+    .. http:post:: api/pedigree/
+
+    **Example Request**:
+
+    .. sourcecode:: http
+
+        POST /api/group/
+        Host: example.com
+        Content-Type: application/json
+        Api-token: (api token)
+        Group-Client-Key: (client key for subj group)
+        Body:
+        [{
+        "subject_1": 3898,
+        "subject_2": 8050,
+        "subject_1_role": 7,
+        "subject_2_role": 3,
+        "protocol_id": "2"
+        }]
+
+    **Example Response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Vary: Accept
+        Content-Type: application/json
+
+        [{
+        "success": true,
+        "created": "2018-8-8 16:15:36",
+        "subject_1_role": 7,
+        "protocol_id": "2",
+        "modified": "2018-8-8 16:15:36",
+        "subject_1": 3898,
+        "subject_2_role": 3,
+        "id": "8", "subject_2": 8050
+        }]
