@@ -49,14 +49,7 @@ class SubjectResource(Resource):
         # search for subjects based on an external record id
         if external_sys and external_id:
             try:
-                ex_record = ExternalRecord.objects.filter(external_system=external_sys).filter(record_id=external_id)
-                if ex_record.__len__() != 1:
-                    log.error("External Record id {0} does not exist".format(ex_record))
-                    return HttpResponse(status=codes.not_found)
-                for s in ex_record:
-                    sub = s.subject.id
-                s = Subject.objects.get(pk=sub)
-
+                s = self.search_sub_by_external_record_id(external_sys, external_id)
             except Organization.DoesNotExist:
                 log.error("Subject not found. Given External Record does not exist")
                 return HttpResponse(status=codes.not_found)
@@ -135,3 +128,13 @@ class SubjectResource(Resource):
                 )
 
         return json.dumps(response)
+
+    def search_sub_by_external_record_id(self, external_sys, external_id):
+        ex_record = ExternalRecord.objects.filter(external_system=external_sys).filter(record_id=external_id)
+        if ex_record.__len__() != 1:
+            log.error("External Record id {0} does not exist".format(ex_record))
+            return HttpResponse(status=codes.not_found)
+        for s in ex_record:
+            sub = s.subject.id
+        s = Subject.objects.get(pk=sub)
+        return s
