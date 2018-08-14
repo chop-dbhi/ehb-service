@@ -630,7 +630,30 @@ PUT to modify a group
   }
   ]
 
+DELETE to delete a group record
+ -------------------------------
+ **URL**:
 
+ .. http:delete:: api/group/?id=(group_id)
+
+ **Example Request**:
+
+ .. sourcecode:: http
+
+   PUT /api/group/?id=12640
+   Host: example.com
+   Accept: application/json
+   Api-token:
+   Group-client-key:
+
+
+ **Example Response**:
+
+ .. sourcecode:: http
+
+   HTTP/1.1 204 OK
+   Vary: Accept
+   Accept: application/json
 
 
 Organization
