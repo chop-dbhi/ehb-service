@@ -156,7 +156,7 @@ GET a subject with external record ID and external system ID
 .. sourcecode:: http
 
       Host: example.com
-      GET /api/subject/externalrecsys/19/erid/
+      GET /api/subject/externalrecsys/19/erid/19
       Accept: application/json
       Api-token:
 
@@ -168,6 +168,17 @@ GET a subject with external record ID and external system ID
       Vary: Accept
       Content-Type: application/json
 
+      {
+      "first_name": "Test",
+      "last_name": "Sub",
+      "created": "2016-06-03 15:03:16.603638",
+      "dob": "2013-01-01",
+      "modified": "2016-06-03 15:03:16.603664",
+      "organization_id_label": "Medical Record Number",
+      "organization_subject_id": "testtest123",
+      "organization": 2,
+      "id": 5856
+      }
 
 
 
@@ -191,10 +202,22 @@ DELETE a subject with subject_id
 
 .. sourcecode:: http
 
-    HTTP/1.1 204 OK
+    HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
 
+    {
+    "first_name": "Test",
+    "last_name": "Sub",
+    "created": "2016-06-03 15:03:16.603638",
+    "dob": "2013-01-01",
+    "modified": "2016-06-03 15:03:16.603664",
+    "organization_id_label": "Medical Record Number",
+    "organization_subject_id": "testtest123",
+    "organization": 2,
+    "id": 5856
+
+    }
 
 DELETE a subject with organization_id and MRN
 ---------------------------------------------
@@ -233,10 +256,20 @@ POST to create a subject
 
 .. sourcecode:: http
 
-      HTTP/1.1 204 OK
+      HTTP/1.1 200 OK
       Vary: Accept
       Content-Type: application/json
 
+      [
+      {
+        "success": true,
+        "created": "2018-6-7 11:23:7",
+        "modified": "2018-6-7 11:23:7",
+        "organization_id": "6",
+        "organization_subject_id": "334",
+        "id": "22"
+        }
+        ]
 
 PUT to modify a subject
 -----------------------
@@ -257,10 +290,29 @@ PUT to modify a subject
       [
        {
           "id": "11",
+          "old_subject": {
+             "first_name": "sdfsd",
+             "last_name": "sdfsdf",
+             "group_name": "",
+             "organization_subject_id": "6665",
+             "organization": 6,
+             "organization_id_label": "Record ID",
+             "dob": "2222-2-2",
+             "id": 11,
+             "modified": "2018-06-06 11:55:49.423644",
+             "created": "2018-06-06 11:55:49.423626"
+          },
           "new_subject": {
-             "first_name": "thisisthe", # list the new values for any field you want to modify
-             "last_name": "newname2",   # fields are those returned in get_subject
-             "organization": 6          # must specify organization_id in new_subject for a successful request
+             "first_name": "thisisthe",
+             "last_name": "newname2",
+             "group_name": "",
+             "organization_subject_id": "6665",
+             "organization": 6,
+             "organization_id_label": "Record ID",
+             "dob": "2222-2-2",
+             "id": 11,
+             "modified": "2018-06-06 11:55:49.423644",
+             "created": "2018-06-06 11:55:49.423626"
           }
         }
         ]
@@ -578,7 +630,7 @@ PUT to modify a group
   }
   ]
 
-DELETE to delete a group record
+DELETE a group
 -------------------------------
 **URL**:
 
@@ -602,8 +654,6 @@ DELETE to delete a group record
   HTTP/1.1 204 OK
   Vary: Accept
   Accept: application/json
-
-
 
 
 Organization
