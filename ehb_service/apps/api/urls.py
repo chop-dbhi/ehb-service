@@ -5,6 +5,7 @@ subject_patterns = patterns(
     url(r'^$', 'SubjectResource'),
     url(r'^id/(?P<pk>\d+)/$', 'SubjectResource'),
     url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'SubjectResource'),
+    url(r'^externalrecsys/(?P<externalrecsys>\d+)/erid/(?P<erid>.*)/$', 'SubjectResource'),
 )
 
 organization_patterns = patterns(

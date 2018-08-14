@@ -7,7 +7,7 @@ from restlib2.http import codes
 
 from api.helpers import FormHelpers
 from constants import ErrorConstants
-from core.models.identities import Subject, Organization
+from core.models.identities import Subject, Organization, ExternalRecord
 from core.forms import SubjectForm
 
 log = logging.getLogger(__name__)
@@ -21,6 +21,8 @@ class SubjectResource(Resource):
         pk = kwargs.pop("pk", None)
         orgpk = kwargs.pop("org_pk", None)
         org_sub_id = kwargs.pop("osid", None)
+        external_sys = kwargs.pop("externalrecsys", None)
+        external_id = kwargs.pop("erid", None)
         s = None
 
         if pk:
@@ -30,6 +32,7 @@ class SubjectResource(Resource):
                 log.error("Subject[{0}] not found".format(pk))
                 return HttpResponse(status=codes.not_found)
 
+        # search for subjects based on their orginization and subj ID
         if orgpk and org_sub_id:
             try:
                 org = Organization.objects.get(pk=orgpk)
@@ -41,6 +44,14 @@ class SubjectResource(Resource):
                     return HttpResponse(status=codes.not_found)
             except Organization.DoesNotExist:
                 log.error("Subject not found. Given Organization does not exist")
+                return HttpResponse(status=codes.not_found)
+
+        # search for subjects based on an external record id
+        if external_sys and external_id:
+            try:
+                s = self.search_sub_by_external_record_id(external_sys, external_id)
+            except Organization.DoesNotExist:
+                log.error("Subject not found. Given External Record does not exist")
                 return HttpResponse(status=codes.not_found)
 
         if s:
@@ -117,3 +128,13 @@ class SubjectResource(Resource):
                 )
 
         return json.dumps(response)
+
+    def search_sub_by_external_record_id(self, external_sys, external_id):
+        ex_record = ExternalRecord.objects.filter(external_system=external_sys).filter(record_id=external_id)
+        if ex_record.__len__() != 1:
+            log.error("External Record id {0} does not exist".format(ex_record))
+            return HttpResponse(status=codes.not_found)
+        for s in ex_record:
+            sub = s.subject.id
+        s = Subject.objects.get(pk=sub)
+        return s
