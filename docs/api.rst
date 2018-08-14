@@ -1387,7 +1387,6 @@ POST to add subject relationship
     Host: example.com
     Content-Type: application/json
     Api-token: (api token)
-    Group-Client-Key: (client key for subj group)
     Body:
     [{
     "subject_1": 3898,
@@ -1420,7 +1419,7 @@ GET relationships for a given subject
 ----------------------------
 **URL**:
 
-.. http:post:: api/pedigree/subject_id/(int: subject PK)/
+.. http:post:: api/pedigree/subject_id/(int: subject_id)/
 
 **Example Request**:
 
@@ -1429,7 +1428,6 @@ GET relationships for a given subject
     POST api/pedigree/subject_id/10286/
     Host: example.com
     Api-token: (api token)
-    Group-Client-Key: (client key for subj group)
 
 **Example Response**:
 
@@ -1456,7 +1454,6 @@ GET relationships for a given protocol
     POST api/pedigree/protocol_id/1/
     Host: example.com
     Api-token: (api token)
-    Group-Client-Key: (client key for subj group)
 
 **Example Response**:
 
