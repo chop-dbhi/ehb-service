@@ -3,14 +3,15 @@ Run via Django's manage.py tool: `./bin/manage.py test api`
 """
 import json
 
-from django.test import TestCase
 from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem
+from django.test import TestCase
 
 from mock import patch
 
+from parameterized import parameterized
+
 
 class TestGroup(TestCase):
-
     fixtures = ['test_fixture.json']
 
     # 2 is going to return subject group
@@ -74,30 +75,28 @@ class TestGroup(TestCase):
             content_type='application/json',
             data=json.dumps([req]))
 
-    def test_delete_group_by_id(self):
-        pre_count = Group.objects.count()
-        response = self.client.delete(
-            '/api/group/',
-            content_type='application/json',
-            QUERY_STRING='id=6',
-            HTTP_GROUP_CLIENT_KEY='testck',
-            HTTP_API_TOKEN="secretkey123"
-        )
-        post_count = Group.objects.count()
-        self.assertEqual(response.status_code, 204)
-        self.assertTrue(post_count < pre_count)
+    @parameterized.expand([
+        ('/api/group/', 'application/json', 'id=6', 'testck', "secretkey123", 204), #via client key
+        ('/api/group/', 'application/json', 'name=BRP:NEWTESTGROUP', 'testck', "secretkey123", 204), #via name
+        # ('/api/group/', 'application/json', 'name=BRP:NEWTESTGROUP', None, 'secretkey123', 403) #no client key
+        # ('/api/group/', 'secretkey123', None, 'application/json', 'testck') #no query string
+        # ('/api/group/', 'application/json', 'name=BAD', 'testck', 'secretkey123') #bad "pk"
 
-    def test_delete_group_by_name(self):
+
+    ])
+    # TODO figure out how to parametrize decorated test cases
+    # TODO figure out what "pk" means
+    def test_delete(self, path, content_type, query_string, http_group_client_key, http_api_token,
+                    expected_response_code):
         pre_count = Group.objects.count()
         response = self.client.delete(
-            '/api/group/',
-            content_type='application/json',
-            QUERY_STRING='name=BRP:NEWTESTGROUP',
-            HTTP_GROUP_CLIENT_KEY='testck',
-            HTTP_API_TOKEN="secretkey123"
-        )
+            path,
+            content_type=content_type,
+            QUERY_STRING=query_string,
+            HTTP_GROUP_CLIENT_KEY=http_group_client_key,
+            HTTP_API_TOKEN=http_api_token)
         post_count = Group.objects.count()
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, expected_response_code)
         self.assertTrue(post_count < pre_count)
 
     @patch('api.resources.group.log')
@@ -133,6 +132,8 @@ class TestGroup(TestCase):
         )
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 404)
+
+
 
     def test_add_group(self):
         pre_count = Group.objects.count()
@@ -432,7 +433,6 @@ class TestGroup(TestCase):
 
 
 class TestSubject(TestCase):
-
     fixtures = ['test_fixture.json']
 
     def test_subject_get(self):
@@ -619,7 +619,6 @@ class TestSubject(TestCase):
 
 
 class TestExternalSystem(TestCase):
-
     fixtures = ['test_fixture.json']
 
     def test_es_query_by_name(self):
@@ -705,7 +704,7 @@ class TestExternalSystem(TestCase):
     def test_es_xref_subjects_by_org_bad_org(self, mock_log):
         response = self.client.get(
             '/api/externalsystem/id/2/organization/99/subjects/',
-            HTTP_API_TOKEN='secretkey123',)
+            HTTP_API_TOKEN='secretkey123', )
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 404)
 
@@ -889,7 +888,6 @@ class TestExternalSystem(TestCase):
 
 
 class TestExternalRecord(TestCase):
-
     fixtures = ['test_fixture.json']
 
     def test_er_query_by_sub_id(self):
@@ -1167,7 +1165,6 @@ class TestExternalRecord(TestCase):
 
 
 class TestExternalRecordLink(TestCase):
-
     fixtures = ['test_fixture.json']
 
     def test_get_external_links(self):
@@ -1204,7 +1201,6 @@ class TestExternalRecordLink(TestCase):
 
 
 class TestRelationResource(TestCase):
-
     fixtures = ['test_fixture.json']
 
     def test_get_relations(self):
@@ -1219,7 +1215,6 @@ class TestRelationResource(TestCase):
 
 
 class TestOrganization(TestCase):
-
     fixtures = ['test_fixture.json']
 
     def test_org_query_by_name(self):
