@@ -110,12 +110,27 @@ class PedigreeSubjectRelationForm(ModelForm):
         validation['subject_2'] = self.cleaned_data.get('subject_2')
         validation['subject_1_role'] = self.cleaned_data.get('subject_1_role')
         validation['subject_1_role'] = self.cleaned_data.get('subject_2_role')
-
         for item in validation:
             if not item:
                 self._errors[item] = ErrorList(
-                    ["Subject does not meet validation rules for this organization."]
+                    ["Relationship does not meet validation rules for this organization."]
                 )
+        if (self.cleaned_data.get('subject_1_role').typ == "familial-Parent" and
+                self.cleaned_data.get('subject_2_role').typ == "familial-Parent"):
+            self._errors["both relationhip Roles cannot both be parents"] = ErrorList(
+                ["cannot create a relationship between two parents, must be connected through child."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ == "familial-Sibling" and
+                self.cleaned_data.get('subject_2_role').typ == "familial-half-Sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and whole sibling."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ == "familial-half-Sibling" and
+                self.cleaned_data.get('subject_2_role').typ == "familial-Sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and whole sibling."]
+            )
+
         return self.cleaned_data
 
     class Meta:
