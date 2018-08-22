@@ -393,8 +393,10 @@ class Relation(CreatedModified):
             ('generic', 'Generic'),
             ('label', 'Label'),
             ('file', 'File'),
-            ('familial-Parent', 'Familial-Parent'),
-            ('familial-Child', 'Familial-Child'),
+            ('familial-parent', 'Familial-Parent'),
+            ('familial-child', 'Familial-Child'),
+            ('familial-sibling', 'Familial-Sibling'),
+            ('familial-half-sibling', 'Familial-half-Sibling'),
             ('diagnosis', 'Diagnosis')
         ],
         default='Label'
