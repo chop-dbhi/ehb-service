@@ -332,7 +332,97 @@
           "created": "2015-09-29T13:51:16.189",
           "modified": "2015-09-29T13:51:16.190"
       }
-  },{
+  }, {
+      "pk": 4,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-half-Sibling",
+          "desc": "Half Sister",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
+      "pk": 5,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-half-Sibling",
+          "desc": "Half Brother",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
+      "pk": 6,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-Sibling",
+          "desc": "Sister",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
+      "pk": 7,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-Sibling",
+          "desc": "Brother",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
+      "pk": 8,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-Parent",
+          "desc": "Father",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
+      "pk": 9,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-Child",
+          "desc": "Daughter",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
+      "pk": 10,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-Child",
+          "desc": "Son",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
+      "pk": 11,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-Child",
+          "desc": "Fetus",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
+      "pk": 12,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-Parent",
+          "desc": "Paternal",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
+      "pk": 13,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-Parent",
+          "desc": "Maternal",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
       "pk": 2,
       "model": "core.PedigreeSubjectRelation",
       "fields":{
