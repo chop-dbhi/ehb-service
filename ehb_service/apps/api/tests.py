@@ -1216,7 +1216,7 @@ class TestRelationResource(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         res = json.loads(response.content)
-        self.assertEqual(len(res), 13)
+        self.assertEqual(len(res), 14)
 
 
 class TestOrganization(TestCase):
@@ -1379,37 +1379,41 @@ class TestOrganization(TestCase):
 ##### for the pedigree feature #####
 
     def test_pedigree_add(self):
-        pre_count = PedigreeSubjectRelation.objects.count()
-        pedigree = {
-            'subject_1': '2',
-            'subject_2': '3',
-            'subject_1_role': '6',
-            'subject_2_role': '7',
-            'protocol_id': '1'
-        }
-        response = self.client.post(
-            '/api/pedigree/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([pedigree])
-        )
 
-        post_count = PedigreeSubjectRelation.objects.count()
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        print(response)
+    #    num_roles_plus_1 = len(json.loads(response.content) + 1
+        for role_1 in range(1, 15):
+            for role_2 in range(1, 15):
+                pre_count = PedigreeSubjectRelation.objects.count()
+                pedigree = {
+                    'subject_1': '2',
+                    'subject_2': '3',
+                    'subject_1_role': str(role_1),
+                    'subject_2_role': str(role_2),
+                    'protocol_id': '1'
+                }
 
-        if r['success'] == True:
-            self.assertTrue(r['success'])
-            self.assertTrue(pre_count < post_count)
-        else:
-            self.assertTrue(r['errors'])
-            self.assertTrue(pre_count == post_count)
-    #    self.assertTrue(r['success'])
+                response = self.client.post(
+                    '/api/pedigree/',
+                    HTTP_API_TOKEN='secretkey123',
+                    content_type='application/json',
+                    data=json.dumps([pedigree])
+                )
 
+                post_count = PedigreeSubjectRelation.objects.count()
+                self.assertEqual(response.status_code, 200)
+                j = json.loads(response.content)
+                r = j[0]
 
+                if r['success'] == True:
+                    self.assertTrue(r['success'])
+                    self.assertTrue(pre_count < post_count)
+                else:
+                    self.assertTrue(r['errors'])
+                    self.assertTrue(pre_count == post_count)
 
+                print(response)
+                pre_count = 0
+                post_count = 0
 
     def test_get_relationships_for_protocol(self):
         relationship_count = PedigreeSubjectRelation.objects.filter(

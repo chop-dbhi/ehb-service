@@ -381,8 +381,8 @@
       "pk": 9,
       "model": "core.relation",
       "fields": {
-          "typ": "familial-Child",
-          "desc": "Daughter",
+          "typ": "familial-Parent",
+          "desc": "Mother",
           "created": "2015-09-29T13:51:16.189",
           "modified": "2015-09-29T13:51:16.190"
       }
@@ -391,7 +391,7 @@
       "model": "core.relation",
       "fields": {
           "typ": "familial-Child",
-          "desc": "Son",
+          "desc": "Daughter",
           "created": "2015-09-29T13:51:16.189",
           "modified": "2015-09-29T13:51:16.190"
       }
@@ -400,12 +400,21 @@
       "model": "core.relation",
       "fields": {
           "typ": "familial-Child",
-          "desc": "Fetus",
+          "desc": "Son",
           "created": "2015-09-29T13:51:16.189",
           "modified": "2015-09-29T13:51:16.190"
       }
   }, {
       "pk": 12,
+      "model": "core.relation",
+      "fields": {
+          "typ": "familial-Child",
+          "desc": "Fetus",
+          "created": "2015-09-29T13:51:16.189",
+          "modified": "2015-09-29T13:51:16.190"
+      }
+  }, {
+      "pk": 13,
       "model": "core.relation",
       "fields": {
           "typ": "familial-Parent",
@@ -414,7 +423,7 @@
           "modified": "2015-09-29T13:51:16.190"
       }
   }, {
-      "pk": 13,
+      "pk": 14,
       "model": "core.relation",
       "fields": {
           "typ": "familial-Parent",
