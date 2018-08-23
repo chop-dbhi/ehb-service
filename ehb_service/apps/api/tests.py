@@ -75,65 +75,50 @@ class TestGroup(TestCase):
             content_type='application/json',
             data=json.dumps([req]))
 
+    # TODO make names more explicit and remove from class
+    def assert_success(self, j):
+        self.assertTrue(j[0]['success'])
+
+    def assert_no_errors(self, j):
+        self.assertFalse(j[0]['errors'], 13)
+
+    def assert_not_success(self, j):
+        self.assertFalse(j[0]['success'])
+
+    def assert_errors(self, j):
+        self.assertTrue(j[0]['errors'], 13)
+
+    def assert_len(self, j):
+        self.assertEqual(len(j), 1)
+
     @parameterized.expand([
-        ('/api/group/', 'application/json', 'id=6', 'testck', "secretkey123", 204), #via client key
-        ('/api/group/', 'application/json', 'name=BRP:NEWTESTGROUP', 'testck', "secretkey123", 204), #via name
-        # ('/api/group/', 'application/json', 'name=BRP:NEWTESTGROUP', None, 'secretkey123', 403) #no client key
-        # ('/api/group/', 'secretkey123', None, 'application/json', 'testck') #no query string
-        # ('/api/group/', 'application/json', 'name=BAD', 'testck', 'secretkey123') #bad "pk"
-
-
+        ('/api/group/', 'application/json', 'name=BRP:NEWTESTGROUP', None, 'secretkey123', 403),  # no client key
+        ('/api/group/', 'application/json', None, 'testck', 'secretkey123', 400),  # no query string
+        ('/api/group/', 'application/json', 'name=BAD', 'testck', 'secretkey123', 404),  # bad query string
     ])
-    # TODO figure out how to parametrize decorated test cases
-    # TODO figure out what "pk" means
-    def test_delete(self, path, content_type, query_string, http_group_client_key, http_api_token,
-                    expected_response_code):
+    @patch('api.resources.group.log')
+    def test_delete_group_patched(self, path, content_type, query_string, client_key, api_token, response_code,
+                                  mock_log):
+        self.base_delete_group(path, content_type, query_string, client_key, api_token, response_code, mock_log)
+
+    @parameterized.expand([
+        ('/api/group/', 'application/json', 'id=6', 'testck', "secretkey123", 204),  # via client key
+        ('/api/group/', 'application/json', 'name=BRP:NEWTESTGROUP', 'testck', "secretkey123", 204),  # via name
+    ])
+    def test_delete_group(self, path, content_type, query_string, client_key, api_token, response_code):
+        self.base_delete_group(path, content_type, query_string, client_key, api_token, response_code)
+
+    def base_delete_group(self, path, content_type, query_string, client_key, api_token, response_code, mock_log=None):
         pre_count = Group.objects.count()
         response = self.client.delete(
             path,
             content_type=content_type,
             QUERY_STRING=query_string,
-            HTTP_GROUP_CLIENT_KEY=http_group_client_key,
-            HTTP_API_TOKEN=http_api_token)
+            HTTP_GROUP_CLIENT_KEY=client_key,
+            HTTP_API_TOKEN=api_token)
         post_count = Group.objects.count()
-        self.assertEqual(response.status_code, expected_response_code)
-        self.assertTrue(post_count < pre_count)
-
-    @patch('api.resources.group.log')
-    def test_delete_group_no_ck(self, mock_log):
-        response = self.client.delete(
-            '/api/group/',
-            content_type='application/json',
-            QUERY_STRING='name=BRP:NEWTESTGROUP',
-            HTTP_API_TOKEN='secretkey123'
-        )
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 403)
-
-    @patch('api.resources.group.log')
-    def test_delete_group_no_qs(self, mock_log):
-        response = self.client.delete(
-            '/api/group/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            HTTP_GROUP_CLIENT_KEY='testck'
-        )
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 400)
-
-    @patch('api.resources.group.log')
-    def test_delete_group_bad_pk(self, mock_log):
-        response = self.client.delete(
-            '/api/group/',
-            content_type='application/json',
-            QUERY_STRING='name=BAD',
-            HTTP_GROUP_CLIENT_KEY='testck',
-            HTTP_API_TOKEN='secretkey123'
-        )
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
-
-
+        self.assertEqual(response.status_code, response_code)
+        self.assertTrue(post_count < pre_count if mock_log is None else mock_log.error.called)
 
     def test_add_group(self):
         pre_count = Group.objects.count()
@@ -155,338 +140,196 @@ class TestGroup(TestCase):
         self.assertTrue(r['success'])
         self.assertTrue(post_count > pre_count)
 
-    def test_update_group(self):
-        req = {
-            'id': '6',
-            'group': {
-                'description': 'A New Description',
-                'id': '6',
-                'is_locking': 'True',
-                'name': 'BRP:NEWTESTGROUP',
-                'current_client_key': 'testck'
-            }
-        }
-        response = self.client.put(
-            '/api/group/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([req]))
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue(r['success'])
+    @parameterized.expand([
+        ('6', 'BRP:NEWTESTGROUP', 'testck', 200, '6', [assert_success])
+    ])
+    def test_update_group(self, inner_id, name, current_client_key, expected_error_code, outer_id, assertions):
+        self.base_update_group(inner_id, name, current_client_key, expected_error_code, outer_id, assertions)
 
+    @parameterized.expand([
+        ('2', 'BRP:M0536B4E2DDLA7W6', 'testck', 400, None, None),  # no pk
+        ('2', 'BRP:NEWTESTGROUP', 'BADCK', 401, '2', None),  # bad ck
+        ('1', 'BRP:NEWTESTGROUP', None, 400, '1', None),  # no ck
+        ('99', 'BRP:M0536B4E2DDLA7W6', 'testck', 200, '99', [assert_not_success])  # bad pk
+    ])
     @patch('api.resources.group.log')
-    def test_update_group_no_pk(self, mock_log):
+    def test_update_group_patched(self, inner_id, name, client_key, error_code, outer_id, assertions, mock_log):
+        self.base_update_group(inner_id, name, client_key, error_code, outer_id, assertions, mock_log)
+
+    def base_update_group(self, inner_id, name, client_key, error_code, outer_id, additional_assertions, mock_log=None):
         req = {
+            'id': outer_id,
             'group': {
-                'description': 'A New Description',
-                'id': '2',
+                'description': 'A New Desciption',
+                'id': inner_id,
                 'is_locking': 'True',
-                'name': 'BRP:M0536B4E2DDLA7W6',
-                'current_client_key': 'testck'
+                'name': name,
+                'current_client_key': client_key
             }
         }
+        if outer_id is None:
+            del req['id']
         response = self.client.put(
             '/api/group/',
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data=json.dumps([req]))
 
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 400)
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
+        self.assertEqual(response.status_code, error_code)
+        if additional_assertions is not None:
+            j = json.loads(response.content)
+            for assertion in additional_assertions:
+                assertion(self, j)
 
+    @parameterized.expand([
+        ('6', '[4]', 'testck', 200, [assert_success], True),
+    ])
+    def test_add_record_to_group(self, response_id, data, client_key, status_code, additional_assertions, get_pk):
+        self.base_add_record_to_group(response_id, data, client_key, status_code, additional_assertions, get_pk)
+
+    @parameterized.expand([
+        ('99', json.dumps([2]), 'testck', 404, None),  # no group
+        ('6', '[2]', None, 403, None),  # no ck
+        ('6', json.dumps([99]), 'testck', 200, [assert_not_success, assert_errors]),  # bad record id
+    ])
     @patch('api.resources.group.log')
-    def test_update_group_bad_ck(self, mock_log):
-        req = {
-            'id': '2',
-            'group': {
-                'description': 'A New Description',
-                'id': '2',
-                'is_locking': 'True',
-                'name': 'BRP:NEWTESTGROUP',
-                'current_client_key': 'BADCK'
-            }
-        }
-        response = self.client.put(
-            '/api/group/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([req]))
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 401)
+    def test_add_record_to_group_patched(self, response_id, data, client_key, status_code, assertions, mock_log):
+        self.base_add_record_to_group(response_id, data, client_key, status_code, assertions, False, mock_log)
 
-    @patch('api.resources.group.log')
-    def test_update_group_no_ck(self, mock_log):
-        req = {
-            'id': '1',
-            'group': {
-                'description': 'A New Description',
-                'id': '1',
-                'is_locking': 'True',
-                'name': 'BRP:NEWTESTGROUP'
-            }
-        }
-        response = self.client.put(
-            '/api/group/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([req]))
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 400)
-
-    @patch('api.resources.group.log')
-    def test_update_group_bad_pk(self, mock_log):
-        req = {
-            'id': '99',
-            'group': {
-                'description': 'A New Description',
-                'id': '2',
-                'is_locking': 'True',
-                'name': 'BRP:M0536B4E2DDLA7W6',
-                'current_client_key': 'testck'
-            }
-        }
-        response = self.client.put(
-            '/api/group/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([req]))
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(r['success'])
-
-    def test_add_record_to_group(self):
-        # we only need to pass a list of pks being added to the group to add it
-        er = Group.objects.get(pk=6).externalrecordgroup_set.all()
+    def base_add_record_to_group(self, response_id, data, client_key, status_code, assertions, get_pk, mock_log=None):
+        if get_pk:
+            er = Group.objects.get(pk=6).externalrecordgroup_set.all()
         response = self.client.post(
-            '/api/group/id/6/records/',
+            '/api/group/id/{0}/records/'.format(response_id),
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
-            data='[4]',
-            HTTP_GROUP_CLIENT_KEY='testck')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue(r['success'])
-
-    @patch('api.resources.group.log')
-    def test_add_record_to_group_no_group(self, mock_log):
-        # we only need to pass a list of pks being added to the group to add it
-        response = self.client.post(
-            '/api/group/id/99/records/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([2]),
-            HTTP_GROUP_CLIENT_KEY='testck')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
-
-    @patch('api.resources.group.log')
-    def test_add_record_to_group_no_key(self, mock_log):
-        # we only need to pass a list of pks being added to the group to add it
-        response = self.client.post(
-            '/api/group/id/6/records/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[2]')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 403)
-
-    @patch('api.resources.group.log')
-    def test_add_record_to_group_bad_record_id(self, mock_log):
-        # we only need to pass a list of pks being added to the group to add it
-        response = self.client.post(
-            '/api/group/id/6/records/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([99]),
-            HTTP_GROUP_CLIENT_KEY='testck')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue(mock_log.error.called)
-        self.assertFalse(r['success'])
-        self.assertTrue(r['errors'], 13)
+            data=data,
+            HTTP_GROUP_CLIENT_KEY=client_key)
+        self.assertEqual(response.status_code, status_code)
+        if assertions is not None:
+            j = json.loads(response.content)
+            for assertion in assertions:
+                assertion(self, j)
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
 
     def test_delete_record(self):
-        # Essentially this will remove John Doe's Redcap record from his record group.
-        response = self.client.delete(
-            '/api/group/id/6/records/id/2/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            HTTP_GROUP_CLIENT_KEY='testck')
-        self.assertEqual(response.status_code, 204)
+        self.base_delete_record('6', '2', 'testck', 204)
 
+    @parameterized.expand([
+        ('3', '1', 'BADKEY', 403),  # bad key
+        ('99', '1', 'testck', 404),  # bad x
+        ('6', '99', 'testck', 404),  # no xg
+    ])
     @patch('api.resources.group.log')
-    def test_delete_record_bad_group_key(self, mock_log):
+    def test_delete_record_patched(self, id1, id2, client_key, expected_status_code, mock_log):
+        self.base_delete_record(id1, id2, client_key, expected_status_code, mock_log)
+
+    def base_delete_record(self, id1, id2, client_key, expected_status_code, mock_log=None):
         response = self.client.delete(
-            '/api/group/id/3/records/id/1/',
+            '/api/group/id/{0}/records/id/{1}/'.format(id1, id2),
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
-            HTTP_GROUP_CLIENT_KEY='BADKEY')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 403)
+            HTTP_GROUP_CLIENT_KEY=client_key)
+        self.assertEqual(response.status_code, expected_status_code)
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
 
+    @parameterized.expand([
+        ('?name=BRP:NEWTESTGROUP', 'testck', 200, ['id', '6'], None),  # protocol by name
+        ('?id=2', 'testck', 200, ['name', 'BRP:M0536B4E2DDLA7W6'], None),  # protocol by id
+        ('id/6/records/', 'testck', 200, None, [assert_len]),  # group records
+        ('id/7/subjects/', 'testck', 200, None, [assert_len]),  # group subjects
+        ('id/2/subjects/', 'BADKEY', 403, None, None)  # group subjects bad ck
+    ])
+    def test_get(self, api_group, client_key, expected_status_code, equal_assertion, additional_assertions):
+        self.base_get(api_group, client_key, expected_status_code, equal_assertion, additional_assertions)
+
+    @parameterized.expand([
+        ('?name=BADGROUP', 'testck', 416, None, None),  # protocol by name bad group
+        ('id/8/records/', 'testck', 404, None, None),  # group records no group provided
+        ('id/99/subjects/', 'testck', 404, None, None)  # bad group subject id
+    ])
     @patch('api.resources.group.log')
-    def test_delete_record_bad_x(self, mock_log):
-        response = self.client.delete(
-            '/api/group/id/99/records/id/1/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            HTTP_GROUP_CLIENT_KEY='testck')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
+    def test_get_patched(self, api_group, client_key, expected_status_code, equal_assertion, additional_assertions,
+                         mock_log):
+        self.base_get(api_group, client_key, expected_status_code, equal_assertion, additional_assertions, mock_log)
 
-    @patch('api.resources.group.log')
-    def test_delete_record_no_xg(self, mock_log):
-        response = self.client.delete(
-            '/api/group/id/6/records/id/99/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            HTTP_GROUP_CLIENT_KEY='testck')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
-
-    def test_get_protocol_group_by_name(self):
+    def base_get(self, api_group, client_key, expected_status_code, equal_assertion, additional_assertions,
+                 mock_log=None):
         response = self.client.get(
-            '/api/group/?name=BRP:NEWTESTGROUP', **{
+            '/api/group/{0}'.format(api_group), **{
                 "CONTENT_TYPE": 'application/json',
-                "HTTP_GROUP_CLIENT_KEY": 'testck',
+                "HTTP_GROUP_CLIENT_KEY": client_key,
                 'HTTP_API_TOKEN': 'secretkey123'
             }
         )
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(j['id'], '6')
-
-    def test_get_protocol_group_by_id(self):
-        response = self.client.get(
-            '/api/group/?id=2', **{
-                "CONTENT_TYPE": 'application/json',
-                "HTTP_GROUP_CLIENT_KEY": 'testck',
-                'HTTP_API_TOKEN': 'secretkey123'})
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(j['name'], 'BRP:M0536B4E2DDLA7W6')
-
-    @patch('api.resources.group.log')
-    def test_get_protocol_group_by_name_bad_group(self, mock_log):
-        response = self.client.get(
-            '/api/group/?name=BADGROUP', **{
-                "CONTENT_TYPE": 'application/json',
-                "HTTP_GROUP_CLIENT_KEY": 'testck',
-                'HTTP_API_TOKEN': 'secretkey123'})
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 416)
-
-    def test_get_group_records(self):
-        response = self.client.get(
-            '/api/group/id/6/records/', **{
-                'CONTENT_TYPE': 'application/json',
-                "HTTP_GROUP_CLIENT_KEY": 'testck',
-                'HTTP_API_TOKEN': 'secretkey123'})
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(len(j), 1)
-
-    @patch('api.resources.group.log')
-    def test_get_group_records_no_records(self, mock_log):
-        response = self.client.get(
-            '/api/group/id/8/records/', **{
-                "CONTENT_TYPE": 'application/json',
-                "HTTP_GROUP_CLIENT_KEY": 'testck',
-                'HTTP_API_TOKEN': 'secretkey123'})
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
-
-    def test_get_group_subjects(self):
-        response = self.client.get(
-            '/api/group/id/7/subjects/', **{
-                "CONTENT_TYPE": 'application/json',
-                "HTTP_GROUP_CLIENT_KEY": 'testck',
-                'HTTP_API_TOKEN': 'secretkey123'})
-
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(len(j), 1)
-
-    @patch('api.resources.group.log')
-    def test_get_group_subjects_bad_group_id(self, mock_log):
-        response = self.client.get(
-            '/api/group/id/99/subjects/', **{
-                "CONTENT_TYPE": 'application/json',
-                "HTTP_GROUP_CLIENT_KEY": 'testck',
-                'HTTP_API_TOKEN': 'secretkey123'})
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
-
-    def test_get_group_subjects_bad_ck(self):
-        response = self.client.get(
-            '/api/group/id/2/subjects/', **{
-                "CONTENT_TYPE": 'application/json',
-                "HTTP_GROUP_CLIENT_KEY": 'BADKEY',
-                'HTTP_API_TOKEN': 'secretkey123'})
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, expected_status_code)
+        if equal_assertion is not None:
+            j = json.loads(response.content)
+            self.assertEqual(j[equal_assertion[0]], equal_assertion[1])
+        if additional_assertions is not None:
+            j = json.loads(response.content)
+            for assertion in additional_assertions:
+                assertion(self, j)
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
 
 
 class TestSubject(TestCase):
     fixtures = ['test_fixture.json']
 
-    def test_subject_get(self):
-        response = self.client.get(
-            '/api/subject/id/2/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(j['first_name'], 'John')
-        self.assertEqual(j['last_name'], 'Doe')
-        self.assertEqual(j['dob'], '2000-01-01')
-        self.assertEqual(j['organization'], 3)
-        self.assertEqual(j['organization_subject_id'], '123456')
+    # TODO make method names more explicit and remove from class
 
+    @staticmethod
+    def assert_success(provided_self, test_case_output):
+        provided_self.assertTrue(test_case_output[0]['success'])
+
+    @staticmethod
+    def assert_no_errors(provided_self, test_case_output):
+        provided_self.assertFalse(test_case_output[0]['errors'], 13)
+
+    @staticmethod
+    def assert_not_success(provided_self, test_case_output):
+        provided_self.assertFalse(test_case_output[0]['success'])
+
+    @staticmethod
+    def assert_errors(provided_self, test_case_output):
+        provided_self.assertTrue(test_case_output[0]['errors'], 13)
+
+    @parameterized.expand([
+        ('id/2/'),  # default
+        ('organization/3/osid/123456/'),  # by osid
+    ])
+    def test_subject_get(self, api_subject):
+        self.base_subject_get(api_subject, 200, True)
+
+    @parameterized.expand([
+        ('id/99/'),  # bad pk
+        ('organization/99/osid/123456/'),  # by_osid_bad_org
+        ('organization/3/osid/99/'),  # get ocid bad ocid
+    ])
     @patch('api.resources.subject.log')
-    def test_subject_get_bad_pk(self, mock_log):
-        response = self.client.get(
-            '/api/subject/id/99/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
+    def test_subject_get_patched(self, api_subject, mock_log):
+        self.base_subject_get(api_subject, 404, False, mock_log)
 
-    def test_subject_get_by_osid(self):
+    def base_subject_get(self, api_subject, status_code, assess_equal, mock_log=None):
         response = self.client.get(
-            '/api/subject/organization/3/osid/123456/',
+            '/api/subject/{0}'.format(api_subject),
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(j['first_name'], 'John')
-        self.assertEqual(j['last_name'], 'Doe')
-        self.assertEqual(j['dob'], '2000-01-01')
-        self.assertEqual(j['organization'], 3)
-        self.assertEqual(j['organization_subject_id'], '123456')
-
-    @patch('api.resources.subject.log')
-    def test_subject_get_by_osid_bad_org(self, mock_log):
-        response = self.client.get(
-            '/api/subject/organization/99/osid/123456/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
-
-    @patch('api.resources.subject.log')
-    def test_subject_get_osid_bad_osid(self, mock_log):
-        response = self.client.get(
-            '/api/subject/organization/3/osid/99/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status_code)
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
+        if assess_equal:
+            j = json.loads(response.content)
+            self.assertEqual(j['first_name'], 'John')
+            self.assertEqual(j['last_name'], 'Doe')
+            self.assertEqual(j['dob'], '2000-01-01')
+            self.assertEqual(j['organization'], 3)
+            self.assertEqual(j['organization_subject_id'], '123456')
 
     def test_subject_delete(self):
         pre_count = Subject.objects.count()
@@ -498,14 +341,18 @@ class TestSubject(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertTrue(post_count < pre_count)
 
-    def test_subject_add(self):
+    @parameterized.expand([
+        '999999',
+        '123456'
+    ])
+    def test_subject_add(self, subject_id):
         pre_count = Subject.objects.count()
         sub = {
             'first_name': 'New',
             'last_name': 'Subject',
             'dob': '2000-01-01',
             'organization': '3',
-            'organization_subject_id': '999999'
+            'organization_subject_id': subject_id
         }
         response = self.client.post(
             '/api/subject/',
@@ -514,243 +361,134 @@ class TestSubject(TestCase):
             data=json.dumps([sub]))
         post_count = Subject.objects.count()
         self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue(r['success'])
-        self.assertTrue(pre_count < post_count)
 
-    def test_subject_add_same_osid(self):
-        sub = {
-            'first_name': 'New',
-            'last_name': 'Subject',
-            'dob': '2000-01-01',
-            'organization': '3',
-            'organization_subject_id': '123456'
-        }
-        response = self.client.post(
-            '/api/subject/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([sub]))
-        self.assertEqual(response.status_code, 200)
         j = json.loads(response.content)
         r = j[0]
-        self.assertTrue({"__all__": 3} in r['errors'])
+        if subject_id == '999999':
+            self.assertTrue(r['success'])
+            self.assertTrue(pre_count < post_count)
+        else:
+            self.assertTrue({"__all__": 3} in r['errors'])
 
     def test_subject_update(self):
+        self.base_subject_update(0, 0, 200, TestSubject.assert_success, None, True)
+
+    @parameterized.expand([
+        (1, 200, assert_not_success, {"id": 1}, False),
+        (2, 400, None, None, False)
+    ])
+    @patch('api.resources.subject.log')
+    def test_subject_update_patched(self, id_type, status_code, success_assessment, assert_in_errors, assert_whole,
+                                    mock_log):
+        self.base_subject_update(id_type, 0, status_code,
+                                 None if success_assessment is None else success_assessment.__func__,
+                                 assert_in_errors, assert_whole, mock_log)
+
+    @parameterized.expand([
+        ('', assert_not_success)
+        # arbitrary parameter required to force python to interpret as tuple instead of function
+    ])
+    @patch('api.helpers.log')
+    def test_subject_update_patched_helpers(self, _, success_assertion, mock_log):
+        self.base_subject_update(0, 1, 200, success_assertion.__func__, {"organization": 7}, False, mock_log)
+
+    def base_subject_update(self, id_type, organization_type, status_code, success_assessment, assert_in_errors,
+                            assert_whole,
+                            mock_log=None):
         sub = Subject.objects.get(pk=2)
         pre_id = sub.organization_subject_id
         sub_data = sub.responseFieldDict()
         sub_data['organization_subject_id'] = '999999'
-        sub_data['organization'] = sub.organization_id
-        req = {}
-        req['new_subject'] = sub_data
-        req['id'] = sub.id
+        sub_data['organization'] = sub.organization_id if organization_type == 0 else '99'
+        req = {'new_subject': sub_data, 'id': sub.id if id_type == 0 else '99' if id_type == 1 else None}
         response = self.client.put(
             '/api/subject/',
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data=json.dumps([req]))
         sub = Subject.objects.get(pk=2)
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertEqual(sub.organization_subject_id, '999999')
-        self.assertTrue(pre_id != sub.organization_subject_id)
-        self.assertTrue(r['success'])
-
-    @patch('api.resources.subject.log')
-    def test_subject_update_bad_sub_pk(self, mock_log):
-        sub = Subject.objects.get(pk=2)
-        sub_data = sub.responseFieldDict()
-        sub_data['organization_subject_id'] = '999999'
-        sub_data['organization'] = sub.organization_id
-        req = {}
-        req['new_subject'] = sub_data
-        req['id'] = '99'
-        response = self.client.put(
-            '/api/subject/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([req]))
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue(mock_log.error.called)
-        self.assertFalse(r['success'])
-        self.assertTrue({"id": 1} in r['errors'])
-
-    @patch('api.helpers.log')
-    def test_subject_update_bad_org_pk(self, mock_log):
-        sub = Subject.objects.get(pk=2)
-        sub_data = sub.responseFieldDict()
-        sub_data['organization_subject_id'] = '999999'
-        sub_data['organization'] = '99'
-        req = {}
-        req['new_subject'] = sub_data
-        req['id'] = sub.id
-        response = self.client.put(
-            '/api/subject/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([req]))
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue(mock_log.error.called)
-        self.assertFalse(r['success'])
-        self.assertTrue({"organization": 7} in r['errors'])
-
-    @patch('api.resources.subject.log')
-    def test_subject_update_no_pk(self, mock_log):
-        sub = Subject.objects.get(pk=2)
-        sub_data = sub.responseFieldDict()
-        sub_data['organization_subject_id'] = '999999'
-        req = {}
-        req['new_subject'] = sub_data
-
-        response = self.client.put(
-            '/api/subject/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([req]))
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status_code)
+        if success_assessment is not None:
+            j = json.loads(response.content)
+            success_assessment(self, j)
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
+        if assert_in_errors is not None:
+            j = json.loads(response.content)
+            r = j[0]
+            self.assertTrue(assert_in_errors, r['errors'])
+        if assert_whole:
+            self.assertEqual(sub.organization_subject_id, '999999')
+            self.assertTrue(pre_id != sub.organization_subject_id)
 
 
 class TestExternalSystem(TestCase):
     fixtures = ['test_fixture.json']
 
-    def test_es_query_by_name(self):
-        response = self.client.post(
-            '/api/externalsystem/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"name":"Nautilus Test"}]')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]['externalSystem']
-        self.assertEqual(r['name'], "Nautilus Test")
-        self.assertEqual(r['url'], 'http://nautilus.local:8090/api/')
+    @parameterized.expand([
+        '[{"name":"Nautilus Test"}]',  # by name
+        '[{"url":"http://nautilus.local:8090/api/"}]'  # by url
+    ])
+    def test_es_query(self, data):
+        self.base_es_query(data, None, {'name': 'Nautilus Test', 'url': 'http://nautilus.local:8090/api/'})
 
-    def test_es_query_by_url(self):
-        response = self.client.post(
-            '/api/externalsystem/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"url":"http://nautilus.local:8090/api/"}]')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]['externalSystem']
-        self.assertEqual(r['name'], "Nautilus Test")
-        self.assertEqual(r['url'], 'http://nautilus.local:8090/api/')
-
+    @parameterized.expand([
+        ('[{"name":"Bad Name"}]', {'Query': 9}),  # by name not found
+        ('[{"url":"http://badurl.local: 8090/api/"}]', {'Query': 9}),  # by url not found
+        ('[{"bad_param":""}]', {'Query': 8})  # invalid query
+    ])
     @patch('api.resources.externalsystem.log')
-    def test_es_query_by_name_not_found(self, mock_log):
-        response = self.client.post(
-            '/api/externalsystem/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"name":"Bad Name"}]')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(mock_log.error.called)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue({'Query': 9} in r['errors'])
+    def test_es_query_patched(self, data, assert_in_errors, mock_log):
+        self.base_es_query(data, assert_in_errors, None, mock_log)
 
-    @patch('api.resources.externalsystem.log')
-    def test_es_query_by_url_not_found(self, mock_log):
+    def base_es_query(self, data, assert_in_errors, equal_assertions, mock_log=None):
         response = self.client.post(
             '/api/externalsystem/query/',
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
-            data='[{"url":"http://badurl.local: 8090/api/"}]')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(mock_log.error.called)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue({'Query': 9} in r['errors'])
-
-    @patch('api.resources.externalsystem.log')
-    def test_es_query_invalid_query(self, mock_log):
-        response = self.client.post(
-            '/api/externalsystem/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"bad_param":""}]')
+            data=data)
         self.assertEqual(response.status_code, 200)
         j = json.loads(response.content)
         r = j[0]
-        self.assertTrue({'Query': 8} in r['errors'])
+        if equal_assertions is not None:
+            for key in equal_assertions:
+                self.assertTrue(r['externalSystem'][key], equal_assertions[key])
+        if assert_in_errors is not None:
+            self.assertTrue(assert_in_errors, r['errors'])
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
 
-    def test_es_xref_subjects(self):
-        response = self.client.get(
-            '/api/externalsystem/id/2/subjects/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(len(j), 2)
+    @parameterized.expand([
+        ('id/2/subjects/', True, True),  # subjects
+        ('id/2/organization/3/subjects/', False, True),  # subjects by org
+        ('id/2/records/', True, True),  # exrecs
+        ('id/2/organization/3/records/', True, True),  # exrecs by org
+    ])
+    def test_es_xref(self, external_system, include_content, test_length):
+        self.base_es_xref(external_system, 200, include_content, test_length)
 
-    def test_es_xref_subjects_by_org(self):
-        response = self.client.get(
-            '/api/externalsystem/id/2/organization/3/subjects/',
-            HTTP_API_TOKEN='secretkey123')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(len(j), 2)
-
+    @parameterized.expand([
+        ('id/2/organization/99/subjects/', False, False),  # subjects by bad org
+        ('id/99/organization/3/subjects/', False, False),  # subjects by bad es
+        ('id/2/organization/99/records/', True, False),  # exrecs by bad org
+        ('id/99/records/', True, False)  # exrecs by bad es
+    ])
     @patch('api.resources.externalsystem.log')
-    def test_es_xref_subjects_by_org_bad_org(self, mock_log):
-        response = self.client.get(
-            '/api/externalsystem/id/2/organization/99/subjects/',
-            HTTP_API_TOKEN='secretkey123', )
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
+    def test_es_xref_patched(self, external_system, include_content, test_length, mock_log):
+        self.base_es_xref(external_system, 404, include_content, test_length, mock_log)
 
-    @patch('api.resources.externalsystem.log')
-    def test_es_xref_subjects_by_org_bad_es(self, mock_log):
+    def base_es_xref(self, external_system, status_code, include_content, test_length, mock_log=None):
         response = self.client.get(
-            '/api/externalsystem/id/99/organization/3/subjects/',
-            HTTP_API_TOKEN='secretkey123')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
-
-    def test_es_xref_exrecs(self):
-        response = self.client.get(
-            '/api/externalsystem/id/2/records/',
+            '/api/externalsystem/{0}'.format(external_system),
             HTTP_API_TOKEN='secretkey123',
-            content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(len(j), 2)
-
-    def test_es_xref_exrecs_by_org(self):
-        response = self.client.get(
-            '/api/externalsystem/id/2/organization/3/records/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(len(j), 2)
-
-    @patch('api.resources.externalsystem.log')
-    def test_es_xref_exrecs_by_org_bad_org(self, mock_log):
-        response = self.client.get(
-            '/api/externalsystem/id/2/organization/99/records/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
-
-    @patch('api.resources.externalsystem.log')
-    def test_es_xref_exrecs_bad_es(self, mock_log):
-        response = self.client.get(
-            '/api/externalsystem/id/99/records/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json')
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 404)
+            content_type='application/json' if include_content else None
+        )
+        self.assertEqual(response.status_code, status_code)
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
+        if test_length:
+            j = json.loads(response.content)
+            self.assertEqual(len(j), 2)
 
     def test_es_get(self):
         response = self.client.get(
@@ -815,57 +553,51 @@ class TestExternalSystem(TestCase):
         self.assertTrue(pre_count == post_count)
 
     def test_es_update(self):
-        es = ExternalSystem.objects.get(pk=2)
-        pre_name = es.name
-        es_data = es.responseFieldDict()
-        es_data['name'] = "New Name"
-        req = {}
-        req['external_system'] = es_data
-        req['id'] = es_data['id']
-        response = self.client.put(
-            '/api/externalsystem/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([req]))
-        es = ExternalSystem.objects.get(pk=2)
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertEqual(es.name, 'New Name')
-        self.assertTrue(pre_name != es.name)
-        self.assertTrue(r['success'])
+        self.base_es_update(0, 200, True, True, False, True)
 
+    @parameterized.expand([
+        (1, 200, False, False, True, True),  # bad id
+        (0, 400, None, False, False, False)  # bad query
+    ])
     @patch('api.resources.externalsystem.log')
-    def test_es_update_bad_id(self, mock_log):
-        es = ExternalSystem.objects.get(pk=2)
-        es_data = es.responseFieldDict()
-        es_data['name'] = "New Name"
-        req = {}
-        req['external_system'] = es_data
-        req['id'] = '99'
-        response = self.client.put(
-            '/api/externalsystem/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data=json.dumps([req]))
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue(mock_log.error.called)
-        self.assertFalse(r['success'])
-        self.assertTrue({"id": 1} in r['errors'])
+    def test_es_update_patched(self, id_source, status_code, success_assertion, assert_names, assert_in_errors,
+                               get_from_es, mock_log):
+        self.base_es_update(id_source, status_code, success_assertion, assert_names, assert_in_errors, get_from_es,
+                            mock_log)
 
-    @patch('api.resources.externalsystem.log')
-    def test_es_update_bad_query(self, mock_log):
+    def base_es_update(self, id_source, status_code, success_assertion, assert_names, assert_in_errors, get_from_es,
+                       mock_log=None):
         req = {}
+        pre_name = None
         req['external_system'] = None
+        if get_from_es:
+            es = ExternalSystem.objects.get(pk=2)
+            pre_name = es.name
+            es_data = es.responseFieldDict()
+            es_data['name'] = "New Name"
+            req['external_system'] = es_data
+            req['id'] = es_data['id'] if id_source is 0 else '99'
         response = self.client.put(
             '/api/externalsystem/',
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data=json.dumps([req]))
-        self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status_code)
+        if success_assertion is not None:
+            r = json.loads(response.content)[0]
+            if success_assertion:
+                self.assertTrue(r['success'])
+            else:
+                self.assertFalse(r['success'])
+        if assert_names:
+            es = ExternalSystem.objects.get(pk=2)
+            self.assertTrue(pre_name != es.name)
+            self.assertEqual(es.name, 'New Name')
+        if assert_in_errors:
+            r = json.loads(response.content)[0]
+            self.assertTrue({"id": 1} in r['errors'])
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
 
     def test_es_delete(self):
         pre_count = ExternalSystem.objects.count()
@@ -890,164 +622,57 @@ class TestExternalSystem(TestCase):
 class TestExternalRecord(TestCase):
     fixtures = ['test_fixture.json']
 
-    def test_er_query_by_sub_id(self):
-        response = self.client.post(
-            '/api/externalrecord/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"subject_id": "2"}]')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        ex_recs = j[0]['external_record']
-        self.assertEqual(len(ex_recs), 3)
+    @parameterized.expand([
+        ('[{"subject_id": "2"}]', 3, None, None, 200),  # by sub id
+        ('[{"subject_org": "2", "subject_id":"1"}]', None, None, None, 200),  # by sub id
+        ('[{"subject_org": "3", "subject_org_id":"54545454"}]', 1, {'subject_org': '3', 'subject_org_id': '54545454'},
+         None, 200),  # by sub org and sub org id
+        ('[{"external_system_id":"1"}]', 2, None, ['external_system', 1], 200),  # by esid
+        ('[{"external_system_name":"Nautilus Test"}]', 2, None, ['external_system', 1], 200),  # by es name
+        ('[{"external_system_url":"http://nautilus.local:8090/api/"}]', 2, None, ['external_system', 1], 200),
+        # by es url
+        ('[{"path":"Test Protocol"}]', 4, None, ['path', 'Test Protocol'], 200),  # by path
+    ])
+    def test_er_query(self, data, ex_recs_len, equal_assertions, ex_recs_assertion, status_code):
+        self.base_er_query(data, ex_recs_len, equal_assertions, ex_recs_assertion, status_code, None)
 
-    def test_er_query_by_sub_org(self):
-        '''
-        **TODO: If _only_ sub_org is provided without sub_id the eHB will return _all_ external records
-
-        Not sure if this should be the expected behavior (probably not)
-        '''
-        response = self.client.post(
-            '/api/externalrecord/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"subject_org": "2", "subject_id":"1"}]')
-        self.assertEqual(response.status_code, 200)
-        # j = json.loads(response.content)
-        # ex_recs = j[0]['external_record']
-        # self.assertEqual(len(ex_recs), 3)
-
-    def test_er_query_by_sub_org_and_sub_org_id(self):
-        '''
-        Testing the query of ExternalRecords by a Subject's Organization's ID (pk) and their
-        Organization ID issued by the Organization (MRN)
-        '''
-        response = self.client.post(
-            '/api/externalrecord/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"subject_org": "3", "subject_org_id":"54545454"}]')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        ex_recs = j[0]['external_record']
-        self.assertEqual(len(ex_recs), 1)
-        self.assertEqual(j[0]['subject_org'], '3')
-        self.assertEqual(j[0]['subject_org_id'], '54545454')
-
-    def test_er_query_by_esid(self):
-        response = self.client.post(
-            '/api/externalrecord/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"external_system_id":"1"}]')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        ex_recs = j[0]['external_record']
-        for each in ex_recs:
-            self.assertEqual(each['external_system'], 1)
-        self.assertEqual(len(ex_recs), 2)
-
-    def test_er_query_by_esname(self):
-        response = self.client.post(
-            '/api/externalrecord/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"external_system_name":"Nautilus Test"}]')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        ex_recs = j[0]['external_record']
-        for each in ex_recs:
-            self.assertEqual(each['external_system'], 1)
-        self.assertEqual(len(ex_recs), 2)
-
-    def test_er_query_by_esurl(self):
-        response = self.client.post(
-            '/api/externalrecord/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"external_system_url":"http://nautilus.local:8090/api/"}]')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        ex_recs = j[0]['external_record']
-        for each in ex_recs:
-            self.assertEqual(each['external_system'], 1)
-        self.assertEqual(len(ex_recs), 2)
-
-    def test_er_query_by_path(self):
-        response = self.client.post(
-            '/api/externalrecord/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"path":"Test Protocol"}]')
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        ex_recs = j[0]['external_record']
-        for each in ex_recs:
-            self.assertEqual(each['path'], 'Test Protocol')
-        self.assertEqual(len(ex_recs), 4)
-
+    @parameterized.expand([
+        ('[{"subject_id": "99"}]', None, {'errors': {'Query': 9}, 'subject_id': '99'}, None, 200, None),  # bad sub id
+        ('[{"external_system_id":"99"}]', None, {'errors': {'Query': 9}, 'external_system_id': '99'}, None, 200, None),
+        # bad query esid
+        ('[{"path": "BAD PATH"}]', None, None, None, 200, {"Query": 9}),  # bad params
+    ])
     @patch('api.resources.externalrecord.log')
-    def test_er_query_bad_sub_id(self, mock_log):
+    def test_er_query_patched(self, data, ex_recs_len, equal_assertions, ex_recs_assertion, status_code,
+                              assert_in_errors, mock_log):
+        self.base_er_query(data, ex_recs_len, equal_assertions, ex_recs_assertion, status_code, assert_in_errors,
+                           mock_log)
+
+    def base_er_query(self, data, ex_recs_len, equal_assertions, ex_recs_assertion, status_code, assert_in_errors,
+                      mock_log=None):
         response = self.client.post(
             '/api/externalrecord/query/',
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
-            data='[{"subject_id": "99"}]')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(mock_log.error.called)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertEqual(r['subject_id'], '99')
-        self.assertEqual({"Query": 9}, r['errors'])
-
-    def test_er_query_bad_sub_org_and_sub_id(self):
-        '''
-        TODO: There is a problem with this query
-        '''
-        # response = self.client.post(
-        #     '/api/externalrecord/query/',
-        #     HTTP_API_TOKEN='secretkey123',
-        #     content_type='application/json',
-        #     data='[{"subject_org": "99", "subject_org_id":"99"}]')
-        # self.assertEqual(response.status_code, 416)
-
-    @patch('api.resources.externalrecord.log')
-    def test_er_query_bad_esid(self, mock_log):
-        response = self.client.post(
-            '/api/externalrecord/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"external_system_id":"99"}]')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(mock_log.error.called)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertEqual(r['external_system_id'], '99')
-        self.assertEqual({"Query": 9}, r['errors'])
-
-    def test_er_query_bad_params(self):
-        '''
-        TODO: we're returning all external records
-        '''
-        # response = self.client.post(
-        #     '/api/externalrecord/query/',
-        #     HTTP_API_TOKEN='secretkey123',
-        #     content_type='application/json',
-        #     data ='[{"testing":"99"}]')
-        # self.assertEqual(True)
-
-    @patch('api.resources.externalrecord.log')
-    def test_er_query_bad_path(self, mock_log):
-        response = self.client.post(
-            '/api/externalrecord/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"path": "BAD PATH"}]')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(mock_log.error.called)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue({"Query": 9} in r['errors'])
+            data=data)
+        self.assertEqual(response.status_code, status_code)
+        if ex_recs_len is not None:
+            j = json.loads(response.content)
+            ex_recs = j[0]['external_record']
+            self.assertEqual(len(ex_recs), ex_recs_len)
+            if ex_recs_assertion is not None:
+                for each in ex_recs:
+                    self.assertEqual(each[ex_recs_assertion[0]], ex_recs_assertion[1])
+        if equal_assertions is not None:
+            j = json.loads(response.content)
+            for key in equal_assertions:
+                self.assertEqual(j[0][key], equal_assertions[key])
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
+        if assert_in_errors is not None:
+            j = json.loads(response.content)
+            r = j[0]
+            self.assertTrue({"Query": 9} in r['errors'])
 
     def test_er_add(self):
         pre = ExternalRecord.objects.count()
@@ -1217,55 +842,42 @@ class TestRelationResource(TestCase):
 class TestOrganization(TestCase):
     fixtures = ['test_fixture.json']
 
-    def test_org_query_by_name(self):
-        response = self.client.post(
-            '/api/organization/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"name":"Test Organization"}]'
-        )
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        self.assertEqual(len(j), 1)
-        org = j[0]
-        self.assertEqual(org['name'], 'Test Organization')
+    @parameterized.expand([
+        ('[{"name":"Test Organization"}]', ['name', 'Test Organization'], None, 1, 200, 'json'),  # by name
+        ('[{"name":"Some Organization"}]', None, None, None, 415, 'xml')  # unsuported type
+    ])
+    def test_org_query(self, data, org_assertion, assert_in_errors, assert_json_len, status_code, content_type):
+        self.base_org_query(data, org_assertion, assert_in_errors, assert_json_len, status_code, content_type)
 
+    @parameterized.expand([
+        ('[{"name":"Some Organization"}]', None, {'Query': 9}, None, 200),  # not found
+        ('[{"bad_key":"Some Organization"}]', None, {'Query': 8}, None, 200)  # invalid
+    ])
     @patch('api.resources.organization.log')
-    def test_org_not_found(self, mock_log):
-        response = self.client.post(
-            '/api/organization/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"name":"Some Organization"}]'
-        )
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue({"Query": 9} in r["errors"])
-        self.assertTrue(mock_log.error.called)
+    def test_org_query_patched(self, data, org_assertion, assert_in_errors, assert_json_len, status_code, mock_log):
+        self.base_org_query(data, org_assertion, assert_in_errors, assert_json_len, status_code, 'json', mock_log)
 
-    @patch('api.resources.organization.log')
-    def test_org_query_invalid(self, mock_log):
+    def base_org_query(self, data, org_assertion, assert_in_errors, assert_json_len, status_code, content_type,
+                       mock_log=None):
         response = self.client.post(
             '/api/organization/query/',
             HTTP_API_TOKEN='secretkey123',
-            content_type='application/json',
-            data='[{"bad_key":"Some Organization"}]'
-        )
-        self.assertEqual(response.status_code, 200)
-        j = json.loads(response.content)
-        r = j[0]
-        self.assertTrue({"Query": 8} in r['errors'])
-        self.assertTrue(mock_log.error.called)
+            content_type='application/{0}'.format(content_type),
+            data=data)
+        self.assertEqual(response.status_code, status_code)
 
-    def test_org_query_unsupported_type(self):
-        response = self.client.post(
-            '/api/organization/query/',
-            HTTP_API_TOKEN='secretkey123',
-            content_type='application/xml',
-            data='[{"name":"Some Organization"}]'
-        )
-        self.assertEqual(response.status_code, 415)
+        if org_assertion is not None:
+            j = json.loads(response.content)
+            r = j[0]
+            self.assertEqual(r[org_assertion[0]], org_assertion[1])
+        if assert_in_errors is not None:
+            j = json.loads(response.content)
+            r = j[0]
+            self.assertTrue(assert_in_errors in r['errors'])
+        if assert_json_len is not None:
+            self.assertEqual(len(json.loads(response.content)), assert_json_len)
+        if mock_log is not None:
+            self.assertTrue(mock_log.error.called)
 
     def test_org_update(self):
         org = Organization.objects.get(name="Test Organization")
