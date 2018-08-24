@@ -1378,42 +1378,57 @@ class TestOrganization(TestCase):
 
 ##### for the pedigree feature #####
 
-    def test_pedigree_add(self):
+    positive_combos = (('role_1', 'role_2', 'comment'),
+    [("8","11","role1=father role2=son"),
+    ("8","10", "role1=father role2=daughter"),
+    ("8","12", "role1=father role2=fetus"),
+    ("9","11", "role1=mother role2=son"),
+    ("9","10", "role1=mother role2=daughter"),
+    ("9","12", "role1=mother role2=fetus"),
+    ("7","6", "role1=brother role2=sister"),
+    ("7","7", "role1=brother role2=brother"),
+    ("6","6", "role1=sister role2=sister"),
+    ("6","7", "role1=sister role2=brother"),
+    ("4","4", "role1=half sister role2=half sister"),
+    ("4","5", "role1=half sister role2=half brother"),
+    ("5","4", "role1=half brother role2=half sister"),
+    ("5","5", "role1=half brother role2=half brother"),
+    ("11","9", "role1=son role2=mother"),
+    ("11","8", "role1=son role2=father"),
+    ("10","9", "role1=daughter role2=mother"),
+    ("10","8", "role1=daughter role2=father"),
+    ("12","9", "role1=fetus role2=mother"),
+    ("12","8", "role1=fetus role2=father")])
 
-    #    num_roles_plus_1 = len(json.loads(response.content) + 1
-        for role_1 in range(1, 15):
-            for role_2 in range(1, 15):
-                pre_count = PedigreeSubjectRelation.objects.count()
-                pedigree = {
-                    'subject_1': '2',
-                    'subject_2': '3',
-                    'subject_1_role': str(role_1),
-                    'subject_2_role': str(role_2),
-                    'protocol_id': '1'
-                }
+    @pytest.mark.parametrize(*positive_combos)
+    def test_pedigree_add_positive(self, role_1,role_2,comment):
+        pre_count = PedigreeSubjectRelation.objects.count()
+        pedigree = {
+            'subject_1': '2',
+            'subject_2': '3',
+            'subject_1_role': role_1,
+            'subject_2_role': role_2,
+            'protocol_id': '1'
+        }
+        response = self.client.post(
+            '/api/pedigree/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json',
+            data=json.dumps([pedigree])
+        )
 
-                response = self.client.post(
-                    '/api/pedigree/',
-                    HTTP_API_TOKEN='secretkey123',
-                    content_type='application/json',
-                    data=json.dumps([pedigree])
-                )
+        post_count = PedigreeSubjectRelation.objects.count()
+        self.assertEqual(response.status_code, 200)
+        j = json.loads(response.content)
+        r = j[0]
+    #    print(response)
 
-                post_count = PedigreeSubjectRelation.objects.count()
-                self.assertEqual(response.status_code, 200)
-                j = json.loads(response.content)
-                r = j[0]
+        self.assertTrue(r['success'])
+        self.assertTrue(pre_count < post_count)
 
-                if r['success'] == True:
-                    self.assertTrue(r['success'])
-                    self.assertTrue(pre_count < post_count)
-                else:
-                    self.assertTrue(r['errors'])
-                    self.assertTrue(pre_count == post_count)
 
-                print(response)
-                pre_count = 0
-                post_count = 0
+
+
 
     def test_get_relationships_for_protocol(self):
         relationship_count = PedigreeSubjectRelation.objects.filter(
