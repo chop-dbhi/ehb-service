@@ -2,6 +2,7 @@
 Run via Django's manage.py tool: `./bin/manage.py test api`
 """
 import json
+from parameterized import parameterized
 from django.db.models import Q
 
 from django.test import TestCase
@@ -1378,8 +1379,9 @@ class TestOrganization(TestCase):
 
 ##### for the pedigree feature #####
 
-    positive_combos = (('role_1', 'role_2', 'comment'),
-    [("8","11","role1=father role2=son"),
+    #Positive relationships
+    @parameterized.expand([
+    ("8","11","role1=father role2=son"),
     ("8","10", "role1=father role2=daughter"),
     ("8","12", "role1=father role2=fetus"),
     ("9","11", "role1=mother role2=son"),
@@ -1398,10 +1400,9 @@ class TestOrganization(TestCase):
     ("10","9", "role1=daughter role2=mother"),
     ("10","8", "role1=daughter role2=father"),
     ("12","9", "role1=fetus role2=mother"),
-    ("12","8", "role1=fetus role2=father")])
-
-    @pytest.mark.parametrize(*positive_combos)
-    def test_pedigree_add_positive(self, role_1,role_2,comment):
+    ("12","8", "role1=fetus role2=father")
+    ])
+    def test_pedigree_add_positive(self,role_1,role_2,comment):
         pre_count = PedigreeSubjectRelation.objects.count()
         pedigree = {
             'subject_1': '2',
@@ -1427,8 +1428,90 @@ class TestOrganization(TestCase):
         self.assertTrue(pre_count < post_count)
 
 
+    #Negative relationships
+    @parameterized.expand([
+    ("8","6","role1=father role2=sister"),
+    ("8","4", "role1=father role2=half sister"),
+    ("8","7", "role1=father role2=brother"),
+    ("8","5", "role1=father role2=half brother"),
+    ("8","9", "role1=father role2=mother"),
+    ("9","6", "role1=mother role2=sister"),
+    ("9","4", "role1=mother role2= half sister"),
+    ("9","7", "role1=mother role2=brother"),
+    ("9","5", "role1=mother role2=half brother"),
+    ("9","8", "role1=mother role2=father"),
+    ("7","8", "role1=brother role2=father"),
+    ("7","9", "role1=brother role2=mother"),
+    ("7","4", "role1=brother role2=half sister"),
+    ("7","5", "role1=brother role2=half brother"),
+    ("7","11", "role1=brother role2=son"),
+    ("7","10", "role1=brother role2=daughter"),
+    ("7","12", "role1=brother role2=fetus"),
+    ("6","8", "role1=sister role2=father"),
+    ("6","9", "role1=sister role2=mother"),
+    ("6","4", "role1=sister role2=half sister"),
+    ("6","5", "role1=sister role2=half brother"),
+    ("6","11", "role1=sister role2=son"),
+    ("6","10", "role1=sister role2=daughter"),
+    ("6","12", "role1=sister role2=fetus"),
+    ("4","6", "role1=half sister role2=sister"),
+    ("4","7", "role1=half sister role2=brother"),
+    ("4","8", "role1=half sister role2=father"),
+    ("4","9", "role1=half sister role2=mother"),
+    ("4","11", "role1=half sister role2=son"),
+    ("4","10", "role1=half sister role2=daughter"),
+    ("4","12", "role1=half sister role2=fetus"),
+    ("5","6", "role1=half brother role2=sister"),
+    ("5","7", "role1=half brother role2=brother"),
+    ("5","8", "role1=half brother role2=father"),
+    ("5","9", "role1=half brother role2=mother"),
+    ("5","11", "role1=half brother role2=son"),
+    ("5","10", "role1=half brother role2=daughter"),
+    ("5","12", "role1=half brother role2=fetus"),
+    ("11","6", "role1=son role2=sister"),
+    ("11","7", "role1=son role2=brother"),
+    ("11","4", "role1=son role2=half sister"),
+    ("11","5", "role1=son role2=half brother"),
+    ("11","10", "role1=son role2=daughter"),
+    ("11","12", "role1=son role2=fetus"),
+    ("10","6", "role1=daughter role2=sister"),
+    ("10","7", "role1=daughter role2=brother"),
+    ("10","4", "role1=daughter role2=half sister"),
+    ("10","5", "role1=daughter role2=half brother"),
+    ("10","11", "role1=daughter role2=son"),
+    ("10","12", "role1=daughter role2=fetus"),
+    ("12","6", "role1=fetus role2=sister"),
+    ("12","7", "role1=fetus role2=brother"),
+    ("12","4", "role1=fetus role2=half sister"),
+    ("12","5", "role1=fetus role2=half brother"),
+    ("12","11", "role1=fetus role2=son"),
+    ("12","12", "role1=fetus role2=fetus"),
+    ("12","10", "role1=fetus role2=daughter")
+    ])
+    def test_pedigree_add_negative(self,role_1,role_2,comment):
+        pre_count = PedigreeSubjectRelation.objects.count()
+        pedigree = {
+            'subject_1': '2',
+            'subject_2': '3',
+            'subject_1_role': role_1,
+            'subject_2_role': role_2,
+            'protocol_id': '1'
+        }
+        response = self.client.post(
+            '/api/pedigree/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json',
+            data=json.dumps([pedigree])
+        )
 
+        post_count = PedigreeSubjectRelation.objects.count()
+        self.assertEqual(response.status_code, 200)
+        j = json.loads(response.content)
+        r = j[0]
+    #    print(response)
 
+        self.assertFalse(r['success'])
+        self.assertTrue(pre_count == post_count)
 
     def test_get_relationships_for_protocol(self):
         relationship_count = PedigreeSubjectRelation.objects.filter(

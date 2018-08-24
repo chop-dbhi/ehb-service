@@ -33,3 +33,4 @@ pycrypto==2.3
 
 # Testing
 mock
+parameterized
