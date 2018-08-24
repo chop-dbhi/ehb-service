@@ -1422,7 +1422,6 @@ class TestOrganization(TestCase):
         self.assertEqual(response.status_code, 200)
         j = json.loads(response.content)
         r = j[0]
-    #    print(response)
 
         self.assertTrue(r['success'])
         self.assertTrue(pre_count < post_count)
@@ -1508,9 +1507,11 @@ class TestOrganization(TestCase):
         self.assertEqual(response.status_code, 200)
         j = json.loads(response.content)
         r = j[0]
-    #    print(response)
 
+        if r['success'] == True:
+            print(comment)
         self.assertFalse(r['success'])
+
         self.assertTrue(pre_count == post_count)
 
     def test_get_relationships_for_protocol(self):
