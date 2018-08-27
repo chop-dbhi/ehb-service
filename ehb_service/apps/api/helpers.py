@@ -69,6 +69,21 @@ class FormHelpers(object):
             elif e == 'cannot create a relationship between half sibling and whole sibling.':
                 log.error("cannot create a relationship between half sibling and whole sibling.")
                 v = ErrorConstants.ERROR_INVALID_CHOICE
+            elif e == 'cannot create a relationship between half sibling and parent.':
+                log.error("cannot create a relationship between half sibling and parent.")
+                v = ErrorConstants.ERROR_INVALID_CHOICE
+            elif e == 'cannot create a relationship between sibling and Parent.':
+                log.error("cannot create a relationship between sibling and Parent.")
+                v = ErrorConstants.ERROR_INVALID_CHOICE
+            elif e == 'cannot create a relationship between sibling and Child.':
+                log.error("cannot create a relationship between sibling and Child.")
+                v = ErrorConstants.ERROR_INVALID_CHOICE
+            elif e == 'cannot create a relationship between half sibling and child.':
+                log.error("cannot create a relationship between half sibling and child.")
+                v = ErrorConstants.ERROR_INVALID_CHOICE
+            elif e == 'cannot create a relationship between two children, must be siblings.':
+                log.error("cannot create a relationship between two children, must be siblings.")
+                v = ErrorConstants.ERROR_INVALID_CHOICE
             else:
                 v = ErrorConstants.ERROR_UNKNOWN
 
