@@ -115,20 +115,72 @@ class PedigreeSubjectRelationForm(ModelForm):
                 self._errors[item] = ErrorList(
                     ["Relationship does not meet validation rules for this organization."]
                 )
-        if (self.cleaned_data.get('subject_1_role').typ == "familial-Parent" and
-                self.cleaned_data.get('subject_2_role').typ == "familial-Parent"):
+        # prevent two parents to connect. this connection should be mapped through siblings
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-parent" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-parent"):
             self._errors["both relationhip Roles cannot both be parents"] = ErrorList(
                 ["cannot create a relationship between two parents, must be connected through child."]
             )
-        if (self.cleaned_data.get('subject_1_role').typ == "familial-Sibling" and
-                self.cleaned_data.get('subject_2_role').typ == "familial-half-Sibling"):
+        # prevent a full sibling and a half sibling to be connected.
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-half-sibling"):
             self._errors["Cannot mix sibling types"] = ErrorList(
                 ["cannot create a relationship between half sibling and whole sibling."]
             )
-        if (self.cleaned_data.get('subject_1_role').typ == "familial-half-Sibling" and
-                self.cleaned_data.get('subject_2_role').typ == "familial-Sibling"):
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-half-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-sibling"):
             self._errors["Cannot mix sibling types"] = ErrorList(
                 ["cannot create a relationship between half sibling and whole sibling."]
+            )
+        # prevent half sibling and a parent from being connected
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-half-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-parent"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and parent."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-parent" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-half-sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and parent."]
+            )
+        # prevent sibling and parent from being connected
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-parent" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between sibling and Parent."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-parent"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between sibling and parent."]
+            )
+        # prevent sibling and child from being connected
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-child"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between sibling and Child."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-child" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between sibling and child."]
+            )
+        # prevent half sibling and child from being connected
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-half-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-child"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and child."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-child" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-half-sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and child."]
+            )
+        # prevent two children from being connected, should be connected through siblings
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-child" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-child"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between two children, must be siblings."]
             )
 
         return self.cleaned_data
