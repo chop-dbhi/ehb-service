@@ -30,10 +30,33 @@ class PedigreeSubjectRelationResource(Resource):
         return PedigreeSubjectRelation.objects.filter(protocol_id=protocol_id)
 
     def relationships_by_subject(self, subject_id):
-        relationships_subs = PedigreeSubjectRelation.objects.filter(
-                                Q(subject_1=subject_id) |
-                                Q(subject_2=subject_id))
-        return relationships_subs
+        relationships = []
+        # relationships_subs = PedigreeSubjectRelation.objects.filter(
+        #                         Q(subject_1=subject_id) |
+        #                         Q(subject_2=subject_id))
+        relationships_subs1 = PedigreeSubjectRelation.objects.filter(
+                                subject_1=subject_id)
+        # if given subject is 'subject 1' get subject1 role and subject 2
+        for relationship in relationships_subs1:
+            relationships.append({
+                "subject_1_org_id": relationship.subject_1.organization_subject_id,
+                "subject_1_org": relationship.subject_1.organization.name.responseFieldDict(),
+                "role": relationship.subject_1_role.desc,
+                "subject_2_org_id": relationship.subject_2.organization_subject_id,
+                "subject_2_org": relationship.subject_2.organization.responseFieldDict()
+            })
+        # if given subject is 'subject 2' get subject2 role and subject 1
+        relationships_subs2 = PedigreeSubjectRelation.objects.filter(
+                                subject_2=subject_id)
+        for relationship in relationships_subs2:
+            relationships.append({
+                "subject_1_org_id": relationship.subject_2.organization_subject_id,
+                "subject_1_org": relationship.subject_2.organization.responseFieldDict(),
+                "role": relationship.subject_2_role.desc,
+                "subject_2_org_id": relationship.subject_1.organization_subject_id,
+                "subject_2_org": relationship.subject_1.organization.responseFieldDict()
+            })
+        return relationships
 
     def append_query_to_dict(self, query):
         dict = []
@@ -51,9 +74,10 @@ class PedigreeSubjectRelationResource(Resource):
         if subject_id:
             relationships = self.relationships_by_subject(subject_id)
 
-        relationship_dictionary = self.append_query_to_dict(relationships)
-
-        return (json.dumps(relationship_dictionary))
+        # relationship_dictionary = self.append_query_to_dict(relationships)
+        # relationship_dictionary = (relationships)
+        # return (json.dumps(relationship_dictionary))
+        return relationships
 
     def put(self, request):
         """This method is intended for updating an existing protocol relationship"""
