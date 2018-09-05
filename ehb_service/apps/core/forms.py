@@ -9,10 +9,6 @@ from django.forms import ModelForm
 from django.forms.util import ErrorList
 from models.identities import Subject, ExternalRecord, ExternalSystem, \
     Organization, Group, ExternalRecordRelation, PedigreeSubjectRelation
-<<<<<<< HEAD
-
-=======
->>>>>>> adding functionality to add a subject relationship through the ehb api
 
 
 class SubjectForm(ModelForm):
