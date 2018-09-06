@@ -21,9 +21,13 @@ INSTALLED_APPS = (
     # third-party
     'restlib2',
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     #'south',
 >>>>>>> comment out 'south' in installed_apps due to deprecation
+=======
+    'south',
+>>>>>>> Revert "comment out 'south' in installed_apps due to deprecation"
 
     'core',
     'api',
