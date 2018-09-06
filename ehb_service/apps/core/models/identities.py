@@ -180,6 +180,8 @@ class GroupEhbKey(GroupPropsKey):
         self._set_key()
         super(GroupEhbKey, self).save()
 
+    def __unicode__(self):
+        return self.key
 
 class Group(CreatedModified):
     '''
@@ -391,7 +393,10 @@ class Relation(CreatedModified):
             ('generic', 'Generic'),
             ('label', 'Label'),
             ('file', 'File'),
-            ('familial', 'Familial'),
+            ('familial-parent', 'Familial-Parent'),
+            ('familial-child', 'Familial-Child'),
+            ('familial-sibling', 'Familial-Sibling'),
+            ('familial-half-sibling', 'Familial-half-Sibling'),
             ('diagnosis', 'Diagnosis')
         ],
         default='Label'
@@ -429,6 +434,44 @@ class ExternalRecordRelation(CreatedModified):
               self.external_record,
               self.related_record,
               self.relation_type,
+              )
+
+
+class PedigreeSubjectRelation(CreatedModified):
+    id = models.AutoField(primary_key=True)
+    subject_1 = models.ForeignKey(Subject,
+                                  related_name='subject_1',
+                                  default=None,
+                                  null=True)
+    subject_2 = models.ForeignKey(Subject,
+                                  related_name='subject_2',
+                                  default=None,
+                                  null=True)
+    subject_1_role = models.ForeignKey(Relation,
+                                       related_name='subject_1_role',
+                                       default=None,
+                                       null=True)
+    subject_2_role = models.ForeignKey(Relation,
+                                       related_name='subject_2_role',
+                                       default=None,
+                                       null=True)
+    protocol_id = models.CharField(max_length=100)
+
+    def to_dict(self):
+        return {
+          'id': self.id,
+          'subject_1': self.subject_1.responseFieldDict(),
+          'subject_2': self.subject_2.responseFieldDict(),
+          'subject_1_role': self.subject_1_role.responseFieldDict(),
+          'subject_2_role': self.subject_2_role.responseFieldDict()
+        }
+
+    def __unicode__(self):
+        return "{0} is {1} to {2}, {3}".format(
+              self.subject_1,
+              self.subject_1_role,
+              self.subject_2,
+              self.subject_2_role
               )
 
 

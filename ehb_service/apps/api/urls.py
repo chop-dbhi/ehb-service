@@ -1,4 +1,4 @@
-from django.conf.urls import *  # noqa
+from django.conf.urls import url, patterns, include  # noqa
 
 subject_patterns = patterns(
     'api.resources.subject',
@@ -46,13 +46,28 @@ group_patterns = patterns(
     url(r'^id/(?P<grp_pk>\d+)/records/id/(?P<x_pk>\d+)/$', 'RecordGroupResource'),
 )
 
+pedigreeRelationship_patterns = patterns(
+    'api.resources.relation',
+    url(r'^$', 'PedigreeSubjectRelationResource'),
+    url(r'^protocol_id/(?P<protocol_id>\d+)/$', 'PedigreeSubjectRelationResource'),
+    url(r'^subject_id/(?P<subject_id>\d+)/$', 'PedigreeSubjectRelationResource'),
+    #url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'PedigreeSubjectRelationResource'),
+)
+
 urlpatterns = patterns(
     '',
-    url(r'^subject/', include(subject_patterns, namespace='subject')),
-    url(r'^externalsystem/', include(externalSystem_patterns, namespace='externalsystem')),
-    url(r'^externalrecord/', include(externalRecord_patterns, namespace='externalrecord')),
-    url(r'^organization/', include(organization_patterns, namespace='organization')),
-    url(r'^group/', include(group_patterns, namespace='group')),
+    url(r'^subject/', include(subject_patterns,
+        namespace='subject')),
+    url(r'^externalsystem/', include(externalSystem_patterns,
+        namespace='externalsystem')),
+    url(r'^externalrecord/', include(externalRecord_patterns,
+        namespace='externalrecord')),
+    url(r'^organization/', include(organization_patterns,
+        namespace='organization')),
+    url(r'^group/', include(group_patterns,
+        namespace='group')),
     url(r'^links/$', 'api.resources.relation.RelationResource'),
+    url(r'^pedigree/', include(pedigreeRelationship_patterns,
+        namespace='pedigree')),
 
 )

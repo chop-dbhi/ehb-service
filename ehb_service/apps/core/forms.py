@@ -8,14 +8,16 @@ import re
 from django.forms import ModelForm
 from django.forms.util import ErrorList
 from models.identities import Subject, ExternalRecord, ExternalSystem, \
-    Organization, Group, ExternalRecordRelation
+    Organization, Group, ExternalRecordRelation, PedigreeSubjectRelation
+
 
 class SubjectForm(ModelForm):
 
     def clean(self):
         # Run subject validation if it exists
         org = self.cleaned_data.get('organization')
-        # If there is no org simply return data. Error will be caught downstream
+        # If there is no org simply return data.
+        # Error will be caught downstream
         if not org:
             return self.cleaned_data
         validations = org.subjectvalidation_set.all()
@@ -26,9 +28,11 @@ class SubjectForm(ModelForm):
                 if not valid:
                     self._errors["subject"] = ErrorList(["Subject identifier does not meet validation rules for this organization."])
         return self.cleaned_data
+
     class Meta:
         fields = "__all__"
         model = Subject
+
 
 class ExternalRecordForm(ModelForm):
     class Meta:
@@ -67,9 +71,9 @@ class ExternalSystemForm(ModelForm):
             m.save()
         return m
 
-    '''This version of save as well as new is_valid and errors methods will be needed
-     if the POST method for ExternalSystemResource is going to support the
-     addition of ExternalRecords at the time a new ExternalSystem is created
+    '''This version of save as well as new is_valid and errors methods will be
+    needed if the POST method for ExternalSystemResource is going to support
+    the addition of ExternalRecords at the time a new ExternalSystem is created
      def save(self,commit=True):
 
         try:
@@ -85,10 +89,98 @@ class ExternalSystemForm(ModelForm):
                     if sid != None and rid !=None:
                         try:
                             s=Subject.objects.get(pk=sid)
-                            er = ExternalRecord(subject=s,external_system=m, record_id=rid)
+                            er = ExternalRecord(
+                                subject=s,external_system=m, record_id=rid)
                             er.save()
                         except Exception:
                             pass
             return m
         except Exception as err:
             print err'''
+
+
+class PedigreeSubjectRelationForm(ModelForm):
+    def clean(self):
+        validation = {}
+        validation['subject_1'] = self.cleaned_data.get('subject_1')
+        validation['subject_2'] = self.cleaned_data.get('subject_2')
+        validation['subject_1_role'] = self.cleaned_data.get('subject_1_role')
+        validation['subject_1_role'] = self.cleaned_data.get('subject_2_role')
+        for item in validation:
+            if not item:
+                self._errors[item] = ErrorList(
+                    ["Relationship does not meet validation rules for this organization."]
+                )
+        # prevent two parents to connect. this connection should be mapped through siblings
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-parent" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-parent"):
+            self._errors["both relationhip Roles cannot both be parents"] = ErrorList(
+                ["cannot create a relationship between two parents, must be connected through child."]
+            )
+        # prevent a full sibling and a half sibling to be connected.
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-half-sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and whole sibling."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-half-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and whole sibling."]
+            )
+        # prevent half sibling and a parent from being connected
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-half-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-parent"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and parent."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-parent" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-half-sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and parent."]
+            )
+        # prevent sibling and parent from being connected
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-parent" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between sibling and Parent."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-parent"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between sibling and parent."]
+            )
+        # prevent sibling and child from being connected
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-child"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between sibling and Child."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-child" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between sibling and child."]
+            )
+        # prevent half sibling and child from being connected
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-half-sibling" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-child"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and child."]
+            )
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-child" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-half-sibling"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between half sibling and child."]
+            )
+        # prevent two children from being connected, should be connected through siblings
+        if (self.cleaned_data.get('subject_1_role').typ.lower() == "familial-child" and
+                self.cleaned_data.get('subject_2_role').typ.lower() == "familial-child"):
+            self._errors["Cannot mix sibling types"] = ErrorList(
+                ["cannot create a relationship between two children, must be siblings."]
+            )
+
+        return self.cleaned_data
+
+    class Meta:
+        fields = "__all__"
+        model = PedigreeSubjectRelation
