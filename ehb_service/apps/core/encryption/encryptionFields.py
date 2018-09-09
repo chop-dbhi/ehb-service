@@ -35,11 +35,6 @@ class BaseField(models.Field):
 
         models.Field.__init__(self, *args, **kwargs)
 
-    def deconstruct (self):
-        name, path, args, kwargs = super().deconstruct()
-        del kwargs['max_length']
-        return name, path, args, kwargs
-
     def _max_db_length(self, unique, user_specified_length):
 
         def encrypted_length(usl):
