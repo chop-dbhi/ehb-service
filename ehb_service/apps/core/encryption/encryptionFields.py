@@ -34,6 +34,12 @@ class BaseField(models.Field):
 
         models.Field.__init__(self, *args, **kwargs)
 
+    def deconstruct(self):
+        name, path, args, kwargs = super(BaseField, self).deconstruct()
+        if self.use_encryption:
+            kwargs["max_length"]=255
+        return name, path, args, kwargs
+
     def _max_db_length(self, unique, user_specified_length):
 
         def encrypted_length(usl):
@@ -124,6 +130,7 @@ class BaseField(models.Field):
             return value
 
         value = smart_str(value, encoding='utf-8', strings_only=False, errors='strict')
+        print (" this is original value " + value)
         if self.use_encryption:
 
             key = self.akms.get_key()
@@ -138,9 +145,7 @@ class BaseField(models.Field):
                 # Some encryption services add a checksum byte which throws off the pad_length
                 value += self._split_byte()
             value = binascii.b2a_hex(value)
-
         return value
-
 
 class EncryptCharField(BaseField):
 
@@ -155,7 +160,10 @@ class EncryptCharField(BaseField):
         return name, path, args, kwargs
 
     def formfield(self, **kwargs):
+        print ("we are in form field")
         "Returns a django.forms.Field instance for this database Field."
+        print ("the max length for this field is ")
+        print (self.max_length)
         defaults = {'max_length': self.max_length}
         defaults.update(kwargs)
 
@@ -212,6 +220,7 @@ class EncryptDateField(BaseField):
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
         dt = value.strftime('%Y:%m:%d') if value else None
+        print ("we are in encrypt date field, about to call get db prep")
 
         return super(EncryptDateField, self).get_db_prep_value(dt, connection=connection, prepared=prepared)
 
