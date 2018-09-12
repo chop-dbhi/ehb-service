@@ -27,38 +27,18 @@ class BaseField(models.Field):
 
         if self.use_encryption:
             user_specified_length = kwargs.get('max_length', 20)
-            # print ("this is user specified length")
-            # print (user_specified_length)
             unique = kwargs.get('unique', False)
-            # print ("this is unique, should all be false?")
-            # print (unique)
             max_length, usl = self._max_db_length(unique, user_specified_length)
-            # print ("this is usl, should be 20?")
-            # print (usl)
-            # print ("this is user specified max length before equal statement")
-            # print (self.user_specified_max_length)
             self.user_specified_max_length = usl
-            # print ("this is after")
-            # print (self.user_specified_max_length)
             kwargs['max_length'] = max_length
 
         models.Field.__init__(self, *args, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super(BaseField, self).deconstruct()
-        # print ("this is name")
-        # print (name)
-        # print ("this is path")
-        # print (path)
-        # print ("this is args")
-        # print (args)
-        # print ("this is max length")
-        # print (kwargs["max_length"])
         if self.use_encryption:
-            del kwargs["max_length"]
-            return name, path, args, kwargs
-        else:
-            return name, path, args, kwargs
+            kwargs["max_length"]=255
+        return name, path, args, kwargs
 
     def _max_db_length(self, unique, user_specified_length):
 
@@ -150,8 +130,7 @@ class BaseField(models.Field):
             return value
 
         value = smart_str(value, encoding='utf-8', strings_only=False, errors='strict')
-        print ("this is when value isn't none")
-        print (value)
+        print (" this is original value " + value)
         if self.use_encryption:
 
             key = self.akms.get_key()
@@ -166,7 +145,6 @@ class BaseField(models.Field):
                 # Some encryption services add a checksum byte which throws off the pad_length
                 value += self._split_byte()
             value = binascii.b2a_hex(value)
-
         return value
 
 class EncryptCharField(BaseField):
@@ -176,16 +154,11 @@ class EncryptCharField(BaseField):
     def get_internal_type(self):
         return 'CharField'
 
-    # def deconstruct (self):
-    #
-    #      # name, path, args, kwargs = super(EncryptCharField).deconstruct()
-    #      print ("WE CALLED DECONSTRUCT IN 153 FOR CHAR FIELD ")
-    #      # del kwargs["max_length"]
-    #      # return name, path, args, kwargs
-    #      pass
-
     def formfield(self, **kwargs):
+        print ("we are in form field")
         "Returns a django.forms.Field instance for this database Field."
+        print ("the max length for this field is ")
+        print (self.max_length)
         defaults = {'max_length': self.max_length}
         defaults.update(kwargs)
 
@@ -212,13 +185,6 @@ class EncryptDateField(BaseField):
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 10  # YYYY:MM:DD format
         super(EncryptDateField, self).__init__(*args, **kwargs)
-
-    # def deconstruct (self):
-    #      name, path, args, kwargs = super(EncryptDateField, self).deconstruct()
-    #      print ("WE CALLED DECONSTRUCT IN 183 for date field ")
-    #      del kwargs["max_length"]
-    #      return name, path, args, kwargs
-
 
     def get_internal_type(self):
         return 'CharField'
