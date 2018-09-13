@@ -34,11 +34,11 @@ class BaseField(models.Field):
 
         models.Field.__init__(self, *args, **kwargs)
 
-    def deconstruct(self):
-        name, path, args, kwargs = super(BaseField, self).deconstruct()
-        if self.use_encryption:
-            kwargs["max_length"]=255
-        return name, path, args, kwargs
+    # def deconstruct(self):
+    #     name, path, args, kwargs = super(BaseField, self).deconstruct()
+    #     if self.use_encryption:
+    #         kwargs["max_length"] = 232
+    #     return name, path, args, kwargs
 
     def _max_db_length(self, unique, user_specified_length):
 
@@ -130,7 +130,7 @@ class BaseField(models.Field):
             return value
 
         value = smart_str(value, encoding='utf-8', strings_only=False, errors='strict')
-        print (" this is original value " + value)
+        # print (" this is original value " + value)
         if self.use_encryption:
 
             key = self.akms.get_key()
@@ -154,14 +154,18 @@ class EncryptCharField(BaseField):
     def get_internal_type(self):
         return 'CharField'
 
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(EncryptCharField, self).deconstruct()
+        kwargs["max_length"] = 255
+        return name, path, args, kwargs
+
+
     def formfield(self, **kwargs):
-        print ("we are in form field")
         "Returns a django.forms.Field instance for this database Field."
-        print ("the max length for this field is ")
-        print (self.max_length)
+
         defaults = {'max_length': self.max_length}
         defaults.update(kwargs)
-
         return super(EncryptCharField, self).formfield(**defaults)
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
@@ -185,6 +189,11 @@ class EncryptDateField(BaseField):
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 10  # YYYY:MM:DD format
         super(EncryptDateField, self).__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(EncryptDateField, self).deconstruct()
+        kwargs["max_length"] = 10
+        return name, path, args, kwargs
 
     def get_internal_type(self):
         return 'CharField'
@@ -210,7 +219,7 @@ class EncryptDateField(BaseField):
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
         dt = value.strftime('%Y:%m:%d') if value else None
-        print ("we are in encrypt date field, about to call get db prep")
+        # print ("we are in encrypt date field, about to call get db prep")
 
         return super(EncryptDateField, self).get_db_prep_value(dt, connection=connection, prepared=prepared)
 
