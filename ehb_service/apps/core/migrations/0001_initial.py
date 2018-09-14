@@ -270,7 +270,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='externalrecord',
             name='label',
-            field=models.ForeignKey(default=1, verbose_name=b'Label', to='core.ExternalRecordLabel', null=True),
+            field=models.ForeignKey(verbose_name=b'Label', blank=True, to='core.ExternalRecordLabel', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
