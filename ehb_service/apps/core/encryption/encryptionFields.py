@@ -141,6 +141,7 @@ class BaseField(models.Field):
 
         return value
 
+
 class EncryptCharField(BaseField):
 
     __metaclass__ = models.SubfieldBase
