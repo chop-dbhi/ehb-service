@@ -1,8 +1,6 @@
 import os
 import sys
 
-
-
 PROJECT_SRC_NAME = 'ehb_service'
 
 # absolute path to the myproject directory
