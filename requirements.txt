@@ -5,8 +5,7 @@
 #     pip install -U -r requirements.txt
 
 # Core requirements
-Django>=1.6,<1.7
-south
+Django==1.7.11
 uWSGI
 django-environ==0.4.1
 restlib2==0.3.9
