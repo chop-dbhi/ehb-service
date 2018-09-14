@@ -58,8 +58,8 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(help_text=b'Please use date format: <em>YYYY-MM-DD</em>', verbose_name=b'Record Creation DateTime', auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True, auto_now_add=True, help_text=b'Please use date format: <em>YYYY-MM-DD</em>', verbose_name=b'Record Last Modified DateTime')),
                 ('id', models.AutoField(serialize=False, primary_key=True)),
-                ('external_record', models.ForeignKey(related_name=b'external_record', default=None, to='core.ExternalRecord', null=True)),
-                ('related_record', models.ForeignKey(related_name=b'related_record', default=None, to='core.ExternalRecord', null=True)),
+                ('external_record', models.ForeignKey(related_name='external_record', default=None, to='core.ExternalRecord', null=True)),
+                ('related_record', models.ForeignKey(related_name='related_record', default=None, to='core.ExternalRecord', null=True)),
             ],
             options={
                 'abstract': False,
@@ -88,7 +88,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created', models.DateTimeField(help_text=b'Please use date format: <em>YYYY-MM-DD</em>', verbose_name=b'Record Creation DateTime', auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True, auto_now_add=True, help_text=b'Please use date format: <em>YYYY-MM-DD</em>', verbose_name=b'Record Last Modified DateTime')),
-                ('name', core.encryption.encryptionFields.EncryptCharField(unique=True, max_length=232, verbose_name=b'Group Name')),
+                ('name', core.encryption.encryptionFields.EncryptCharField(unique=True, max_length=255, verbose_name=b'Group Name')),
                 ('client_key', models.CharField(max_length=255, verbose_name=b'Client KEY')),
                 ('is_locking', models.BooleanField(default=False, verbose_name=b'Lock Group')),
                 ('description', models.TextField(help_text=b'Please briefly describe this Group.', verbose_name=b'Group Description')),
@@ -105,7 +105,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created', models.DateTimeField(help_text=b'Please use date format: <em>YYYY-MM-DD</em>', verbose_name=b'Record Creation DateTime', auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True, auto_now_add=True, help_text=b'Please use date format: <em>YYYY-MM-DD</em>', verbose_name=b'Record Last Modified DateTime')),
-                ('key', core.encryption.encryptionFields.EncryptCharField(verbose_name=b'EHB KEY', unique=True, max_length=232, editable=False, blank=True)),
+                ('key', core.encryption.encryptionFields.EncryptCharField(verbose_name=b'EHB KEY', unique=True, max_length=255, editable=False, blank=True)),
             ],
             options={
                 'abstract': False,
@@ -116,7 +116,7 @@ class Migration(migrations.Migration):
             name='MachineClient',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ip_address', models.IPAddressField(verbose_name=b'Remote Host IP Address')),
+                ('ip_address', models.GenericIPAddressField(verbose_name=b'Remote Host IP Address')),
                 ('host_name', models.CharField(default=b'', max_length=255, verbose_name=b'Name', blank=True)),
             ],
             options={
@@ -171,10 +171,10 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created', models.DateTimeField(help_text=b'Please use date format: <em>YYYY-MM-DD</em>', verbose_name=b'Record Creation DateTime', auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True, auto_now_add=True, help_text=b'Please use date format: <em>YYYY-MM-DD</em>', verbose_name=b'Record Last Modified DateTime')),
-                ('first_name', core.encryption.encryptionFields.EncryptCharField(max_length=296, verbose_name=b'First Name')),
-                ('last_name', core.encryption.encryptionFields.EncryptCharField(max_length=360, verbose_name=b'Last Name')),
-                ('organization_subject_id', core.encryption.encryptionFields.EncryptCharField(max_length=552, verbose_name=b'Organization Subject Record ID')),
-                ('dob', core.encryption.encryptionFields.EncryptDateField(help_text=b'Please use date format: <em>YYYY-MM-DD</em>', max_length=40, verbose_name=b'Date Of Birth')),
+                ('first_name', core.encryption.encryptionFields.EncryptCharField(max_length=255, verbose_name=b'First Name')),
+                ('last_name', core.encryption.encryptionFields.EncryptCharField(max_length=255, verbose_name=b'Last Name')),
+                ('organization_subject_id', core.encryption.encryptionFields.EncryptCharField(max_length=255, verbose_name=b'Organization Subject Record ID')),
+                ('dob', core.encryption.encryptionFields.EncryptDateField(help_text=b'Please use date format: <em>YYYY-MM-DD</em>', max_length=10, verbose_name=b'Date Of Birth')),
                 ('organization', models.ForeignKey(to='core.Organization')),
             ],
             options={
@@ -212,25 +212,25 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pedigreesubjectrelation',
             name='subject_1',
-            field=models.ForeignKey(related_name=b'subject_1', default=None, to='core.Subject', null=True),
+            field=models.ForeignKey(related_name='subject_1', default=None, to='core.Subject', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='pedigreesubjectrelation',
             name='subject_1_role',
-            field=models.ForeignKey(related_name=b'subject_1_role', default=None, to='core.Relation', null=True),
+            field=models.ForeignKey(related_name='subject_1_role', default=None, to='core.Relation', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='pedigreesubjectrelation',
             name='subject_2',
-            field=models.ForeignKey(related_name=b'subject_2', default=None, to='core.Subject', null=True),
+            field=models.ForeignKey(related_name='subject_2', default=None, to='core.Subject', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='pedigreesubjectrelation',
             name='subject_2_role',
-            field=models.ForeignKey(related_name=b'subject_2_role', default=None, to='core.Relation', null=True),
+            field=models.ForeignKey(related_name='subject_2_role', default=None, to='core.Relation', null=True),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
@@ -270,7 +270,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='externalrecord',
             name='label',
-            field=models.ForeignKey(default=1, verbose_name=b'Label', blank=True, to='core.ExternalRecordLabel'),
+            field=models.ForeignKey(default=1, verbose_name=b'Label', to='core.ExternalRecordLabel', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
