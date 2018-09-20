@@ -20,7 +20,6 @@ class CreatedModified(models.Model):
         help_text=date_help_text
     )
     modified = models.DateTimeField(
-        auto_now_add=True,
         auto_now=True,
         verbose_name='Record Last Modified DateTime',
         help_text=date_help_text
