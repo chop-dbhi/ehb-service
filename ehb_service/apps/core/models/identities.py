@@ -196,6 +196,7 @@ class Group(CreatedModified):
     client_key = models.CharField(max_length=255, verbose_name='Client KEY', editable=True)
     is_locking = models.BooleanField(default=False, verbose_name='Lock Group')
     # this cannot use onetoone because I don't want the ehb_keys to EVER be deleted
+    # ehb_key = models.OneToOneField(GroupEhbKey, editable=False, blank=True)
     ehb_key = models.ForeignKey(GroupEhbKey, editable=False, blank=True, unique=True)
     desc_help = 'Please briefly describe this Group.'
     description = models.TextField(verbose_name='Group Description', help_text=desc_help)
@@ -269,7 +270,7 @@ class SubjectGroup(CreatedModified):
 
     subjects = models.ManyToManyField(Subject)
 
-    group = models.ForeignKey(Group, unique=True)
+    group = models.OneToOneField(Group)
 
     class Meta(CreatedModified.Meta):
         ordering = ['group']
@@ -477,7 +478,7 @@ class PedigreeSubjectRelation(CreatedModified):
 class ExternalRecordGroup(CreatedModified):
 
     external_records = models.ManyToManyField(ExternalRecord)
-    group = models.ForeignKey(Group, unique=True)
+    group = models.OneToOneField(Group)
 
     class Meta(CreatedModified.Meta):
         ordering = ['group']
