@@ -5,13 +5,13 @@ import json
 from parameterized import parameterized
 from django.db.models import Q
 
-from django.test import TestCase
+from django.test import TransactionTestCase, TestCase
 from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem, PedigreeSubjectRelation
 
 from mock import patch
 
 
-class TestGroup(TestCase):
+class TestGroup(TransactionTestCase):
 
     fixtures = ['test_fixture.json']
 
