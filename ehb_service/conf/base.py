@@ -99,7 +99,7 @@ ROOT_URLCONF = 'ehb_service.conf.urls'
 MIDDLEWARE_CLASSES = (
 
 #    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.gzip.GZipMiddleware',
+    # 'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -113,13 +113,33 @@ MIDDLEWARE_CLASSES = (
 #------------------------------------
 #TEMPLATES
 #------------------------------------
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, PROJECT_MODULE_NAME, 'templates'),
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(PROJECT_ROOT, PROJECT_MODULE_NAME, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors':[
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.request',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
-TEMPLATE_CONTEXT_PROCESSORS += (
-    'django.core.context_processors.request',
-)
+# TEMPLATE_DIRS = (
+#     os.path.join(PROJECT_ROOT, PROJECT_MODULE_NAME, 'templates'),
+# )
+#
+# TEMPLATE_CONTEXT_PROCESSORS += (
+#     'django.core.context_processors.request',
+# )
 
 #------------------------------------
 # AUTHENTICATION
