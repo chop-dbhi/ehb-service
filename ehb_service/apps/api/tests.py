@@ -5,13 +5,10 @@ import json
 from parameterized import parameterized
 from django.db.models import Q
 
-from django.test import TestCase, TransactionTestCase
-from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem, PedigreeSubjectRelation
+from django.test import TestCase
+from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem, PedigreeSubjectRelation, ExternalRecordGroup
 
-from django.contrib.contenttypes.models import ContentType
 from mock import patch
-from django.core.cache import cache
-from django.db import connection
 
 
 class TestGroup(TestCase):
@@ -30,7 +27,6 @@ class TestGroup(TestCase):
     # url(r'^id/(?P<pk>\d+)/records/$', 'RecordGroupResource'),
     # url(r'^id/(?P<grp_pk>\d+)/records/id/(?P<x_pk>\d+)/$', 'RecordGroupResource'),
 
-
     def setUp(self):
         ############################
         # 1. Create Subject Group ##
@@ -47,8 +43,7 @@ class TestGroup(TestCase):
             content_type='application/json',
             data=json.dumps([req]))
         response_json = json.loads(response.content)
-        self.subjectGroup_id = str(response_json[0]['id'])
-
+        self.subjectGroup_id = str(response_json[0]['id']) # get subject group id (aka primary key)
         # Add a record to the Group
         response = self.client.post(
             '/api/group/id/{0}/records/'.format(self.subjectGroup_id),
@@ -56,7 +51,6 @@ class TestGroup(TestCase):
             content_type='application/json',
             data='[2]',
             HTTP_GROUP_CLIENT_KEY='testck')
-
         ##################################
         # 2. Create Subject Record Group #
         ##################################
@@ -72,8 +66,7 @@ class TestGroup(TestCase):
             content_type='application/json',
             data=json.dumps([req]))
         response_json = json.loads(response.content)
-        self.subjectRecordGroup_id = str(response_json[0]['id'])
-
+        self.subjectRecordGroup_id = str(response_json[0]['id']) # get subject record group id (aka primary key)
         # Add a record to the Group
         response = self.client.post(
             '/api/group/id/{0}/subjects/'.format(self.subjectRecordGroup_id),
@@ -81,11 +74,9 @@ class TestGroup(TestCase):
             content_type='application/json',
             data='[2]',
             HTTP_GROUP_CLIENT_KEY='testck')
-
-
-        ############################################
-        # 2. Create Subject Record Group - no record #
-        ############################################
+        #############################################
+        # 3. Create Subject Record Group - no record #
+        #############################################
         req = {
             'description': 'A BRP Protocol Group',
             'is_locking': 'True',
@@ -98,7 +89,7 @@ class TestGroup(TestCase):
             content_type='application/json',
             data=json.dumps([req]))
         response_json = json.loads(response.content)
-        self.subjectGroup_norecord_id = str(response_json[0]['id'])
+        self.subjectGroup_norecord_id = str(response_json[0]['id']) # get subject group id (aka primary key)
 
 
     def test_delete_group_by_id(self):
@@ -287,6 +278,7 @@ class TestGroup(TestCase):
     def test_add_record_to_group(self):
         # we only need to pass a list of pks being added to the group to add it
         primarykey = int(self.subjectGroup_id)
+        er = ExternalRecordGroup.objects.get(group_id=primarykey)
         # er = Group.objects.get(pk=primarykey).externalrecordgroup_set.all()
         response = self.client.post(
             '/api/group/id/{0}/records/'.format(self.subjectGroup_id),
