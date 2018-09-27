@@ -218,7 +218,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='group',
             name='ehb_key',
-            field=models.OneToOneField(blank=True, editable=False, to='core.GroupEhbKey'),
+            field=models.ForeignKey(blank=True, editable=False, to='core.GroupEhbKey', unique=True),
         ),
         migrations.AddField(
             model_name='externalsystem',

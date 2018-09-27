@@ -144,7 +144,6 @@ class BaseField(models.Field):
 
 class EncryptCharField(BaseField):
 
-
     def from_db_value(self, value, expression, connection, context):
         if value is None:
             return value
