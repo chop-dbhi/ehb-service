@@ -132,15 +132,6 @@ TEMPLATES = [
         },
     },
 ]
-
-# TEMPLATE_DIRS = (
-#     os.path.join(PROJECT_ROOT, PROJECT_MODULE_NAME, 'templates'),
-# )
-#
-# TEMPLATE_CONTEXT_PROCESSORS += (
-#     'django.core.context_processors.request',
-# )
-
 #------------------------------------
 # AUTHENTICATION
 #------------------------------------
