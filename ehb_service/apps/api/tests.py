@@ -5,13 +5,19 @@ import json
 from parameterized import parameterized
 from django.db.models import Q
 
-from django.test import TransactionTestCase, TestCase
+from django.test import TestCase, TransactionTestCase
 from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem, PedigreeSubjectRelation
 
+from django.contrib.contenttypes.models import ContentType
 from mock import patch
+from django.core.cache import cache
+from django.db import connection
 
 
-class TestGroup(TransactionTestCase):
+class TestGroup(TestCase):
+    subjectGroup_id = '0'
+    subjectRecordGroup_id = '0'
+    subjectGroup_norecord_id = '0'
 
     fixtures = ['test_fixture.json']
 
@@ -24,8 +30,11 @@ class TestGroup(TransactionTestCase):
     # url(r'^id/(?P<pk>\d+)/records/$', 'RecordGroupResource'),
     # url(r'^id/(?P<grp_pk>\d+)/records/id/(?P<x_pk>\d+)/$', 'RecordGroupResource'),
 
+
     def setUp(self):
-        # Create Subject Group
+        ############################
+        # 1. Create Subject Group ##
+        ############################
         req = {
             'description': 'A BRP Protocol Group',
             'is_locking': 'True',
@@ -37,14 +46,20 @@ class TestGroup(TransactionTestCase):
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data=json.dumps([req]))
+        response_json = json.loads(response.content)
+        self.subjectGroup_id = str(response_json[0]['id'])
+
         # Add a record to the Group
         response = self.client.post(
-            '/api/group/id/6/records/',
+            '/api/group/id/{0}/records/'.format(self.subjectGroup_id),
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data='[2]',
             HTTP_GROUP_CLIENT_KEY='testck')
-        # Create Subject Record Group
+
+        ##################################
+        # 2. Create Subject Record Group #
+        ##################################
         req = {
             'description': 'A BRP Record Group',
             'is_locking': 'True',
@@ -56,14 +71,21 @@ class TestGroup(TransactionTestCase):
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data=json.dumps([req]))
+        response_json = json.loads(response.content)
+        self.subjectRecordGroup_id = str(response_json[0]['id'])
+
         # Add a record to the Group
         response = self.client.post(
-            '/api/group/id/7/subjects/',
+            '/api/group/id/{0}/subjects/'.format(self.subjectRecordGroup_id),
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data='[2]',
             HTTP_GROUP_CLIENT_KEY='testck')
-        # Create Subject Group ( no records )
+
+
+        ############################################
+        # 2. Create Subject Record Group - no record #
+        ############################################
         req = {
             'description': 'A BRP Protocol Group',
             'is_locking': 'True',
@@ -75,13 +97,16 @@ class TestGroup(TransactionTestCase):
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data=json.dumps([req]))
+        response_json = json.loads(response.content)
+        self.subjectGroup_norecord_id = str(response_json[0]['id'])
+
 
     def test_delete_group_by_id(self):
         pre_count = Group.objects.count()
         response = self.client.delete(
             '/api/group/',
             content_type='application/json',
-            QUERY_STRING='id=6',
+            QUERY_STRING='id={0}'.format(self.subjectGroup_id),
             HTTP_GROUP_CLIENT_KEY='testck',
             HTTP_API_TOKEN="secretkey123"
         )
@@ -158,12 +183,12 @@ class TestGroup(TransactionTestCase):
 
     def test_update_group(self):
         req = {
-            'id': '6',
+            'id': '{0}'.format(self.subjectGroup_id),
             'group': {
                 'description': 'A New Description',
-                'id': '6',
+                'id': '{0}'.format(self.subjectGroup_id),
                 'is_locking': 'True',
-                'name': 'BRP:NEWTESTGROUP',
+                'name': 'BRP:NEWTESTCASE',
                 'current_client_key': 'testck'
             }
         }
@@ -261,9 +286,10 @@ class TestGroup(TransactionTestCase):
 
     def test_add_record_to_group(self):
         # we only need to pass a list of pks being added to the group to add it
-        er = Group.objects.get(pk=6).externalrecordgroup_set.all()
+        primarykey = int(self.subjectGroup_id)
+        # er = Group.objects.get(pk=primarykey).externalrecordgroup_set.all()
         response = self.client.post(
-            '/api/group/id/6/records/',
+            '/api/group/id/{0}/records/'.format(self.subjectGroup_id),
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data='[4]',
@@ -272,6 +298,7 @@ class TestGroup(TransactionTestCase):
         j = json.loads(response.content)
         r = j[0]
         self.assertTrue(r['success'])
+
 
     @patch('api.resources.group.log')
     def test_add_record_to_group_no_group(self, mock_log):
@@ -289,7 +316,7 @@ class TestGroup(TransactionTestCase):
     def test_add_record_to_group_no_key(self, mock_log):
         # we only need to pass a list of pks being added to the group to add it
         response = self.client.post(
-            '/api/group/id/6/records/',
+            '/api/group/id/{0}/records/'.format(self.subjectGroup_id),
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data='[2]')
@@ -300,7 +327,7 @@ class TestGroup(TransactionTestCase):
     def test_add_record_to_group_bad_record_id(self, mock_log):
         # we only need to pass a list of pks being added to the group to add it
         response = self.client.post(
-            '/api/group/id/6/records/',
+            '/api/group/id/{0}/records/'.format(self.subjectGroup_id),
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             data=json.dumps([99]),
@@ -312,10 +339,11 @@ class TestGroup(TransactionTestCase):
         self.assertFalse(r['success'])
         self.assertTrue(r['errors'], 13)
 
+    # @patch('api.resources.group.log')
     def test_delete_record(self):
         # Essentially this will remove John Doe's Redcap record from his record group.
         response = self.client.delete(
-            '/api/group/id/6/records/id/2/',
+            '/api/group/id/{0}/records/id/2/'.format(self.subjectGroup_id),
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             HTTP_GROUP_CLIENT_KEY='testck')
@@ -344,7 +372,7 @@ class TestGroup(TransactionTestCase):
     @patch('api.resources.group.log')
     def test_delete_record_no_xg(self, mock_log):
         response = self.client.delete(
-            '/api/group/id/6/records/id/99/',
+            '/api/group/id/{0}/records/id/99/'.format(self.subjectGroup_id),
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
             HTTP_GROUP_CLIENT_KEY='testck')
@@ -361,7 +389,8 @@ class TestGroup(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 200)
         j = json.loads(response.content)
-        self.assertEqual(j['id'], '6')
+        self.assertEqual(j['id'], self.subjectGroup_id)
+        # self.assertEqual(j['Description'], '6')
 
     def test_get_protocol_group_by_id(self):
         response = self.client.get(
@@ -385,7 +414,7 @@ class TestGroup(TransactionTestCase):
 
     def test_get_group_records(self):
         response = self.client.get(
-            '/api/group/id/6/records/', **{
+            '/api/group/id/{0}/records/'.format(self.subjectGroup_id), **{
                 'CONTENT_TYPE': 'application/json',
                 "HTTP_GROUP_CLIENT_KEY": 'testck',
                 'HTTP_API_TOKEN': 'secretkey123'})
@@ -396,7 +425,7 @@ class TestGroup(TransactionTestCase):
     @patch('api.resources.group.log')
     def test_get_group_records_no_records(self, mock_log):
         response = self.client.get(
-            '/api/group/id/8/records/', **{
+            '/api/group/id/{0}/records/'.format(self.subjectGroup_norecord_id), **{
                 "CONTENT_TYPE": 'application/json',
                 "HTTP_GROUP_CLIENT_KEY": 'testck',
                 'HTTP_API_TOKEN': 'secretkey123'})
@@ -405,7 +434,7 @@ class TestGroup(TransactionTestCase):
 
     def test_get_group_subjects(self):
         response = self.client.get(
-            '/api/group/id/7/subjects/', **{
+            '/api/group/id/{0}/subjects/'.format(self.subjectRecordGroup_id), **{
                 "CONTENT_TYPE": 'application/json',
                 "HTTP_GROUP_CLIENT_KEY": 'testck',
                 'HTTP_API_TOKEN': 'secretkey123'})
@@ -908,7 +937,6 @@ class TestExternalRecord(TestCase):
     def test_er_query_by_sub_org(self):
         '''
         **TODO: If _only_ sub_org is provided without sub_id the eHB will return _all_ external records
-
         Not sure if this should be the expected behavior (probably not)
         '''
         response = self.client.post(
