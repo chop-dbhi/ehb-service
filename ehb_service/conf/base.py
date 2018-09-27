@@ -99,7 +99,6 @@ ROOT_URLCONF = 'ehb_service.conf.urls'
 MIDDLEWARE_CLASSES = (
 
 #    'django.middleware.cache.UpdateCacheMiddleware',
-    # 'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
