@@ -91,7 +91,6 @@ class TestGroup(TestCase):
         response_json = json.loads(response.content)
         self.subjectGroup_norecord_id = str(response_json[0]['id']) # get subject group id (aka primary key)
 
-
     def test_delete_group_by_id(self):
         pre_count = Group.objects.count()
         response = self.client.delete(
@@ -179,7 +178,7 @@ class TestGroup(TestCase):
                 'description': 'A New Description',
                 'id': '{0}'.format(self.subjectGroup_id),
                 'is_locking': 'True',
-                'name': 'BRP:NEWTESTCASE',
+                'name': 'BRP:NEWTESTGROUP',
                 'current_client_key': 'testck'
             }
         }
@@ -291,7 +290,6 @@ class TestGroup(TestCase):
         r = j[0]
         self.assertTrue(r['success'])
 
-
     @patch('api.resources.group.log')
     def test_add_record_to_group_no_group(self, mock_log):
         # we only need to pass a list of pks being added to the group to add it
@@ -331,7 +329,6 @@ class TestGroup(TestCase):
         self.assertFalse(r['success'])
         self.assertTrue(r['errors'], 13)
 
-    # @patch('api.resources.group.log')
     def test_delete_record(self):
         # Essentially this will remove John Doe's Redcap record from his record group.
         response = self.client.delete(
@@ -382,7 +379,6 @@ class TestGroup(TestCase):
         self.assertEqual(response.status_code, 200)
         j = json.loads(response.content)
         self.assertEqual(j['id'], self.subjectGroup_id)
-        # self.assertEqual(j['Description'], '6')
 
     def test_get_protocol_group_by_id(self):
         response = self.client.get(
@@ -430,7 +426,6 @@ class TestGroup(TestCase):
                 "CONTENT_TYPE": 'application/json',
                 "HTTP_GROUP_CLIENT_KEY": 'testck',
                 'HTTP_API_TOKEN': 'secretkey123'})
-
         self.assertEqual(response.status_code, 200)
         j = json.loads(response.content)
         self.assertEqual(len(j), 1)
@@ -929,6 +924,7 @@ class TestExternalRecord(TestCase):
     def test_er_query_by_sub_org(self):
         '''
         **TODO: If _only_ sub_org is provided without sub_id the eHB will return _all_ external records
+        
         Not sure if this should be the expected behavior (probably not)
         '''
         response = self.client.post(
