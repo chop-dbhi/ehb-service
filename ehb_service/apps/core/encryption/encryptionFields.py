@@ -144,18 +144,11 @@ class BaseField(models.Field):
 
 class EncryptCharField(BaseField):
 
-    # __metaclass__ = models.SubfieldBase
 
     def from_db_value(self, value, expression, connection, context):
         if value is None:
             return value
         return super(EncryptCharField, self).to_python(value)
-        # return input_text
-
-    # def to_python(self, value):
-    #     print ("we are in char to python")
-    #     input_text = super(EncryptCharField, self).to_python(value)
-    #     return input_text
 
     def get_internal_type(self):
         return 'CharField'
@@ -188,7 +181,6 @@ class EncryptCharField(BaseField):
 
 
 class EncryptDateField(BaseField):
-    # __metaclass__ = models.SubfieldBase
 
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 10  # YYYY:MM:DD format
