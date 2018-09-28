@@ -320,15 +320,6 @@
   },
   {
     "pk": 1,
-    "model": "south.migrationhistory",
-    "fields": {
-      "applied": "2014-01-27T16:22:20.732",
-      "app_name": "core",
-      "migration": "0001_initial"
-    }
-  },
-  {
-    "pk": 1,
     "model": "auth.permission",
     "fields": {
       "codename": "add_logentry",
@@ -933,14 +924,6 @@
       "change_message": "Changed relation.",
       "user": 1,
       "content_type": 16
-    }
-  }
-  {
-    "pk":1,
-    "model": "core.PedigreeRelationshipRole",
-    "fields": {
-      "id": 1,
-      "role": "brother"
     }
   }
 

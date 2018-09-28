@@ -340,7 +340,7 @@ class ExternalRecord(CreatedModified):
     record_id = models.CharField(max_length=50, verbose_name=rec_verb)
     # To track pedigree
     # relation = models.ForeignKey(ExternalRecordRelation, verbose_name="Record Relationship (Pedigree)", null=True)
-    label = models.ForeignKey(ExternalRecordLabel, verbose_name="Label", default=1, blank=True)
+    label = models.ForeignKey(ExternalRecordLabel, verbose_name="Label", default=1, null=True)
     cleanmsg = 'There is already an entry with this path & record id for this external system'
 
     # class Meta(CreatedModified.Meta):

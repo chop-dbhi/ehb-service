@@ -21,7 +21,8 @@ class TokenMiddleware(object):
 
         SITE_ALLOW = [
             settings.FORCE_SCRIPT_NAME + '/admin/',
-            settings.FORCE_SCRIPT_NAME + '/'
+            settings.FORCE_SCRIPT_NAME + '/',
+            settings.FORCE_SCRIPT_NAME + '/admin/login/'
         ]
 
         if getattr(request, 'user', None) and request.user.is_authenticated():

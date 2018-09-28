@@ -6,7 +6,7 @@ Created on Jun 8, 2011
 import re
 
 from django.forms import ModelForm
-from django.forms.util import ErrorList
+from django.forms.utils import ErrorList
 from models.identities import Subject, ExternalRecord, ExternalSystem, \
     Organization, Group, ExternalRecordRelation, PedigreeSubjectRelation
 
