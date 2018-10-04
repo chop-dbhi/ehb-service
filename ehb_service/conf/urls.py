@@ -1,6 +1,6 @@
 from django.conf.urls import *
 from django.contrib import admin
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.views.generic.base import RedirectView
 
 admin.autodiscover()
