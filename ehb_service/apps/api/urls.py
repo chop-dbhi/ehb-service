@@ -57,6 +57,7 @@ pedigreeRelationship_patterns = ([
     'api')
     #url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'PedigreeSubjectRelationResource'),
 
+
 urlpatterns = [
     url(r'^subject/', include(subject_patterns,
         namespace='subject')),
@@ -71,5 +72,4 @@ urlpatterns = [
     url(r'^links/$', relation.RelationResource),
     url(r'^pedigree/', include(pedigreeRelationship_patterns,
         namespace='pedigree')),
-
 ]

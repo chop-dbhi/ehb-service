@@ -197,7 +197,11 @@ class Group(CreatedModified):
     is_locking = models.BooleanField(default=False, verbose_name='Lock Group')
     # this cannot use onetoone because I don't want the ehb_keys to EVER be deleted
     # ehb_key = models.OneToOneField(GroupEhbKey, editable=False, blank=True)
+<<<<<<< HEAD
     ehb_key = models.ForeignKey(GroupEhbKey, editable=False, blank=True, unique=True, on_delete=models.CASCADE)
+=======
+    ehb_key = models.ForeignKey(GroupEhbKey, editable=False, blank=True, unique=True)
+>>>>>>> issue76_django1.8
     desc_help = 'Please briefly describe this Group.'
     description = models.TextField(verbose_name='Group Description', help_text=desc_help)
 
@@ -482,7 +486,11 @@ class PedigreeSubjectRelation(CreatedModified):
 class ExternalRecordGroup(CreatedModified):
 
     external_records = models.ManyToManyField(ExternalRecord)
+<<<<<<< HEAD
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
+=======
+    group = models.OneToOneField(Group)
+>>>>>>> issue76_django1.8
 
     class Meta(CreatedModified.Meta):
         ordering = ['group']
