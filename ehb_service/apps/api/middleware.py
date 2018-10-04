@@ -24,7 +24,6 @@ class TokenMiddleware(object):
         response = self.get_response(request)
         return response
 
-
     def process_request(self, request):
 
         SITE_ALLOW = [
