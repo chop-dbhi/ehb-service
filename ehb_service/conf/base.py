@@ -96,7 +96,7 @@ ROOT_URLCONF = 'ehb_service.conf.urls'
 #------------------------------------
 #MIDDLEWARE
 #------------------------------------
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
 
 #    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -105,9 +105,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'api.middleware.TokenMiddleware',
-    'django.middleware.common.BrokenLinkEmailsMiddleware'
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
 #    'django.middleware.cache.FetchFromCacheMiddleware',
-)
+]
 
 #------------------------------------
 #TEMPLATES
