@@ -38,7 +38,6 @@ externalRecord_patterns = ([
     url(r'^labels/(?P<pk>\d+)/$', externalrecord.ExternalRecordLabelResource),],
     'api')
 
-
 group_patterns = ([
     # 'api.resources.group',
     url(r'^$', group.GroupResource),
@@ -55,7 +54,6 @@ pedigreeRelationship_patterns = ([
     url(r'^subject_id/(?P<subject_id>\d+)/$', relation.PedigreeSubjectRelationResource),],
     'api')
     #url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'PedigreeSubjectRelationResource'),
-
 
 urlpatterns = [
     url(r'^subject/', include(subject_patterns,
