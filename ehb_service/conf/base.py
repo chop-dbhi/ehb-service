@@ -46,7 +46,7 @@ SITE_ID = 1
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = False
-USE_ETAGS = True
+# USE_ETAGS = True
 
 
 #------------------------------------
@@ -106,6 +106,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'api.middleware.TokenMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware',
+    'django.middleware.http.ConditionalGetMiddleware',
 #    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
