@@ -21,7 +21,7 @@ RUN apt-get install -y\
     zlib1g-dev\
     postgresql-client
 
-RUN pip install "Django==1.9.13"
+RUN pip install "Django==1.10.8"
 RUN pip install uWSGI
 RUN pip install "django-environ==0.4.1"
 RUN pip install "restlib2==0.3.9"
