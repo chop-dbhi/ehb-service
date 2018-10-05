@@ -9,6 +9,7 @@ Django==1.10.8
 uWSGI
 django-environ==0.4.1
 restlib2==0.3.9
+tzlocal==1.5.1
 
 # Database bindings - uncomment any of the below libraries depending on the
 # database that will be used for the project. Since Django 1.2, multi-database

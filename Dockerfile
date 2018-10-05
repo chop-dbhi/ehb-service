@@ -30,6 +30,7 @@ RUN pip install python-ldap
 RUN pip install "pycrypto==2.3"
 RUN pip install mock
 RUN pip install django-redis-sessions
+RUN pip install "tzlocal==1.5.1"
 
 RUN mkdir /opt/app
 

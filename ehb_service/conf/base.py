@@ -39,7 +39,8 @@ EMAIL_SUBJECT_PREFIX = '[eHB] '
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = None
+from tzlocal import get_localzone
+TIME_ZONE = get_localzone().zone
 
 SITE_ID = 1
 
