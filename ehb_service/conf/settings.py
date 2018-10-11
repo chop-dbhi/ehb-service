@@ -63,3 +63,11 @@ if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(FORCE_SCRIPT_NAME, ADMIN_MEDIA_PREFIX[1:])
     STATIC_URL = os.path.join(FORCE_SCRIPT_NAME, STATIC_URL[1:])
     MEDIA_URL = os.path.join(FORCE_SCRIPT_NAME, MEDIA_URL[1:])
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
