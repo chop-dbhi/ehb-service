@@ -2,20 +2,25 @@ import json
 import logging
 
 from django.http import HttpResponse
-from restlib2.resources import Resource
-from restlib2.http import codes
 
 from api.helpers import FormHelpers
 from constants import ErrorConstants
 from core.models.identities import Subject, Organization, ExternalRecord
 from core.forms import SubjectForm
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
+from api.serializers import SubjectSerializer
+
+
 log = logging.getLogger(__name__)
+import sys
 
-
-class SubjectResource(Resource):
-    supported_accept_types = ['application/json', 'application/xml']
-    model = 'core.models.identities.Subject'
+@permission_classes((permissions.AllowAny,))
+class SubjectResource (APIView):
 
     def _read_and_action(self, request, sfunc, **kwargs):
         pk = kwargs.pop("pk", None)
@@ -28,9 +33,12 @@ class SubjectResource(Resource):
         if pk:
             try:
                 s = Subject.objects.get(pk=pk)
+                serializer = SubjectSerializer(s)
+                return Response(serializer.data)
             except Subject.DoesNotExist:
                 log.error("Subject[{0}] not found".format(pk))
-                return HttpResponse(status=codes.not_found)
+                return Response (serializer.data, status=status.HTTP_404_NOT_FOUND)
+                # return HttpResponse(status=codes.not_found)
 
         # search for subjects based on their orginization and subj ID
         if orgpk and org_sub_id:
@@ -60,6 +68,8 @@ class SubjectResource(Resource):
     def get(self, request, **kwargs):
         def onSuccess(s):
             r = s.responseFieldDict()
+            print ("this is what r is")
+            print (r)
             return json.dumps(r)
         return self._read_and_action(request, onSuccess, **kwargs)
 
@@ -70,6 +80,7 @@ class SubjectResource(Resource):
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def post(self, request):
+        print ("we are in original post")
         """This method is intended for adding new Subject records"""
         content_type = request.META.get("CONTENT_TYPE")
         response = []
@@ -87,18 +98,27 @@ class SubjectResource(Resource):
             return json.dumps(response)
 
     def put(self, request):
+        print ("we are in put method")
         """This method is intended for updating an existing Subject record"""
+
         response = []
 
         for item in request.data:
             pkval = item.get('id')
             s = item.get('new_subject')
 
+
             if not pkval or not s:
                 log.error("Unable to update Subject. No identifier provided")
                 return HttpResponse(status=codes.bad_request)
             try:
                 subj = Subject.objects.get(pk=pkval)
+                serializer = SubjectSerializer(subj, data=s)
+                # if serializer.is_valid():
+                #     serializer.save()
+                #     return Response(serializer.data)
+                # print ("serializer is not valid")
+                # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 fn = s.get('first_name', subj.first_name)
                 ln = s.get('last_name', subj.last_name)
                 orgid = s.get('organization', subj.organization)
@@ -127,6 +147,7 @@ class SubjectResource(Resource):
                     }
                 )
 
+        return Response(serializer.data)
         return json.dumps(response)
 
     def search_sub_by_external_record_id(self, external_sys, external_id):
