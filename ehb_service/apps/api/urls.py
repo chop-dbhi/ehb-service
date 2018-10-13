@@ -3,10 +3,10 @@ from api.resources import subject, relation, organization, group, externalsystem
 
 subject_patterns = ([
     # 'api.resources.subject',
-    url(r'^$', subject.SubjectResource),
-    url(r'^id/(?P<pk>\d+)/$', subject.SubjectResource),
-    url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', subject.SubjectResource),
-    url(r'^externalrecsys/(?P<externalrecsys>\d+)/erid/(?P<erid>.*)/$', subject.SubjectResource),],
+    url(r'^$', subject.SubjectResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/$', subject.SubjectResource.as_view()),
+    url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', subject.SubjectResource.as_view()),
+    url(r'^externalrecsys/(?P<externalrecsys>\d+)/erid/(?P<erid>.*)/$', subject.SubjectResource.as_view()),],
     'api')
 
 organization_patterns = ([
@@ -69,4 +69,5 @@ urlpatterns = [
     url(r'^links/$', relation.RelationResource),
     url(r'^pedigree/', include(pedigreeRelationship_patterns,
         namespace='pedigree')),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

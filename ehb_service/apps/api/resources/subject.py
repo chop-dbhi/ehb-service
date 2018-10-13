@@ -33,12 +33,9 @@ class SubjectResource (APIView):
         if pk:
             try:
                 s = Subject.objects.get(pk=pk)
-                serializer = SubjectSerializer(s)
-                return Response(serializer.data)
             except Subject.DoesNotExist:
                 log.error("Subject[{0}] not found".format(pk))
-                return Response (serializer.data, status=status.HTTP_404_NOT_FOUND)
-                # return HttpResponse(status=codes.not_found)
+                return Response (status=status.HTTP_404_NOT_FOUND)
 
         # search for subjects based on their orginization and subj ID
         if orgpk and org_sub_id:
@@ -49,10 +46,10 @@ class SubjectResource (APIView):
                     s = subs[0]
                 else:
                     log.error("Subject not found in Organization: {0} with provided Organization ID".format(org))
-                    return HttpResponse(status=codes.not_found)
+                    return Response ( status=status.HTTP_404_NOT_FOUND)
             except Organization.DoesNotExist:
                 log.error("Subject not found. Given Organization does not exist")
-                return HttpResponse(status=codes.not_found)
+                return Response (status=status.HTTP_404_NOT_FOUND)
 
         # search for subjects based on an external record id
         if external_sys and external_id:
@@ -60,16 +57,15 @@ class SubjectResource (APIView):
                 s = self.search_sub_by_external_record_id(external_sys, external_id)
             except Organization.DoesNotExist:
                 log.error("Subject not found. Given External Record does not exist")
-                return HttpResponse(status=codes.not_found)
+                return Response ( status=status.HTTP_404_NOT_FOUND)
 
         if s:
-            return sfunc(s)
+            serializer = SubjectSerializer(s)
+            return Response(serializer.data)
 
     def get(self, request, **kwargs):
         def onSuccess(s):
             r = s.responseFieldDict()
-            print ("this is what r is")
-            print (r)
             return json.dumps(r)
         return self._read_and_action(request, onSuccess, **kwargs)
 
@@ -80,7 +76,6 @@ class SubjectResource (APIView):
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def post(self, request):
-        print ("we are in original post")
         """This method is intended for adding new Subject records"""
         content_type = request.META.get("CONTENT_TYPE")
         response = []
@@ -95,7 +90,8 @@ class SubjectResource (APIView):
                 }
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
 
-            return json.dumps(response)
+            return Response (status=status.HTTP_200_OK)
+            # return json.dumps(response)
 
     def put(self, request):
         print ("we are in put method")
@@ -110,15 +106,9 @@ class SubjectResource (APIView):
 
             if not pkval or not s:
                 log.error("Unable to update Subject. No identifier provided")
-                return HttpResponse(status=codes.bad_request)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
             try:
                 subj = Subject.objects.get(pk=pkval)
-                serializer = SubjectSerializer(subj, data=s)
-                # if serializer.is_valid():
-                #     serializer.save()
-                #     return Response(serializer.data)
-                # print ("serializer is not valid")
-                # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 fn = s.get('first_name', subj.first_name)
                 ln = s.get('last_name', subj.last_name)
                 orgid = s.get('organization', subj.organization)
@@ -147,8 +137,10 @@ class SubjectResource (APIView):
                     }
                 )
 
-        return Response(serializer.data)
-        return json.dumps(response)
+        # if serializer.is_valid():
+        #     serializer.save()
+        return Response(status=status.HTTP_200_OK)
+        # return json.dumps(response)
 
     def search_sub_by_external_record_id(self, external_sys, external_id):
         ex_record = ExternalRecord.objects.filter(external_system=external_sys).filter(record_id=external_id)
