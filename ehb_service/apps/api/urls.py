@@ -11,9 +11,9 @@ subject_patterns = ([
 
 organization_patterns = ([
     # 'api.resources.organization',
-    url(r'^$', organization.OrganizationResource),
-    url(r'^id/(?P<pk>\d+)/$', organization.OrganizationResource),
-    url(r'^query/$', organization.OrganizationQuery),],
+    url(r'^$', organization.OrganizationResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/$', organization.OrganizationResource.as_view()),
+    url(r'^query/$', organization.OrganizationQuery.as_view()),],
     'api')
 
 externalSystem_patterns = ([
