@@ -14,10 +14,11 @@ class SubjectSerializer (serializers.ModelSerializer):
         fields = '__all__'
         # fields = ('first_name', 'last_name', 'created', 'dob', 'modified', 'organization_id_label', 'organization_subject_id', 'organization', 'id')
 
-class OrganizationSerializer (serializers.HyperlinkedModelSerializer):
+class OrganizationSerializer (serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ('id', 'subject_id_label', 'name', 'modified', 'created')
+        fields = '__all__'
+        # fields = ('id', 'subject_id_label', 'name', 'modified', 'created')
 
 class ExternalSystemSerializer (serializers.HyperlinkedModelSerializer):
     class Meta:
