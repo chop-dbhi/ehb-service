@@ -139,7 +139,11 @@ class SubjectResource (APIView):
 
         # if serializer.is_valid():
         #     serializer.save()
-        return Response(status=status.HTTP_200_OK)
+        print ("this is json dumps response")
+        print (json.dumps(response))
+        # print ("this is reseponse status ")
+        # print HTTPResponse(status=status.HTTP_200_OK)
+        return Response(data=json.dumps(response), status=status.HTTP_200_OK)
         # return json.dumps(response)
 
     def search_sub_by_external_record_id(self, external_sys, external_id):
