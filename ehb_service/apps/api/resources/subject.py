@@ -3,6 +3,7 @@ import logging
 
 from django.http import HttpResponse
 
+
 from api.helpers import FormHelpers
 from constants import ErrorConstants
 from core.models.identities import Subject, Organization, ExternalRecord
@@ -60,19 +61,18 @@ class SubjectResource (APIView):
                 return Response ( status=status.HTTP_404_NOT_FOUND)
 
         if s:
-            serializer = SubjectSerializer(s)
-            return Response(serializer.data)
+            return sfunc(s)
 
     def get(self, request, **kwargs):
         def onSuccess(s):
-            r = s.responseFieldDict()
-            return json.dumps(r)
+            serializer = SubjectSerializer(s)
+            return Response(serializer.data)
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def delete(self, request, **kwargs):
         def onSuccess(s):
             s.delete()
-            return HttpResponse(status=codes.ok)
+            return HttpResponse(status=status.HTTP_200_OK)
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def post(self, request):
@@ -90,11 +90,10 @@ class SubjectResource (APIView):
                 }
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
 
-            return Response (status=status.HTTP_200_OK)
-            # return json.dumps(response)
+            # return Response (status=status.HTTP_200_OK)
+            return json.dumps(response)
 
     def put(self, request):
-        print ("we are in put method")
         """This method is intended for updating an existing Subject record"""
 
         response = []
@@ -136,21 +135,13 @@ class SubjectResource (APIView):
                         ]
                     }
                 )
-
-        # if serializer.is_valid():
-        #     serializer.save()
-        print ("this is json dumps response")
-        print (json.dumps(response))
-        # print ("this is reseponse status ")
-        # print HTTPResponse(status=status.HTTP_200_OK)
-        return Response(data=json.dumps(response), status=status.HTTP_200_OK)
-        # return json.dumps(response)
+        return Response(response)
 
     def search_sub_by_external_record_id(self, external_sys, external_id):
         ex_record = ExternalRecord.objects.filter(external_system=external_sys).filter(record_id=external_id)
         if ex_record.__len__() != 1:
             log.error("External Record id {0} does not exist".format(ex_record))
-            return HttpResponse(status=codes.not_found)
+            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         for s in ex_record:
             sub = s.subject.id
         s = Subject.objects.get(pk=sub)
