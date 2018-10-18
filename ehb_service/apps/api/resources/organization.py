@@ -68,12 +68,13 @@ class OrganizationQuery(APIView):
                         }
                     )
 
-            print ("this is the json dumps")
-            print (json.dumps(response))
-            return Response (status=status.HTTP_200_OK)
+            # print ("this is the json dumps")
+            # print (json.dumps(response))
+            return Response(response)
+            # return Response (status=status.HTTP_200_OK)
             # return json.dumps(response)
 
-
+@permission_classes((permissions.AllowAny,))
 class OrganizationResource(APIView):
     supported_accept_types = ['application/json']
     model = 'core.models.identities.Organization'
@@ -88,7 +89,9 @@ class OrganizationResource(APIView):
             except Organization.DoesNotExist:
                 log.error("Organization not found")
                 return HttpResponse(status=codes.not_found)
-            return func(org)
+            serializer = OrganizationSerializer(org)
+            return Response(serializer.data)
+            # return func(org)
 
     def get(self, request, **kwargs):
         def onSuccess(org):
@@ -113,7 +116,8 @@ class OrganizationResource(APIView):
                 form = OrganizationForm(org)
                 args = {'name': name}
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
-            return json.dumps(response)
+            return (Response(response))
+            # return json.dumps(response)
 
     def put(self, request, **kwargs):
         """This method is intended for updating an existing Organization record"""
@@ -147,5 +151,5 @@ class OrganizationResource(APIView):
                             ]
                         }
                     )
-
-            return json.dumps(response)
+            return (Response(response))
+            # return json.dumps(response)
