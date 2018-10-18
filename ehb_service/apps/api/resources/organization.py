@@ -1,8 +1,8 @@
 import json
 import logging
 
-from restlib2.resources import Resource
-from restlib2.http import codes
+# from restlib2.resources import Resource
+# from restlib2.http import codes
 from django.http import HttpResponse
 
 from api.helpers import FormHelpers
@@ -26,7 +26,6 @@ class OrganizationQuery(APIView):
 
     def post(self, request):
         """This method is intended querying for Organization records by name"""
-        print ("this is the organization post")
         content_type = request.META.get("CONTENT_TYPE")
         response = []
 
@@ -67,12 +66,8 @@ class OrganizationQuery(APIView):
                             ]
                         }
                     )
-
-            # print ("this is the json dumps")
-            # print (json.dumps(response))
             return Response(response)
-            # return Response (status=status.HTTP_200_OK)
-            # return json.dumps(response)
+
 
 @permission_classes((permissions.AllowAny,))
 class OrganizationResource(APIView):
@@ -88,22 +83,22 @@ class OrganizationResource(APIView):
                 org = Organization.objects.get(pk=pk)
             except Organization.DoesNotExist:
                 log.error("Organization not found")
-                return HttpResponse(status=codes.not_found)
-            serializer = OrganizationSerializer(org)
-            return Response(serializer.data)
-            # return func(org)
+                return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return func(request, org)
 
     def get(self, request, **kwargs):
-        def onSuccess(org):
-            r = org.responseFieldDict()
-            return json.dumps(r)
+        def onSuccess(request, org):
+            serializer = OrganizationSerializer(org)
+            return Response(serializer.data)
+            # r = org.responseFieldDict()
+            # return json.dumps(r)
 
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def delete(self, request, **kwargs):
         def onSuccess(org):
             org.delete()
-            return HttpResponse(status=codes.ok)
+            return HttpResponse(status=status.HTTP_200_OK)
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def post(self, request):
@@ -130,7 +125,7 @@ class OrganizationResource(APIView):
                 pkval = item.get('id')
                 if not pkval:
                     log.error('Unable to update Organization. No identifier provided')
-                    return HttpResponse(status=codes.unprocessable_entity)
+                    return HttpResponse(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
                 try:
                     org = Organization.objects.get(pk=int(pkval))
                     n = item.get('name', org.name)
