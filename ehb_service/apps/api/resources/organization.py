@@ -10,14 +10,23 @@ from constants import ErrorConstants
 from core.models.identities import Organization
 from core.forms import OrganizationForm
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
+from api.serializers import OrganizationSerializer
+
 log = logging.getLogger(__name__)
 
-class OrganizationQuery(Resource):
+@permission_classes((permissions.AllowAny,))
+class OrganizationQuery(APIView):
     supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.Organization'
 
     def post(self, request):
         """This method is intended querying for Organization records by name"""
+        print ("this is the organization post")
         content_type = request.META.get("CONTENT_TYPE")
         response = []
 
@@ -59,10 +68,13 @@ class OrganizationQuery(Resource):
                         }
                     )
 
-            return json.dumps(response)
+            print ("this is the json dumps")
+            print (json.dumps(response))
+            return Response (status=status.HTTP_200_OK)
+            # return json.dumps(response)
 
 
-class OrganizationResource(Resource):
+class OrganizationResource(APIView):
     supported_accept_types = ['application/json']
     model = 'core.models.identities.Organization'
 
