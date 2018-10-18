@@ -20,10 +20,11 @@ class OrganizationSerializer (serializers.ModelSerializer):
         fields = '__all__'
         # fields = ('id', 'subject_id_label', 'name', 'modified', 'created')
 
-class ExternalSystemSerializer (serializers.HyperlinkedModelSerializer):
+class ExternalSystemSerializer (serializers.ModelSerializer):
     class Meta:
         model = ExternalSystem
-        fields = ('description','created', 'url', 'modified', 'id', 'name')
+        fields = '__all__'
+        # fields = ('description','created', 'url', 'modified', 'id', 'name')
 
 class ExternalRecordSerializer (serializers.HyperlinkedModelSerializer):
     class Meta:
