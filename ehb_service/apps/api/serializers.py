@@ -12,7 +12,7 @@ class SubjectSerializer (serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields = '__all__'
-        # fields = ('first_name', 'last_name', 'created', 'dob', 'modified', 'organization_id_label', 'organization_subject_id', 'organization', 'id')
+        # fields = ('first_name', 'last_name', 'created', 'dob', 'modified',  'organization_id_label','organization_subject_id', 'organization', 'id')
 
 class OrganizationSerializer (serializers.ModelSerializer):
     class Meta:
@@ -26,10 +26,11 @@ class ExternalSystemSerializer (serializers.ModelSerializer):
         fields = '__all__'
         # fields = ('description','created', 'url', 'modified', 'id', 'name')
 
-class ExternalRecordSerializer (serializers.HyperlinkedModelSerializer):
+class ExternalRecordSerializer (serializers.ModelSerializer):
     class Meta:
         model = ExternalRecord
-        fields = ('created', 'modified', 'label', 'record_id', 'path', 'external_system', 'id', 'subject')
+        fields = '__all__'
+        # fields = ('created', 'modified', 'label', 'record_id', 'path', 'external_system', 'id', 'subject')
 
 
 # class UserSerializer(serializers.HyperlinkedModelSerializer):
