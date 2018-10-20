@@ -40,11 +40,11 @@ externalRecord_patterns = ([
 
 group_patterns = ([
     # 'api.resources.group',
-    url(r'^$', group.GroupResource),
-    url(r'^id/(?P<pk>\d+)/subjects/$', group.SubjectGroupResource),
-    url(r'^id/(?P<grp_pk>\d+)/subjects/id/(?P<x_pk>\d+)/$', group.SubjectGroupResource),
-    url(r'^id/(?P<pk>\d+)/records/$', group.RecordGroupResource),
-    url(r'^id/(?P<grp_pk>\d+)/records/id/(?P<x_pk>\d+)/$', group.RecordGroupResource),],
+    url(r'^$', group.GroupResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/subjects/$', group.SubjectGroupResource.as_view()),
+    url(r'^id/(?P<grp_pk>\d+)/subjects/id/(?P<x_pk>\d+)/$', group.SubjectGroupResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/records/$', group.RecordGroupResource.as_view()),
+    url(r'^id/(?P<grp_pk>\d+)/records/id/(?P<x_pk>\d+)/$', group.RecordGroupResource.as_view()),],
     'api')
 
 pedigreeRelationship_patterns = ([
