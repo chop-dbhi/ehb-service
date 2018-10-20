@@ -144,7 +144,7 @@ class XGroupResource(ClientKeyResource):
             try:
                 x = X.objects.get(pk=x_pk)
                 self.XGroupItems(X_grp).remove(x)
-                return Response(status=status.HTTP_200_OK)
+                return Response(status=status.HTTP_204_NO_CONTENT)
             except X.DoesNotExist:
                 log.error('Unable to delete record from group. Record does not exist')
                 return Response(status=status.HTTP_404_NOT_FOUND)
@@ -265,7 +265,7 @@ class GroupResource(ClientKeyResource):
 
                 if not grp.verify_client_key(current_client_key):
                     log.error("Unable to update group. Bad client key")
-                    return Response(status=status.HTTP_401_UNAUTHORIZE)
+                    return Response(status=status.HTTP_401_UNAUTHORIZED)
 
                 name = g.get('name', grp.name)
                 lock = g.get('is_locking', grp.is_locking)
@@ -330,7 +330,7 @@ class GroupResource(ClientKeyResource):
                     return Response(status=status.HTTP_403_FORBIDDEN)
                 grp.delete()
 
-                return Response(status=status.HTTP_200_OK)
+                return Response(status=status.HTTP_204_NO_CONTENT)
             except Group.DoesNotExist:
                 log.error("Unable to delete group. Group not found")
                 return Response(status=status.HTTP_404_NOT_FOUND)
