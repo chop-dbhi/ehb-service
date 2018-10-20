@@ -3,55 +3,29 @@ from api.resources import subject, relation, organization, group, externalsystem
 
 subject_patterns = ([
     # 'api.resources.subject',
-    url(r'^$', subject.SubjectResource),
-    url(r'^id/(?P<pk>\d+)/$', subject.SubjectResource),
-    url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', subject.SubjectResource),
-    url(r'^externalrecsys/(?P<externalrecsys>\d+)/erid/(?P<erid>.*)/$', subject.SubjectResource),],
+    url(r'^$', subject.SubjectResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/$', subject.SubjectResource.as_view()),
+    url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', subject.SubjectResource.as_view()),
+    url(r'^externalrecsys/(?P<externalrecsys>\d+)/erid/(?P<erid>.*)/$', subject.SubjectResource.as_view()),],
     'api')
-
-# subject_patterns = ([
-#     # 'api.resources.subject',
-#     url(r'^$', subject.SubjectResource.as_view()),
-#     url(r'^id/(?P<pk>\d+)/$', subject.SubjectResource.as_view()),
-#     url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', subject.SubjectResource.as_view()),
-#     url(r'^externalrecsys/(?P<externalrecsys>\d+)/erid/(?P<erid>.*)/$', subject.SubjectResource.as_view()),],
-#     'api')
-
-# organization_patterns = ([
-#     # 'api.resources.organization',
-#     url(r'^$', organization.OrganizationResource.as_view()),
-#     url(r'^id/(?P<pk>\d+)/$', organization.OrganizationResource.as_view()),
-#     url(r'^query/$', organization.OrganizationQuery.as_view()),],
-#     'api')
 
 organization_patterns = ([
     # 'api.resources.organization',
-    url(r'^$', organization.OrganizationResource),
-    url(r'^id/(?P<pk>\d+)/$', organization.OrganizationResource),
-    url(r'^query/$', organization.OrganizationQuery),],
+    url(r'^$', organization.OrganizationResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/$', organization.OrganizationResource.as_view()),
+    url(r'^query/$', organization.OrganizationQuery.as_view()),],
     'api')
 
 externalSystem_patterns = ([
     # 'api.resources.externalsystem',
-    url(r'^$', externalsystem.ExternalSystemResource),
-    url(r'^id/(?P<pk>\d+)/$', externalsystem.ExternalSystemResource),
-    url(r'^id/(?P<pk>\d+)/subjects/$', externalsystem.ExternalSystemSubjects),
-    url(r'^id/(?P<pk>\d+)/organization/(?P<org_pk>\d+)/subjects/$', externalsystem.ExternalSystemSubjects),
-    url(r'^id/(?P<pk>\d+)/records/$', externalsystem.ExternalSystemRecords),
-    url(r'^id/(?P<pk>\d+)/organization/(?P<org_pk>\d+)/records/$', externalsystem.ExternalSystemRecords),
-    url(r'^query/$', externalsystem.ExternalSystemQuery),],
+    url(r'^$', externalsystem.ExternalSystemResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/$', externalsystem.ExternalSystemResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/subjects/$', externalsystem.ExternalSystemSubjects.as_view()),
+    url(r'^id/(?P<pk>\d+)/organization/(?P<org_pk>\d+)/subjects/$', externalsystem.ExternalSystemSubjects.as_view()),
+    url(r'^id/(?P<pk>\d+)/records/$', externalsystem.ExternalSystemRecords.as_view()),
+    url(r'^id/(?P<pk>\d+)/organization/(?P<org_pk>\d+)/records/$', externalsystem.ExternalSystemRecords.as_view()),
+    url(r'^query/$', externalsystem.ExternalSystemQuery.as_view()),],
     'api')
-
-# externalSystem_patterns = ([
-#     # 'api.resources.externalsystem',
-#     url(r'^$', externalsystem.ExternalSystemResource.as_view()),
-#     url(r'^id/(?P<pk>\d+)/$', externalsystem.ExternalSystemResource.as_view()),
-#     url(r'^id/(?P<pk>\d+)/subjects/$', externalsystem.ExternalSystemSubjects.as_view()),
-#     url(r'^id/(?P<pk>\d+)/organization/(?P<org_pk>\d+)/subjects/$', externalsystem.ExternalSystemSubjects.as_view()),
-#     url(r'^id/(?P<pk>\d+)/records/$', externalsystem.ExternalSystemRecords.as_view()),
-#     url(r'^id/(?P<pk>\d+)/organization/(?P<org_pk>\d+)/records/$', externalsystem.ExternalSystemRecords.as_view()),
-#     url(r'^query/$', externalsystem.ExternalSystemQuery.as_view()),],
-#     'api')
 
 externalRecord_patterns = ([
     # 'api.resources.externalrecord',
@@ -75,9 +49,9 @@ group_patterns = ([
 
 pedigreeRelationship_patterns = ([
     # 'api.resources.relation',
-    url(r'^$', relation.PedigreeSubjectRelationResource),
-    url(r'^protocol_id/(?P<protocol_id>\d+)/$', relation.PedigreeSubjectRelationResource),
-    url(r'^subject_id/(?P<subject_id>\d+)/$', relation.PedigreeSubjectRelationResource),],
+    url(r'^$', relation.PedigreeSubjectRelationResource.as_view()),
+    url(r'^protocol_id/(?P<protocol_id>\d+)/$', relation.PedigreeSubjectRelationResource.as_view()),
+    url(r'^subject_id/(?P<subject_id>\d+)/$', relation.PedigreeSubjectRelationResource.as_view()),],
     'api')
     #url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'PedigreeSubjectRelationResource'),
 
@@ -92,7 +66,7 @@ urlpatterns = [
         namespace='organization')),
     url(r'^group/', include(group_patterns,
         namespace='group')),
-    url(r'^links/$', relation.RelationResource),
+    url(r'^links/$', relation.RelationResource.as_view()),
     url(r'^pedigree/', include(pedigreeRelationship_patterns,
         namespace='pedigree')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
