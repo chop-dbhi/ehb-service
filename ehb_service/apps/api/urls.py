@@ -29,13 +29,13 @@ externalSystem_patterns = ([
 
 externalRecord_patterns = ([
     # 'api.resources.externalrecord',
-    url(r'^$', externalrecord.ExternalRecordResource),
-    url(r'^id/(?P<pk>\d+)/$', externalrecord.ExternalRecordResource),
-    url(r'^id/(?P<pk>\d+)/links/$', externalrecord.ExternalRecordRelationResource),
-    url(r'^id/(?P<pk>\d+)/links/(?P<link>\d+)/$', externalrecord.ExternalRecordRelationResource),
-    url(r'^query/$', externalrecord.ExternalRecordQuery),
-    url(r'^labels/$', externalrecord.ExternalRecordLabelResource),
-    url(r'^labels/(?P<pk>\d+)/$', externalrecord.ExternalRecordLabelResource),],
+    url(r'^$', externalrecord.ExternalRecordResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/$', externalrecord.ExternalRecordResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/links/$', externalrecord.ExternalRecordRelationResource.as_view()),
+    url(r'^id/(?P<pk>\d+)/links/(?P<link>\d+)/$', externalrecord.ExternalRecordRelationResource.as_view()),
+    url(r'^query/$', externalrecord.ExternalRecordQuery.as_view()),
+    url(r'^labels/$', externalrecord.ExternalRecordLabelResource.as_view()),
+    url(r'^labels/(?P<pk>\d+)/$', externalrecord.ExternalRecordLabelResource.as_view()),],
     'api')
 
 group_patterns = ([
