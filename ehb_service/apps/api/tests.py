@@ -924,7 +924,7 @@ class TestExternalRecord(TestCase):
     def test_er_query_by_sub_org(self):
         '''
         **TODO: If _only_ sub_org is provided without sub_id the eHB will return _all_ external records
-        
+
         Not sure if this should be the expected behavior (probably not)
         '''
         response = self.client.post(
@@ -1217,8 +1217,9 @@ class TestExternalRecordLink(TestCase):
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json')
         self.assertEqual(response.status_code, 200)
+        # print (response.content)
         res = json.loads(response.content)
-        self.assertTrue(res['success'])
+        self.assertTrue(res[0]['success'])
 
 
 class TestRelationResource(TestCase):
