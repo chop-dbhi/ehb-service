@@ -2,13 +2,6 @@ import json
 import logging
 
 from django.http import HttpResponse
-
-
-from api.helpers import FormHelpers
-from constants import ErrorConstants
-from core.models.identities import Subject, Organization, ExternalRecord
-from core.forms import SubjectForm
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,9 +9,13 @@ from rest_framework.decorators import permission_classes
 from rest_framework import permissions
 from api.serializers import SubjectSerializer
 
+from api.helpers import FormHelpers
+from constants import ErrorConstants
+from core.models.identities import Subject, Organization, ExternalRecord
+from core.forms import SubjectForm
 
 log = logging.getLogger(__name__)
-import sys
+
 
 @permission_classes((permissions.AllowAny,))
 class SubjectResource (APIView):

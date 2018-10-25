@@ -36,9 +36,7 @@ class ExternalSystemCrossReference(APIView):
         if es:
             response = []
             func(es, response)
-            # response = json.loads(json.dumps(response))
-            return Response (response)
-            # return json.dumps(response)
+            return Response(response)
 
     def getOrganization(self, org_id):
         org = None
@@ -175,9 +173,7 @@ class ExternalSystemQuery(APIView):
                         }
                     )
 
-            # response = json.loads(json.dumps(response))
             return Response(response)
-            # return json.dumps(response)
 
 
 @permission_classes((permissions.AllowAny,))
@@ -196,10 +192,7 @@ class ExternalSystemResource(APIView):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
         r = es.responseFieldDict()
-        #
-        # return json.dumps(r)
         r = json.loads(json.dumps(r))
-        # serializer = ExternalSystemSerializer(es)
         return Response(r)
 
     def post(self, request):

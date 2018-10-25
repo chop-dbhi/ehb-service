@@ -117,7 +117,7 @@ class TestGroup(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertTrue(post_count < pre_count)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_delete_group_no_ck(self, mock_log):
         response = self.client.delete(
             '/api/group/',
@@ -128,7 +128,7 @@ class TestGroup(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 403)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_delete_group_no_qs(self, mock_log):
         response = self.client.delete(
             '/api/group/',
@@ -139,7 +139,7 @@ class TestGroup(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 400)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_delete_group_bad_pk(self, mock_log):
         response = self.client.delete(
             '/api/group/',
@@ -192,7 +192,7 @@ class TestGroup(TestCase):
         r = j[0]
         self.assertTrue(r['success'])
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_update_group_no_pk(self, mock_log):
         req = {
             'group': {
@@ -212,7 +212,7 @@ class TestGroup(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 400)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_update_group_bad_ck(self, mock_log):
         req = {
             'id': '2',
@@ -232,7 +232,7 @@ class TestGroup(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 401)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_update_group_no_ck(self, mock_log):
         req = {
             'id': '1',
@@ -251,7 +251,7 @@ class TestGroup(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 400)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_update_group_bad_pk(self, mock_log):
         req = {
             'id': '99',
@@ -290,7 +290,7 @@ class TestGroup(TestCase):
         r = j[0]
         self.assertTrue(r['success'])
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_add_record_to_group_no_group(self, mock_log):
         # we only need to pass a list of pks being added to the group to add it
         response = self.client.post(
@@ -302,7 +302,7 @@ class TestGroup(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 404)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_add_record_to_group_no_key(self, mock_log):
         # we only need to pass a list of pks being added to the group to add it
         response = self.client.post(
@@ -313,7 +313,7 @@ class TestGroup(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 403)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_add_record_to_group_bad_record_id(self, mock_log):
         # we only need to pass a list of pks being added to the group to add it
         response = self.client.post(
@@ -338,7 +338,7 @@ class TestGroup(TestCase):
             HTTP_GROUP_CLIENT_KEY='testck')
         self.assertEqual(response.status_code, 204)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_delete_record_bad_group_key(self, mock_log):
         response = self.client.delete(
             '/api/group/id/3/records/id/1/',
@@ -348,7 +348,7 @@ class TestGroup(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 403)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_delete_record_bad_x(self, mock_log):
         response = self.client.delete(
             '/api/group/id/99/records/id/1/',
@@ -358,7 +358,7 @@ class TestGroup(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 404)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_delete_record_no_xg(self, mock_log):
         response = self.client.delete(
             '/api/group/id/{0}/records/id/99/'.format(self.subjectGroup_id),
@@ -390,7 +390,7 @@ class TestGroup(TestCase):
         j = json.loads(response.content)
         self.assertEqual(j['name'], 'BRP:M0536B4E2DDLA7W6')
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_get_protocol_group_by_name_bad_group(self, mock_log):
         response = self.client.get(
             '/api/group/?name=BADGROUP', **{
@@ -410,7 +410,7 @@ class TestGroup(TestCase):
         j = json.loads(response.content)
         self.assertEqual(len(j), 1)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_get_group_records_no_records(self, mock_log):
         response = self.client.get(
             '/api/group/id/{0}/records/'.format(self.subjectGroup_norecord_id), **{
@@ -430,7 +430,7 @@ class TestGroup(TestCase):
         j = json.loads(response.content)
         self.assertEqual(len(j), 1)
 
-    @patch('api.resources.group.log')
+    @patch('api.views.group.log')
     def test_get_group_subjects_bad_group_id(self, mock_log):
         response = self.client.get(
             '/api/group/id/99/subjects/', **{
@@ -466,7 +466,7 @@ class TestSubject(TestCase):
         self.assertEqual(j['organization'], 3)
         self.assertEqual(j['organization_subject_id'], '123456')
 
-    @patch('api.resources.subject.log')
+    @patch('api.views.subject.log')
     def test_subject_get_bad_pk(self, mock_log):
         response = self.client.get(
             '/api/subject/id/99/',
@@ -488,7 +488,7 @@ class TestSubject(TestCase):
         self.assertEqual(j['organization'], 3)
         self.assertEqual(j['organization_subject_id'], '123456')
 
-    @patch('api.resources.subject.log')
+    @patch('api.views.subject.log')
     def test_subject_get_by_osid_bad_org(self, mock_log):
         response = self.client.get(
             '/api/subject/organization/99/osid/123456/',
@@ -497,7 +497,7 @@ class TestSubject(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 404)
 
-    @patch('api.resources.subject.log')
+    @patch('api.views.subject.log')
     def test_subject_get_osid_bad_osid(self, mock_log):
         response = self.client.get(
             '/api/subject/organization/3/osid/99/',
@@ -577,7 +577,7 @@ class TestSubject(TestCase):
         self.assertTrue(pre_id != sub.organization_subject_id)
         self.assertTrue(r['success'])
 
-    @patch('api.resources.subject.log')
+    @patch('api.views.subject.log')
     def test_subject_update_bad_sub_pk(self, mock_log):
         sub = Subject.objects.get(pk=2)
         sub_data = sub.responseFieldDict()
@@ -619,7 +619,7 @@ class TestSubject(TestCase):
         self.assertFalse(r['success'])
         self.assertTrue({"organization": 7} in r['errors'])
 
-    @patch('api.resources.subject.log')
+    @patch('api.views.subject.log')
     def test_subject_update_no_pk(self, mock_log):
         sub = Subject.objects.get(pk=2)
         sub_data = sub.responseFieldDict()
@@ -664,7 +664,7 @@ class TestExternalSystem(TestCase):
         self.assertEqual(r['name'], "Nautilus Test")
         self.assertEqual(r['url'], 'http://nautilus.local:8090/api/')
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_query_by_name_not_found(self, mock_log):
         response = self.client.post(
             '/api/externalsystem/query/',
@@ -677,7 +677,7 @@ class TestExternalSystem(TestCase):
         r = j[0]
         self.assertTrue({'Query': 9} in r['errors'])
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_query_by_url_not_found(self, mock_log):
         response = self.client.post(
             '/api/externalsystem/query/',
@@ -690,7 +690,7 @@ class TestExternalSystem(TestCase):
         r = j[0]
         self.assertTrue({'Query': 9} in r['errors'])
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_query_invalid_query(self, mock_log):
         response = self.client.post(
             '/api/externalsystem/query/',
@@ -719,7 +719,7 @@ class TestExternalSystem(TestCase):
         j = json.loads(response.content)
         self.assertEqual(len(j), 2)
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_xref_subjects_by_org_bad_org(self, mock_log):
         response = self.client.get(
             '/api/externalsystem/id/2/organization/99/subjects/',
@@ -727,7 +727,7 @@ class TestExternalSystem(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 404)
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_xref_subjects_by_org_bad_es(self, mock_log):
         response = self.client.get(
             '/api/externalsystem/id/99/organization/3/subjects/',
@@ -753,7 +753,7 @@ class TestExternalSystem(TestCase):
         j = json.loads(response.content)
         self.assertEqual(len(j), 2)
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_xref_exrecs_by_org_bad_org(self, mock_log):
         response = self.client.get(
             '/api/externalsystem/id/2/organization/99/records/',
@@ -762,7 +762,7 @@ class TestExternalSystem(TestCase):
         self.assertTrue(mock_log.error.called)
         self.assertEqual(response.status_code, 404)
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_xref_exrecs_bad_es(self, mock_log):
         response = self.client.get(
             '/api/externalsystem/id/99/records/',
@@ -783,7 +783,7 @@ class TestExternalSystem(TestCase):
         self.assertEqual(j['id'], '2')
         self.assertEqual(j['description'], 'Children\'s Hospital of Philadelphia CBMi/TiU Research REDCap instance')
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_get_bad_pk(self, mock_log):
         response = self.client.get(
             '/api/externalsystem/id/99/',
@@ -854,7 +854,7 @@ class TestExternalSystem(TestCase):
         self.assertTrue(pre_name != es.name)
         self.assertTrue(r['success'])
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_update_bad_id(self, mock_log):
         es = ExternalSystem.objects.get(pk=2)
         es_data = es.responseFieldDict()
@@ -874,7 +874,7 @@ class TestExternalSystem(TestCase):
         self.assertFalse(r['success'])
         self.assertTrue({"id": 1} in r['errors'])
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_update_bad_query(self, mock_log):
         req = {}
         req['external_system'] = None
@@ -896,7 +896,7 @@ class TestExternalSystem(TestCase):
         post_count = ExternalSystem.objects.count()
         self.assertTrue(post_count < pre_count)
 
-    @patch('api.resources.externalsystem.log')
+    @patch('api.views.externalsystem.log')
     def test_es_delete_bad_pk(self, mock_log):
         response = self.client.delete(
             '/api/externalsystem/id/99/',
@@ -1006,7 +1006,7 @@ class TestExternalRecord(TestCase):
             self.assertEqual(each['path'], 'Test Protocol')
         self.assertEqual(len(ex_recs), 4)
 
-    @patch('api.resources.externalrecord.log')
+    @patch('api.views.externalrecord.log')
     def test_er_query_bad_sub_id(self, mock_log):
         response = self.client.post(
             '/api/externalrecord/query/',
@@ -1031,7 +1031,7 @@ class TestExternalRecord(TestCase):
         #     data='[{"subject_org": "99", "subject_org_id":"99"}]')
         # self.assertEqual(response.status_code, 416)
 
-    @patch('api.resources.externalrecord.log')
+    @patch('api.views.externalrecord.log')
     def test_er_query_bad_esid(self, mock_log):
         response = self.client.post(
             '/api/externalrecord/query/',
@@ -1056,7 +1056,7 @@ class TestExternalRecord(TestCase):
         #     data ='[{"testing":"99"}]')
         # self.assertEqual(True)
 
-    @patch('api.resources.externalrecord.log')
+    @patch('api.views.externalrecord.log')
     def test_er_query_bad_path(self, mock_log):
         response = self.client.post(
             '/api/externalrecord/query/',
@@ -1129,7 +1129,7 @@ class TestExternalRecord(TestCase):
         self.assertEqual(updated_er.label_id, 1)
         self.assertEqual(updated_er.path, 'New Path')
 
-    @patch('api.resources.externalrecord.log')
+    @patch('api.views.externalrecord.log')
     def test_er_update_bad_pk(self, mock_log):
         er = ExternalRecord.objects.get(pk=1)
         er_data = er.responseFieldDict()
@@ -1147,7 +1147,7 @@ class TestExternalRecord(TestCase):
         r = j[0]
         self.assertFalse(r['success'], False)
 
-    @patch('api.resources.externalrecord.log')
+    @patch('api.views.externalrecord.log')
     def test_er_update_no_pk(self, mock_log):
         er = ExternalRecord.objects.get(pk=1)
         er_data = er.responseFieldDict()
@@ -1162,7 +1162,7 @@ class TestExternalRecord(TestCase):
         self.assertEqual(response.status_code, 422)
         self.assertTrue(mock_log.error.called)
 
-    @patch('api.resources.externalrecord.log')
+    @patch('api.views.externalrecord.log')
     def test_er_delete_bad_pk(self, mock_log):
         pre = ExternalRecord.objects.count()
         response = self.client.delete(
@@ -1174,7 +1174,7 @@ class TestExternalRecord(TestCase):
         post = ExternalRecord.objects.count()
         self.assertTrue(post == pre)
 
-    @patch('api.resources.externalrecord.log')
+    @patch('api.views.externalrecord.log')
     def test_er_get_bad_pk(self, mock_log):
         response = self.client.get(
             '/api/externalrecord/id/99/',
@@ -1254,7 +1254,7 @@ class TestOrganization(TestCase):
         org = j[0]
         self.assertEqual(org['name'], 'Test Organization')
 
-    @patch('api.resources.organization.log')
+    @patch('api.views.organization.log')
     def test_org_not_found(self, mock_log):
         response = self.client.post(
             '/api/organization/query/',
@@ -1268,7 +1268,7 @@ class TestOrganization(TestCase):
         self.assertTrue({"Query": 9} in r["errors"])
         self.assertTrue(mock_log.error.called)
 
-    @patch('api.resources.organization.log')
+    @patch('api.views.organization.log')
     def test_org_query_invalid(self, mock_log):
         response = self.client.post(
             '/api/organization/query/',
@@ -1308,7 +1308,7 @@ class TestOrganization(TestCase):
         self.assertEqual(pre_label, 'Record ID')
         self.assertEqual(post_label, 'MRN')
 
-    @patch('api.resources.organization.log')
+    @patch('api.views.organization.log')
     def test_org_update_nopk(self, mock_log):
         org = Organization.objects.get(name="Test Organization")
         org_data = org.responseFieldDict()
@@ -1374,7 +1374,7 @@ class TestOrganization(TestCase):
         self.assertEqual(j['id'], '3')
         self.assertEqual(j['name'], 'Test Organization')
 
-    @patch('api.resources.organization.log')
+    @patch('api.views.organization.log')
     def test_org_delete_bad_pk(self, mock_log):
         response = self.client.delete(
             '/api/organization/id/99/',
@@ -1384,7 +1384,7 @@ class TestOrganization(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertTrue(mock_log.error.called)
 
-    @patch('api.resources.organization.log')
+    @patch('api.views.organization.log')
     def test_org_get_bad_pk(self, mock_log):
         response = self.client.get(
             '/api/organization/id/99/',

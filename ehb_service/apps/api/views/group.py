@@ -1,6 +1,4 @@
 from django.http import HttpResponse
-# from restlib2.resources import Resource
-# from restlib2.http import codes
 import json
 import logging
 
@@ -113,7 +111,6 @@ class XGroupResource(ClientKeyResource):
                     response.append({'id': x_id, 'success': False, 'errors': ErrorConstants.ERROR_ID_NOT_FOUND})
 
             return Response(response)
-            # return json.dumps(response)
 
         except Group.DoesNotExist:
             log.error("Group {0} does not exist".format(pk))
@@ -218,7 +215,6 @@ class GroupResource(ClientKeyResource):
                     rd.pop('ehb_key_id')
                     rd['ehb_key'] = g.ehb_key.key
                     return Response(rd)
-                    # return json.dumps(rd)
                 else:
                     log.error('Unable to find group with provided criteria')
                     return Response(status=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
@@ -240,7 +236,6 @@ class GroupResource(ClientKeyResource):
                 rd['ehb_key'] = grp.ehb_key.key
 
         return Response(response)
-        # return json.dumps(response)
 
     def put(self, request):
         '''This method is intended for updating Groups.'''
@@ -295,7 +290,6 @@ class GroupResource(ClientKeyResource):
                 )
 
         return Response(response)
-        # return json.dumps(response)
 
     def delete(self, request):
         ck = self.client_key(request)

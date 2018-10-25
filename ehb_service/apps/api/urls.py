@@ -1,5 +1,5 @@
 from django.conf.urls import url, include  # noqa
-from api.resources import subject, relation, organization, group, externalsystem,externalrecord
+from api.views import subject, relation, organization, group, externalsystem,externalrecord
 
 subject_patterns = ([
     # 'api.resources.subject',
