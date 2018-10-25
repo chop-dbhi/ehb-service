@@ -159,7 +159,7 @@ class ExternalRecordQuery(APIView):
             return Response(response)
 
 @permission_classes((permissions.AllowAny,))
-class ExternalRecordResource(APIView):
+class ExternalRecordView(APIView):
 
     supported_accept_types = ['application/json', 'application/xml']
 
@@ -273,9 +273,9 @@ class ExternalRecordResource(APIView):
 
 
 @permission_classes((permissions.AllowAny,))
-class ExternalRecordLabelResource(APIView):
+class ExternalRecordLabelView(APIView):
     '''
-    Provide a resource to provide ExternalRecord labels.
+    Provide a View to provide ExternalRecord labels.
     '''
     supported_accept_type = ['application/json']
     model = 'core.models.identities.ExternalRecordLabel'
@@ -299,9 +299,9 @@ class ExternalRecordLabelResource(APIView):
         return Response(response)
 
 @permission_classes((permissions.AllowAny,))
-class ExternalRecordRelationResource(APIView):
+class ExternalRecordRelationView(APIView):
     '''
-    Provide a resource to provide related ExternalRecords.
+    Provide a View to provide related ExternalRecords.
     '''
     supported_accept_type = ['application/json']
     model = 'core.models.identities.ExternalRecordRelation'

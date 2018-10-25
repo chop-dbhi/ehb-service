@@ -21,11 +21,11 @@ class TestGroup(TestCase):
     # 2 is going to return subject group
     # 3 is going to return externalrecord group
     # Going to want to test record groups and subject groups
-    # url(r'^$', 'GroupResource'),
-    # url(r'^id/(?P<pk>\d+)/subjects/$', 'SubjectGroupResource'),
-    # url(r'^id/(?P<grp_pk>\d+)/subjects/id/(?P<x_pk>\d+)/$', 'SubjectGroupResource'),
-    # url(r'^id/(?P<pk>\d+)/records/$', 'RecordGroupResource'),
-    # url(r'^id/(?P<grp_pk>\d+)/records/id/(?P<x_pk>\d+)/$', 'RecordGroupResource'),
+    # url(r'^$', 'GroupView'),
+    # url(r'^id/(?P<pk>\d+)/subjects/$', 'SubjectGroupView'),
+    # url(r'^id/(?P<grp_pk>\d+)/subjects/id/(?P<x_pk>\d+)/$', 'SubjectGroupView'),
+    # url(r'^id/(?P<pk>\d+)/records/$', 'RecordGroupView'),
+    # url(r'^id/(?P<grp_pk>\d+)/records/id/(?P<x_pk>\d+)/$', 'RecordGroupView'),
 
     def setUp(self):
         ############################
@@ -1222,7 +1222,7 @@ class TestExternalRecordLink(TestCase):
         self.assertTrue(res[0]['success'])
 
 
-class TestRelationResource(TestCase):
+class TestRelationView(TestCase):
 
     fixtures = ['test_fixture.json']
 

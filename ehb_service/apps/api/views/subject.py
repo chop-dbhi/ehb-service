@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 
 
 @permission_classes((permissions.AllowAny,))
-class SubjectResource (APIView):
+class SubjectView (APIView):
 
     def _read_and_action(self, request, sfunc, **kwargs):
         pk = kwargs.pop("pk", None)

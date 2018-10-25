@@ -80,7 +80,7 @@ class OrganizationQuery(APIView):
 
 
 @permission_classes((permissions.AllowAny,))
-class OrganizationResource(APIView):
+class OrganizationView(APIView):
     supported_accept_types = ['application/json']
     model = 'core.models.identities.Organization'
 

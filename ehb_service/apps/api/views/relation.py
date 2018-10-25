@@ -12,7 +12,7 @@ from api.helpers import FormHelpers
 
 
 @permission_classes((permissions.AllowAny,))
-class RelationResource(APIView):
+class RelationView(APIView):
     supported_accept_types = ['application/json']
     model = 'core.models.identities.Relation'
 
@@ -26,7 +26,7 @@ class RelationResource(APIView):
 
 
 @permission_classes((permissions.AllowAny,))
-class PedigreeSubjectRelationResource(APIView):
+class PedigreeSubjectRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.PedigreeSubjectRelation'
 

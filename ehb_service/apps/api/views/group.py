@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 
 
 @permission_classes((permissions.AllowAny,))
-class ClientKeyResource(APIView):
+class ClientKeyView(APIView):
     # def decode_key(self, key, request):
     #     enc_key = request.META.get(key)
     #     if enc_key:
@@ -31,7 +31,7 @@ class ClientKeyResource(APIView):
     #        return self.decode_key('HTTP_GROUP_CLIENT_KEY', request)
 
 
-class XGroupResource(ClientKeyResource):
+class XGroupView(ClientKeyView):
     mimetypes = ('application/json', 'application/xml')
 
     def XModel(self):
@@ -155,7 +155,7 @@ class XGroupResource(ClientKeyResource):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class SubjectGroupResource(XGroupResource):
+class SubjectGroupView(XGroupView):
     def XModel(self):
         return Subject
 
@@ -169,7 +169,7 @@ class SubjectGroupResource(XGroupResource):
         return xgroup.subjects
 
 
-class RecordGroupResource(XGroupResource):
+class RecordGroupView(XGroupView):
     def XModel(self):
         return ExternalRecord
 
@@ -183,7 +183,7 @@ class RecordGroupResource(XGroupResource):
         return xgroup.external_records
 
 
-class GroupResource(ClientKeyResource):
+class GroupView(ClientKeyView):
 
     def get(self, request):
         dict_ = request.GET

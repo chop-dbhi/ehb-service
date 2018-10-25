@@ -49,7 +49,7 @@ class ExternalSystemRecords(ExternalSystemCrossReference):
 
     def get(self, request, pk, **kwargs):
         '''
-        This resource provides a response with all of the external records that are
+        This View provides a response with all of the external records that are
         associated with this external system. If the org_pk is provided,
         then only external records whos subject record belong to the organization
         will be returned. If the path is provide only external records with the
@@ -79,7 +79,7 @@ class ExternalSystemSubjects(ExternalSystemCrossReference):
 
     def get(self, request, pk, **kwargs):
         '''
-        This resource provides a response with all of the subjects that have
+        This View provides a response with all of the subjects that have
         records associated with this external system. If the org_pk is provided,
         then only subject records that belong to this organization will be returned
         '''
@@ -177,7 +177,7 @@ class ExternalSystemQuery(APIView):
 
 
 @permission_classes((permissions.AllowAny,))
-class ExternalSystemResource(APIView):
+class ExternalSystemView(APIView):
 
     supported_accept_types = ['application/json']
     model = 'core.models.identities.ExternalSystem'
