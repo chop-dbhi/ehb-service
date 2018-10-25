@@ -21,7 +21,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     # third-party
-    'restlib2',
+    # 'restlib2',
 
     'core',
     'api',

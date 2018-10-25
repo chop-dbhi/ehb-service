@@ -1,12 +1,10 @@
 import json
 
-# from restlib2.resources import Resource
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework import permissions
-# from api.serializers import OrganizationSerializer
 
 from core.models.identities import Relation, PedigreeSubjectRelation
 from core.forms import PedigreeSubjectRelationForm
@@ -25,7 +23,6 @@ class RelationResource(APIView):
             d.append(relation.to_dict())
 
         return Response(d)
-        # return (json.dumps(d))
 
 
 @permission_classes((permissions.AllowAny,))
@@ -92,7 +89,6 @@ class PedigreeSubjectRelationResource(APIView):
             relationships = self.relationships_by_subject(subject_id)
 
         return Response(relationships)
-        # return relationships
 
     def put(self, request):
         """This method is intended for updating an existing protocol relationship"""
@@ -116,4 +112,3 @@ class PedigreeSubjectRelationResource(APIView):
                 }
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
             return Response(response)
-            # return json.dumps(response)
