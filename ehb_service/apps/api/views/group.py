@@ -67,7 +67,6 @@ class XGroupView(ClientKeyView):
                 for x in self.XGroupItems(X_grp).all():
                     response.append(x.responseFieldDict())
                 return Response(response)
-                # return json.dumps(response)
             except XGroup.DoesNotExist:
                 log.error("No records found for group [{0}].".format(pk))
                 return Response(status=status.HTTP_404_NOT_FOUND)

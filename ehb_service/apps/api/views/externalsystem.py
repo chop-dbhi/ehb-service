@@ -32,7 +32,7 @@ class ExternalSystemCrossReference(APIView):
             es = ExternalSystem.objects.get(pk=pk)
         except ExternalSystem.DoesNotExist:
             log.error("ExternalSystem[{0}] not found".format(pk))
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
         if es:
             response = []
             func(es, response)
@@ -60,7 +60,7 @@ class ExternalSystemRecords(ExternalSystemCrossReference):
             org = self.getOrganization(kwargs.pop('org_pk', None))
         except Organization.DoesNotExist:
             log.error("Unable to retrieve ExternalSystemRecords. Organization not found")
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         def process(es, response):
             qs = ExternalRecord.objects.filter(external_system=es)
@@ -87,7 +87,7 @@ class ExternalSystemSubjects(ExternalSystemCrossReference):
             org = self.getOrganization(kwargs.pop('org_pk', None))
         except Organization.DoesNotExist:
             log.error("Unable to retrieve ExternalSystemSubjects. Organization not found")
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         def process(es, response):
             if not org:
@@ -103,9 +103,6 @@ class ExternalSystemSubjects(ExternalSystemCrossReference):
 
 @permission_classes((permissions.AllowAny,))
 class ExternalSystemQuery(APIView):
-
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.ExternalSystem'
 
     def post(self, request):
         """This method is intended querying for ExternalSystem records by name"""
@@ -179,9 +176,6 @@ class ExternalSystemQuery(APIView):
 @permission_classes((permissions.AllowAny,))
 class ExternalSystemView(APIView):
 
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.ExternalSystem'
-
     def get(self, request, pk):
         es = None
 
@@ -189,7 +183,7 @@ class ExternalSystemView(APIView):
             es = ExternalSystem.objects.get(pk=pk)
         except ExternalSystem.DoesNotExist:
             log.error("ExternalSystem[{0}] not found".format(pk))
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         r = es.responseFieldDict()
         r = json.loads(json.dumps(r))
@@ -220,7 +214,7 @@ class ExternalSystemView(APIView):
 
             if not pkval or not s:
                 log.error("Unable to update ExternalSystem. Identifier not provided")
-                return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
             try:
                 es = ExternalSystem.objects.get(pk=pkval)
@@ -249,7 +243,7 @@ class ExternalSystemView(APIView):
         try:
             es = ExternalSystem.objects.get(pk=pk)
             es.delete()
-            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except ExternalSystem.DoesNotExist:
             log.error("Unable to delete ExternalSystem. ExternalSystem[{0}] no found".format(pk))
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)

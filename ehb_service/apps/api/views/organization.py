@@ -1,7 +1,6 @@
 import json
 import logging
 
-from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -18,8 +17,6 @@ log = logging.getLogger(__name__)
 
 @permission_classes((permissions.AllowAny,))
 class OrganizationQuery(APIView):
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.Organization'
 
     def post(self, request):
         """This method is intended querying for Organization records by name"""
@@ -81,8 +78,6 @@ class OrganizationQuery(APIView):
 
 @permission_classes((permissions.AllowAny,))
 class OrganizationView(APIView):
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.Organization'
 
     def _read_and_action(self, request, func, **kwargs):
         pk = kwargs.pop("pk")
@@ -93,7 +88,7 @@ class OrganizationView(APIView):
                 org = Organization.objects.get(pk=pk)
             except Organization.DoesNotExist:
                 log.error("Organization not found")
-                return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+                return Response(status=status.HTTP_404_NOT_FOUND)
             return func(org)
 
     def get(self, request, **kwargs):
@@ -105,7 +100,7 @@ class OrganizationView(APIView):
     def delete(self, request, **kwargs):
         def onSuccess(org):
             org.delete()
-            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def post(self, request):
@@ -131,7 +126,7 @@ class OrganizationView(APIView):
                 pkval = item.get('id')
                 if not pkval:
                     log.error('Unable to update Organization. No identifier provided')
-                    return HttpResponse(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+                    return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
                 try:
                     org = Organization.objects.get(pk=int(pkval))
                     n = item.get('name', org.name)

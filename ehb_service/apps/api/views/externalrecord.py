@@ -1,7 +1,6 @@
 import json
 import logging
 
-from django.http import HttpResponse
 from django.db.models import Q
 from core.forms import ExternalRecordForm, ExternalRecordRelationForm
 from constants import ErrorConstants
@@ -20,10 +19,6 @@ log = logging.getLogger(__name__)
 
 @permission_classes((permissions.AllowAny,))
 class ExternalRecordQuery(APIView):
-
-    supported_accept_types = ['application/json']
-
-    model = 'core.models.identities.ExternalRecord'
 
     def responseLabels(self, subjid, subj_org, subj_org_id, esid, esname, esurl, path):
 
@@ -303,9 +298,6 @@ class ExternalRecordRelationView(APIView):
     '''
     Provide a View to provide related ExternalRecords.
     '''
-    supported_accept_type = ['application/json']
-    model = 'core.models.identities.ExternalRecordRelation'
-
     def get(self, request, pk, link=None):
 
         response = []

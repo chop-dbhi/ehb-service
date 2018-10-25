@@ -13,8 +13,6 @@ from api.helpers import FormHelpers
 
 @permission_classes((permissions.AllowAny,))
 class RelationView(APIView):
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.Relation'
 
     def get(self, request, **kwargs):
         relations = Relation.objects.all()

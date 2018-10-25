@@ -1,7 +1,6 @@
 import json
 import logging
 
-from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -74,7 +73,7 @@ class SubjectView (APIView):
     def delete(self, request, **kwargs):
         def onSuccess(s):
             s.delete()
-            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def post(self, request):
