@@ -8,7 +8,7 @@
 Django==1.11.16
 uWSGI
 django-environ==0.4.1
-restlib2==0.3.9
+djangorestframework==3.8.2
 tzlocal==1.5.1
 
 # Database bindings - uncomment any of the below libraries depending on the
