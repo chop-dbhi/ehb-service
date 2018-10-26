@@ -183,7 +183,6 @@ class ExternalSystemView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         r = es.responseFieldDict()
-        r = json.loads(json.dumps(r))
         return Response(r)
 
     def post(self, request):
