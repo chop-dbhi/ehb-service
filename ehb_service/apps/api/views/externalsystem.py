@@ -172,7 +172,6 @@ class ExternalSystemQuery(APIView):
 
             return Response(response)
 
-
 @permission_classes((permissions.AllowAny,))
 class ExternalSystemView(APIView):
 
@@ -237,7 +236,7 @@ class ExternalSystemView(APIView):
                         ]
                     }
                 )
-        return Response (response)
+        return Response(response)
 
     def delete(self, request, pk):
         try:

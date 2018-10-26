@@ -94,13 +94,11 @@ class SubjectView (APIView):
 
     def put(self, request):
         """This method is intended for updating an existing Subject record"""
-
         response = []
 
         for item in request.data:
             pkval = item.get('id')
             s = item.get('new_subject')
-
 
             if not pkval or not s:
                 log.error("Unable to update Subject. No identifier provided")
