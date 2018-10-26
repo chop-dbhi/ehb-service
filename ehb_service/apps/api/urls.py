@@ -2,7 +2,6 @@ from django.conf.urls import url, include  # noqa
 from api.views import subject, relation, organization, group, externalsystem,externalrecord
 
 subject_patterns = ([
-    # 'api.Views.subject',
     url(r'^$', subject.SubjectView.as_view()),
     url(r'^id/(?P<pk>\d+)/$', subject.SubjectView.as_view()),
     url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', subject.SubjectView.as_view()),
@@ -10,14 +9,12 @@ subject_patterns = ([
     'api')
 
 organization_patterns = ([
-    # 'api.Views.organization',
     url(r'^$', organization.OrganizationView.as_view()),
     url(r'^id/(?P<pk>\d+)/$', organization.OrganizationView.as_view()),
     url(r'^query/$', organization.OrganizationQuery.as_view()),],
     'api')
 
 externalSystem_patterns = ([
-    # 'api.Views.externalsystem',
     url(r'^$', externalsystem.ExternalSystemView.as_view()),
     url(r'^id/(?P<pk>\d+)/$', externalsystem.ExternalSystemView.as_view()),
     url(r'^id/(?P<pk>\d+)/subjects/$', externalsystem.ExternalSystemSubjects.as_view()),
@@ -28,7 +25,6 @@ externalSystem_patterns = ([
     'api')
 
 externalRecord_patterns = ([
-    # 'api.Views.externalrecord',
     url(r'^$', externalrecord.ExternalRecordView.as_view()),
     url(r'^id/(?P<pk>\d+)/$', externalrecord.ExternalRecordView.as_view()),
     url(r'^id/(?P<pk>\d+)/links/$', externalrecord.ExternalRecordRelationView.as_view()),
@@ -39,7 +35,6 @@ externalRecord_patterns = ([
     'api')
 
 group_patterns = ([
-    # 'api.Views.group',
     url(r'^$', group.GroupView.as_view()),
     url(r'^id/(?P<pk>\d+)/subjects/$', group.SubjectGroupView.as_view()),
     url(r'^id/(?P<grp_pk>\d+)/subjects/id/(?P<x_pk>\d+)/$', group.SubjectGroupView.as_view()),
@@ -48,7 +43,6 @@ group_patterns = ([
     'api')
 
 pedigreeRelationship_patterns = ([
-    # 'api.Views.relation',
     url(r'^$', relation.PedigreeSubjectRelationView.as_view()),
     url(r'^protocol_id/(?P<protocol_id>\d+)/$', relation.PedigreeSubjectRelationView.as_view()),
     url(r'^subject_id/(?P<subject_id>\d+)/$', relation.PedigreeSubjectRelationView.as_view()),],

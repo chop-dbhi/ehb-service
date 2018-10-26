@@ -196,7 +196,6 @@ class Group(CreatedModified):
     client_key = models.CharField(max_length=255, verbose_name='Client KEY', editable=True)
     is_locking = models.BooleanField(default=False, verbose_name='Lock Group')
     # this cannot use onetoone because I don't want the ehb_keys to EVER be deleted
-    # ehb_key = models.OneToOneField(GroupEhbKey, editable=False, blank=True)
     ehb_key = models.ForeignKey(GroupEhbKey, editable=False, blank=True, unique=True, on_delete=models.CASCADE)
     desc_help = 'Please briefly describe this Group.'
     description = models.TextField(verbose_name='Group Description', help_text=desc_help)
