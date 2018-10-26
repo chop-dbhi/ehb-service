@@ -16,7 +16,6 @@ from constants import ErrorConstants
 log = logging.getLogger(__name__)
 
 
-@permission_classes((permissions.AllowAny,))
 class ClientKeyView(APIView):
     # def decode_key(self, key, request):
     #     enc_key = request.META.get(key)

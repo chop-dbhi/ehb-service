@@ -14,7 +14,6 @@ from core.forms import ExternalSystemForm
 
 log = logging.getLogger(__name__)
 
-@permission_classes((permissions.AllowAny,))
 class ExternalSystemCrossReference(APIView):
 
     class Meta(object):
@@ -99,7 +98,6 @@ class ExternalSystemSubjects(ExternalSystemCrossReference):
         return self._read_and_action(request, process, pk)
 
 
-@permission_classes((permissions.AllowAny,))
 class ExternalSystemQuery(APIView):
 
     def post(self, request):
@@ -170,7 +168,6 @@ class ExternalSystemQuery(APIView):
 
             return Response(response)
 
-@permission_classes((permissions.AllowAny,))
 class ExternalSystemView(APIView):
 
     def get(self, request, pk):

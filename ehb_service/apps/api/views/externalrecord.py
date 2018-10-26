@@ -17,7 +17,6 @@ from core.models.identities import ExternalRecord, \
 
 log = logging.getLogger(__name__)
 
-@permission_classes((permissions.AllowAny,))
 class ExternalRecordQuery(APIView):
 
     def responseLabels(self, subjid, subj_org, subj_org_id, esid, esname, esurl, path):
@@ -153,7 +152,6 @@ class ExternalRecordQuery(APIView):
 
             return Response(response)
 
-@permission_classes((permissions.AllowAny,))
 class ExternalRecordView(APIView):
 
     supported_accept_types = ['application/json', 'application/xml']
@@ -267,7 +265,6 @@ class ExternalRecordView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-@permission_classes((permissions.AllowAny,))
 class ExternalRecordLabelView(APIView):
     '''
     Provide a View to provide ExternalRecord labels.
@@ -293,7 +290,6 @@ class ExternalRecordLabelView(APIView):
             })
         return Response(response)
 
-@permission_classes((permissions.AllowAny,))
 class ExternalRecordRelationView(APIView):
     '''
     Provide a View to provide related ExternalRecords.

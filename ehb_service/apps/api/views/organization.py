@@ -14,7 +14,6 @@ from core.forms import OrganizationForm
 
 log = logging.getLogger(__name__)
 
-@permission_classes((permissions.AllowAny,))
 class OrganizationQuery(APIView):
 
     def post(self, request):
@@ -75,7 +74,6 @@ class OrganizationQuery(APIView):
 
 
 
-@permission_classes((permissions.AllowAny,))
 class OrganizationView(APIView):
 
     def _read_and_action(self, request, func, **kwargs):

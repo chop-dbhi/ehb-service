@@ -11,7 +11,6 @@ from core.forms import PedigreeSubjectRelationForm
 from api.helpers import FormHelpers
 
 
-@permission_classes((permissions.AllowAny,))
 class RelationView(APIView):
 
     def get(self, request, **kwargs):
@@ -23,7 +22,6 @@ class RelationView(APIView):
         return Response(d)
 
 
-@permission_classes((permissions.AllowAny,))
 class PedigreeSubjectRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.PedigreeSubjectRelation'
