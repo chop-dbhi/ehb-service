@@ -1,9 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-class EncryptionService(object):
-    __metaclass__ = ABCMeta
-
-    # Abstract methods
+class EncryptionService(object, metaclass=ABCMeta):
     @abstractmethod
     def configure(self, **kwargs):
         pass

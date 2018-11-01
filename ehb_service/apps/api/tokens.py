@@ -17,8 +17,8 @@ def generate_random_token(size=32, max_attempts=100, test=None):
     """Generates a random token that can be tested for uniqueness before
     returning.
     """
-    for _ in xrange(max_attempts):
-        key = ''.join(random.choice(HEX_CHARS) for i in xrange(size))
+    for _ in range(max_attempts):
+        key = ''.join(random.choice(HEX_CHARS) for i in range(size))
         if not test or test(key):
             return key
     raise ValueError('Maximum attempts made to generate key.')
@@ -65,8 +65,8 @@ class TokenGenerator(object):
 
     def _make(self, user, timestamp):
         ts_b36 = int_to_base36(timestamp)
-        total = (django_settings.SECRET_KEY + unicode(user.pk) +
-                 user.password + unicode(timestamp))
+        total = (django_settings.SECRET_KEY + str(user.pk) +
+                 user.password + str(timestamp))
         digest = hashlib.sha1(total).hexdigest()[::2]
         return '{0}-{1}-{2}'.format(user.pk, ts_b36, digest)
 

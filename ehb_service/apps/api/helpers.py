@@ -1,6 +1,6 @@
 import logging
 import xml.dom.minidom as xml
-from views.constants import ErrorConstants
+from .views.constants import ErrorConstants
 from core.models.identities import ExternalRecord, Subject
 
 log = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class FormHelpers(object):
        this returns a list with json formated errors"""
         errdict = FormHelpers.errorDict(formerrors)
         errl = []
-        for k in errdict.keys():
+        for k in list(errdict.keys()):
             v = errdict.get(k)
             e = v[0]
 
@@ -136,7 +136,7 @@ class FormHelpers(object):
                 response_dict = {"id": str(m.pk), "success": True}
 
             if valid_dict:
-                for key in valid_dict.keys():
+                for key in list(valid_dict.keys()):
                     response_dict[key] = valid_dict.get(key)
 
             if keys_from_response_dict:
@@ -147,7 +147,7 @@ class FormHelpers(object):
             log.error('Error in form validation')
             response_dict = {"success": False, "errors": FormHelpers.jsonErrors(form.errors)}
             if invalid_dict:
-                for key in invalid_dict.keys():
+                for key in list(invalid_dict.keys()):
                     response_dict[key] = invalid_dict.get(key)
         response.append(response_dict)
 

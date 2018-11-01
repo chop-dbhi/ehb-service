@@ -30,7 +30,7 @@ class ApiToken(models.Model):
         verbose_name = 'API Token'
 
     def __unicode__(self):
-        return u"{0}'s API Token".format(self.user)
+        return "{0}'s API Token".format(self.user)
 
     def save(self, *args, **kwargs):
         if not self.token:

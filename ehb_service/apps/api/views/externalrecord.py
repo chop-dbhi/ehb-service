@@ -3,7 +3,7 @@ import logging
 
 from django.db.models import Q
 from core.forms import ExternalRecordForm, ExternalRecordRelationForm
-from constants import ErrorConstants
+from .constants import ErrorConstants
 from api.helpers import FormHelpers
 
 from rest_framework.views import APIView

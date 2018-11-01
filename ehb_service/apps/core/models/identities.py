@@ -27,7 +27,7 @@ class CreatedModified(models.Model):
 
     class Meta(object):
         abstract = True
-        app_label = u'core'
+        app_label = 'core'
 
     def save(self, force_insert=False, force_update=False, using=None):
         now = datetime.now()
@@ -42,7 +42,7 @@ class CreatedModified(models.Model):
     def responseFieldDict(self):
         response = {}
 
-        for k in self.__dict__.keys():
+        for k in list(self.__dict__.keys()):
             if not k.startswith('_'):
                 response[k] = (str(self.__dict__.get(k)))
 
@@ -128,7 +128,7 @@ class GroupPropsKey(CreatedModified):
 
     class Meta(object):
         abstract = True
-        app_label = u'core'
+        app_label = 'core'
 
     def ehb_prop(self, GROUP, KEY, default=None):
         EHB_PROPS = settings.EHB_PROPS
@@ -497,4 +497,4 @@ class SubjectValidation(models.Model):
         return "{0} Subject validation".format(self.organization.name)
 
     class Meta:
-        app_label = u'core'
+        app_label = 'core'

@@ -3,7 +3,7 @@ import environ
 
 from django.core.exceptions import ImproperlyConfigured
 
-from base import *
+from .base import *
 
 env = environ.Env()
 env.read_env('{0}.env'.format(env('APP_ENV')))
