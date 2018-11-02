@@ -34,19 +34,26 @@ class AESEncryption(EncryptionService):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
-        enc = AES.new(key, self.mode)
+        enc = AES.new(str.encode(key), self.mode)
+        # print (enc)
+        # print (data)
+        # data = data.encode("utf8")
+        # print (data)
 
-        if self.use_checksum:
-            data += struct.pack("i", zlib.crc32(data))
+        # if self.use_checksum:
+        #     data += struct.pack("i", zlib.crc32(data))
+        result = enc.encrypt(str.encode(data))
+        print (result)
 
-        return enc.encrypt(data)
+
+        return enc.encrypt(str.encode(data))
 
     def decrypt(self, edata, key, **kwargs):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
-        enc = AES.new(key, self.mode)
-        data = enc.decrypt(edata)
+        enc = AES.new(key.encode("utf8"), self.mode)
+        data = enc.decrypt(edata.encode("utf8"))
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
