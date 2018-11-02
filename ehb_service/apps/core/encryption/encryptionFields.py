@@ -7,7 +7,7 @@ import string
 from django import forms
 from django.db import models
 from django.forms import fields
-from django.utils.encoding import force_unicode, smart_str
+from django.utils.encoding import force_text, smart_bytes
 
 from core.encryption.Factories import FactoryEncryptionServices as efac
 
@@ -101,7 +101,7 @@ class BaseField(models.Field):
         if self.use_encryption:
             key = self.akms.get_key()
             if self._is_encrypted(value, key):
-                return force_unicode(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
+                return force_text(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
             else:
                 return value
         else:
@@ -123,7 +123,7 @@ class BaseField(models.Field):
         if len(value.strip()) == 0:
             return value
 
-        value = smart_str(value, encoding='utf-8', strings_only=False, errors='strict')
+        value = smart_bytes(value, encoding='utf-8', strings_only=False, errors='strict')
         if self.use_encryption:
 
             key = self.akms.get_key()
