@@ -8,7 +8,9 @@ from django.utils.http import int_to_base36, base36_to_int
 from django.conf import settings
 
 # Hex characters
-HEX_CHARS = string.lowercase[:6] + string.digits
+# HEX_CHARS = string.lowercase[:6] + string.digits
+HEX_CHARS = string.ascii_lowercase[:6] + string.digits
+
 
 # System-level random generator
 random = SystemRandom()
