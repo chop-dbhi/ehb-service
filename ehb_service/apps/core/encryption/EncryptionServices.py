@@ -1,6 +1,7 @@
 import struct
 import zlib
 import logging
+from base64 import b64decode, b64encode
 
 from Crypto.Cipher import AES
 
@@ -37,16 +38,21 @@ class AESEncryption(EncryptionService):
         enc = AES.new(str.encode(key), self.mode)
         # print (enc)
         # print (data)
-        # data = data.encode("utf8")
+        data = str.encode(data)
         # print (data)
 
-        # if self.use_checksum:
-        #     data += struct.pack("i", zlib.crc32(data))
-        result = enc.encrypt(str.encode(data))
-        print (result)
+        if self.use_checksum:
+            data += struct.pack("i", zlib.crc32(data))
+            # print (data)
+        # result = enc.encrypt(str.encode(data))
+        # print (result)
+        # data = map(ord, data)
+        # data = str.encode(data)
+        iv = b64encode(enc.iv).decode('utf-8')
+        data_bytes = enc.encrypt(data)
 
-
-        return enc.encrypt(str.encode(data))
+        return b64encode(data_bytes).decode('utf-8')
+        # return enc.encrypt(data)
 
     def decrypt(self, edata, key, **kwargs):
         if self.auto_correct_key_length:
