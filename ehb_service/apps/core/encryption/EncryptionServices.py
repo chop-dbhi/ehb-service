@@ -118,17 +118,37 @@ class AESEncryption(EncryptionService):
         if self.use_checksum:
             data += struct.pack("i", zlib.crc32(data))
 
-            print ("this is data after checksum")
-            print (data)
-            data_uni = self.ToUnicode(data)
-            print ("this is data after unicode conversion")
-            print (data_uni)
+            # print ("this is data after checksum")
+            # print (data)
+            # string_data = []
+            # [string_data.append(chr(d)) for d in data]
+            # print ("this is string data")
+            # print (string_data)
+            # print ("THIS IS ORD VALUE")
+            # ord_data = []
+            # [ord_data.append(ord(s)) for s in string_data]
+
+            # data_uni = self.ToUnicode(data)
+            # print ("this is data after unicode conversion")
+            # print (data_uni)
             # ord_data = []
             # [ord_data.append(ord(c))for c in data_uni]
             # [print (chr(c)) for c in ord_data]
             # print (ord('?'))
+        # encrypted_data = enc.encrypt(data)
+        string_encryption = []
+        # for e in encrypted_data:
+        #     string_encryption.append( chr(e))
+        # print ("this is string encryption")
+        # print (string_encryption)
 
-        return self.ToUnicode(enc.encrypt(data))
+        return str(enc.encrypt(data))
+
+        # for e in (enc.encrypt(data)):
+        #     string_encryption.append(chr(e))
+        # print (string_encryption)
+        # return string_encryption
+        # return self.ToUnicode(enc.encrypt(data))
 
 
         #
