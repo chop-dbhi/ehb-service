@@ -3,7 +3,7 @@ import zlib
 import logging
 import base64
 
-from Crypto.Cipher import AES
+from Crypto.Cipher import AES, DES
 
 from core.encryption.EncryptionServiceBase import EncryptionService
 from core.encryption.Exceptions import CheckSumFailure
@@ -12,6 +12,43 @@ log = logging.getLogger(__name__)
 
 
 class AESEncryption(EncryptionService):
+
+    # Consistently returns the new bytes() type from python-future. Assumes incoming
+    # strings are either UTF-8 or unicode (which is converted to UTF-8).
+    def ToBytes(self, value ):
+        if not value:
+            return bytes()
+        # This is tricky. On py2, the bytes type from builtins (from python-future) is
+        # a subclass of str. So all of the following are true:
+        # isinstance(str(), bytes)
+        #   isinstance(bytes(), str)
+        # But they don't behave the same in one important aspect: iterating over a
+        # bytes instance yields ints, while iterating over a (raw, py2) str yields
+        # chars. We want consistent behavior so we force the use of bytes().
+        if type( value ) == bytes:
+            return value
+
+        # This is meant to catch Python 2's native str type.
+        if isinstance( value, bytes ):
+            return bytes( value, encoding = 'utf8' )
+
+        if isinstance( value, str ):
+        # On py2, with `from builtins import *` imported, the following is true:
+        #
+        #   bytes(str(u'abc'), 'utf8') == b"b'abc'"
+        #
+        # Obviously this is a bug in python-future. So we work around it. Also filed
+        # upstream at: https://github.com/PythonCharmers/python-future/issues/193
+        # We can't just return value.encode( 'utf8' ) on both py2 & py3 because on
+        # py2 that *sometimes* returns the built-in str type instead of the newbytes
+        # type from python-future.
+            if PY2:
+                return bytes( value.encode( 'utf8' ), encoding = 'utf8' )
+            else:
+                return bytes( value, encoding = 'utf8' )
+
+        # This is meant to catch `int` and similar non-string/bytes types.
+        return ToBytes( str( value ) )
 
     def configure(self, **kwargs):
         self.mode = kwargs.get('mode', AES.MODE_CFB)
@@ -34,6 +71,17 @@ class AESEncryption(EncryptionService):
     def encrypt(self, data, key, **kwargs):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
+
+        key = self.ToBytes(key)
+
+        enc = AES.new(key, AES.MODE_CFB)
+
+        data_encode = data.encode('utf-8')
+        print (zlib.crc32(data))
+        if self.use_checksum:
+            data += struct.pack("i", zlib.crc32(data))
+
+
 
         key_encode = key.encode('utf-8')
         data_encode = data.encode('utf-8')
