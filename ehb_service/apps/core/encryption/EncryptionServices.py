@@ -35,21 +35,31 @@ class AESEncryption(EncryptionService):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
+        print ("this is key")
+        print (key)
+
         enc = AES.new(str.encode(key), self.mode)
-        # print (enc)
-        # print (data)
         data = str.encode(data)
-        # print (data)
 
         if self.use_checksum:
             data += struct.pack("i", zlib.crc32(data))
+        #     print (type(data))
             # print (data)
         # result = enc.encrypt(str.encode(data))
         # print (result)
         # data = map(ord, data)
         # data = str.encode(data)
-        iv = b64encode(enc.iv).decode('utf-8')
+        # iv = b64encode(enc.iv).decode('utf-8')
         data_bytes = enc.encrypt(data)
+        print (data_bytes)
+        # print (data_bytes)
+        # enc_2 = AES.new(b'1234561111111111', self.mode)
+        # enc_secret = enc.encrypt(b'secret')
+        # print ("this is encrypted secret")
+        # print (enc_secret)
+        # dec_secret = enc_secret.decode()
+        # print ("this is decoded secret")
+        # print (dec_secret)
 
         return b64encode(data_bytes).decode('utf-8')
         # return enc.encrypt(data)
