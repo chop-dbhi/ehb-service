@@ -52,7 +52,7 @@ class AESEncryption(EncryptionService):
 
     # Returns a unicode type; either the new python-future str type or the real
     # unicode type. The difference shouldn't matter.
-    def ToUnicode(self, value ):
+    def ToUnicode(self, value, encryption=False ):
         if not value:
             return str()
         if isinstance( value, str ):
@@ -62,22 +62,45 @@ class AESEncryption(EncryptionService):
             try:
                 unicode_value = str( value, 'utf8' )
             except UnicodeDecodeError:
-                unicode_value = str( value, 'utf8', 'replace')
-                print ("this is unicode value")
-                print (unicode_value)
-                ord_value= []
-                [ord_value.append(ord(u))for u in unicode_value]
-                string_value =''
-                for o in ord_value:
-                    if o == 65533:
-                        string_value += '?'
-                    else:
-                        string_value += chr(o)
-                print ("printing ord value")
-                [print (ord(s)) for s in string_value]
-                return string_value
-            return (unicode_value)
-        return str( value )
+
+                if encryption==True:
+                    return_value = []
+                    for b in value:
+                        try:
+                            print ("thisis b")
+                            print (b)
+                            print ("this is char b")
+                            print (chr(b))
+                            # char_s= (map(chr, bytes))
+                            # char_s = str((), 'utf8')
+                            # return_value.append(char_s)
+                        except UnicodeDecodeError:
+                            return_value.append(s)
+                    print ("this is return value")
+                    print (return_value)
+                    return return_value
+            return unicode_value
+        return str(value)
+
+
+        #
+        #
+        #         unicode_value = str( value, 'utf8', 'replace')
+        #         print ("this is unicode value")
+        #         print (unicode_value)
+        #         ord_value= []
+        #         [ord_value.append(ord(u))for u in unicode_value]
+        #         string_value =''
+        #         for o in ord_value:
+        #             if o == 65533:
+        #                 string_value += '?'
+        #             else:
+        #                 string_value += chr(o)
+        #         print ("printing ord value")
+        #         [print (ord(s)) for s in string_value]
+        #         return string_value
+        #     return (unicode_value)
+        # return str( value )
 
     def configure(self, **kwargs):
         self.mode = kwargs.get('mode', AES.MODE_CFB)
@@ -108,7 +131,7 @@ class AESEncryption(EncryptionService):
         print ("this is key after tobytes")
         print (key)
 
-        enc = AES.new(key, AES.MODE_CFB)
+        enc = AES.new(key, AES.MODE_CFB, iv=b'abcdef0123456789')
         print ("this is enc")
         print (enc)
 
@@ -118,8 +141,8 @@ class AESEncryption(EncryptionService):
         if self.use_checksum:
             data += struct.pack("i", zlib.crc32(data))
 
-            # print ("this is data after checksum")
-            # print (data)
+            print ("this is data after checksum")
+            print (data)
             # string_data = []
             # [string_data.append(chr(d)) for d in data]
             # print ("this is string data")
@@ -135,14 +158,20 @@ class AESEncryption(EncryptionService):
             # [ord_data.append(ord(c))for c in data_uni]
             # [print (chr(c)) for c in ord_data]
             # print (ord('?'))
-        # encrypted_data = enc.encrypt(data)
-        string_encryption = []
+
+        encrypted_bytes = enc.encrypt(data)
+        print ("this is decoded bytes")
+        print (str(encrypted_bytes, 'utf8', 'ignore'))
+        # print (encrypted_data)
+        # print (encrypted_data)
+        return (encrypted_bytes)
+        # return self.ToUnicode(enc.encrypt(data), True)
         # for e in encrypted_data:
         #     string_encryption.append( chr(e))
         # print ("this is string encryption")
         # print (string_encryption)
 
-        return str(enc.encrypt(data))
+        # return self.ToUnicode(enc.encrypt(data), True)
 
         # for e in (enc.encrypt(data)):
         #     string_encryption.append(chr(e))
