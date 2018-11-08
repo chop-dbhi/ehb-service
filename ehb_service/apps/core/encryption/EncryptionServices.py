@@ -42,13 +42,42 @@ class AESEncryption(EncryptionService):
         # We can't just return value.encode( 'utf8' ) on both py2 & py3 because on
         # py2 that *sometimes* returns the built-in str type instead of the newbytes
         # type from python-future.
-            if PY2:
-                return bytes( value.encode( 'utf8' ), encoding = 'utf8' )
-            else:
-                return bytes( value, encoding = 'utf8' )
+            # if PY2:
+            #     return bytes( value.encode( 'utf8' ), encoding = 'utf8' )
+            # else:
+            return bytes( value, encoding = 'utf8' )
 
         # This is meant to catch `int` and similar non-string/bytes types.
         return ToBytes( str( value ) )
+
+    # Returns a unicode type; either the new python-future str type or the real
+    # unicode type. The difference shouldn't matter.
+    def ToUnicode(self, value ):
+        if not value:
+            return str()
+        if isinstance( value, str ):
+            return value
+        if isinstance( value, bytes ):
+            # All incoming text should be utf8
+            try:
+                unicode_value = str( value, 'utf8' )
+            except UnicodeDecodeError:
+                unicode_value = str( value, 'utf8', 'replace')
+                print ("this is unicode value")
+                print (unicode_value)
+                ord_value= []
+                [ord_value.append(ord(u))for u in unicode_value]
+                string_value =''
+                for o in ord_value:
+                    if o == 65533:
+                        string_value += '?'
+                    else:
+                        string_value += chr(o)
+                print ("printing ord value")
+                [print (ord(s)) for s in string_value]
+                return string_value
+            return (unicode_value)
+        return str( value )
 
     def configure(self, **kwargs):
         self.mode = kwargs.get('mode', AES.MODE_CFB)
@@ -72,49 +101,52 @@ class AESEncryption(EncryptionService):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
+        print ("this is key after corrected keylength")
+        print (key)
+
         key = self.ToBytes(key)
+        print ("this is key after tobytes")
+        print (key)
 
         enc = AES.new(key, AES.MODE_CFB)
+        print ("this is enc")
+        print (enc)
 
-        data_encode = data.encode('utf-8')
+        data = self.ToBytes(data)
+        print ("this is zlibcrc32")
         print (zlib.crc32(data))
         if self.use_checksum:
             data += struct.pack("i", zlib.crc32(data))
 
+            print ("this is data after checksum")
+            print (data)
+            data_uni = self.ToUnicode(data)
+            print ("this is data after unicode conversion")
+            print (data_uni)
+            # ord_data = []
+            # [ord_data.append(ord(c))for c in data_uni]
+            # [print (chr(c)) for c in ord_data]
+            # print (ord('?'))
+
+        return self.ToUnicode(enc.encrypt(data))
 
 
-        key_encode = key.encode('utf-8')
-        data_encode = data.encode('utf-8')
+        #
+        # key_encode = key.encode('utf-8')
+        # data_encode = data.encode('utf-8')
         # key_encode = base64.b64encode(key.encode('utf-8',errors = 'strict'))
         # data_encode = base64.b64encode(data.encode('utf-8',errors = 'strict'))
 
-        enc = AES.new(key_encode, self.mode)
-        # data = str.encode(data)
-
-        if self.use_checksum:
-            data_encode += struct.pack("i", zlib.crc32(data_encode))
-            print (type(data_encode))
-            print (data_encode)
-        data_encode = data_encode.decode('utf-8', 'ignore')
-        # print ("this data decoded")
-        # print (type (data))
-        # print(data)
-        # result = enc.encrypt(str.encode(data))
-        # print (result)
-        # data = map(ord, data)
-        # data = str.encode(data)
-        # iv = b64encode(enc.iv).decode('utf-8')
-        # data_bytes = enc.encrypt(data)
-        # print (data_bytes)
-        # print (data_bytes)
-        # enc_2 = AES.new(b'1234561111111111', self.mode)
-        # enc_secret = enc.encrypt(b'secret')
-        # print ("this is encrypted secret")
-        # print (enc_secret)
-        # dec_secret = enc_secret.decode()
-        # print ("this is decoded secret")
-        # print (dec_secret)
-        return (enc.encrypt(data_encode)).decode('utf-8', 'ignore')
+        # enc = AES.new(key_encode, self.mode)
+        # # data = str.encode(data)
+        #
+        # if self.use_checksum:
+        #     data_encode += struct.pack("i", zlib.crc32(data_encode))
+        #     print (type(data_encode))
+        #     print (data_encode)
+        # data_encode = data_encode.decode('utf-8', 'ignore')
+        #
+        # return (enc.encrypt(data_encode)).decode('utf-8', 'ignore')
 
         # return b64encode(data_bytes).decode('utf-8')
         # return enc.encrypt(data)
