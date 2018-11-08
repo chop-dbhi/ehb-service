@@ -1,7 +1,7 @@
 import struct
 import zlib
 import logging
-from base64 import b64decode, b64encode
+import base64
 
 from Crypto.Cipher import AES
 
@@ -35,23 +35,29 @@ class AESEncryption(EncryptionService):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
-        print ("this is key")
-        print (key)
+        key_encode = key.encode('utf-8')
+        data_encode = data.encode('utf-8')
+        # key_encode = base64.b64encode(key.encode('utf-8',errors = 'strict'))
+        # data_encode = base64.b64encode(data.encode('utf-8',errors = 'strict'))
 
-        enc = AES.new(str.encode(key), self.mode)
-        data = str.encode(data)
+        enc = AES.new(key_encode, self.mode)
+        # data = str.encode(data)
 
         if self.use_checksum:
-            data += struct.pack("i", zlib.crc32(data))
-        #     print (type(data))
-            # print (data)
+            data_encode += struct.pack("i", zlib.crc32(data_encode))
+            print (type(data_encode))
+            print (data_encode)
+        data_encode = data_encode.decode('utf-8', 'ignore')
+        # print ("this data decoded")
+        # print (type (data))
+        # print(data)
         # result = enc.encrypt(str.encode(data))
         # print (result)
         # data = map(ord, data)
         # data = str.encode(data)
         # iv = b64encode(enc.iv).decode('utf-8')
-        data_bytes = enc.encrypt(data)
-        print (data_bytes)
+        # data_bytes = enc.encrypt(data)
+        # print (data_bytes)
         # print (data_bytes)
         # enc_2 = AES.new(b'1234561111111111', self.mode)
         # enc_secret = enc.encrypt(b'secret')
@@ -60,8 +66,9 @@ class AESEncryption(EncryptionService):
         # dec_secret = enc_secret.decode()
         # print ("this is decoded secret")
         # print (dec_secret)
+        return (enc.encrypt(data_encode)).decode('utf-8', 'ignore')
 
-        return b64encode(data_bytes).decode('utf-8')
+        # return b64encode(data_bytes).decode('utf-8')
         # return enc.encrypt(data)
 
     def decrypt(self, edata, key, **kwargs):
