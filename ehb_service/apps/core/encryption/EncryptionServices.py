@@ -30,7 +30,7 @@ class AESEncryption(EncryptionService):
 
         # This is meant to catch Python 2's native str type.
         if isinstance( value, bytes ):
-            return bytes( value, encoding = 'utf8' )
+            return bytes( value, encoding = 'latin-1' )
 
         if isinstance( value, str ):
         # On py2, with `from builtins import *` imported, the following is true:
@@ -45,7 +45,7 @@ class AESEncryption(EncryptionService):
             # if PY2:
             #     return bytes( value.encode( 'utf8' ), encoding = 'utf8' )
             # else:
-            return bytes( value, encoding = 'utf8' )
+            return bytes( value, encoding = 'latin-1' )
 
         # This is meant to catch `int` and similar non-string/bytes types.
         return ToBytes( str( value ) )
@@ -143,62 +143,26 @@ class AESEncryption(EncryptionService):
 
             print ("this is data after checksum")
             print (data)
-            # string_data = []
-            # [string_data.append(chr(d)) for d in data]
-            # print ("this is string data")
-            # print (string_data)
-            # print ("THIS IS ORD VALUE")
-            # ord_data = []
-            # [ord_data.append(ord(s)) for s in string_data]
+            print ("this is decoded data with latin1")
+            print (data.decode("latin-1"))
 
-            # data_uni = self.ToUnicode(data)
-            # print ("this is data after unicode conversion")
-            # print (data_uni)
-            # ord_data = []
-            # [ord_data.append(ord(c))for c in data_uni]
-            # [print (chr(c)) for c in ord_data]
-            # print (ord('?'))
+        # encrypted_bytes =  base64.b64encode(enc.encrypt(data))
+        # print ("this is encryoted bytes")
+        # print (base64.b64decode(encrypted_bytes))
+        theanswer = "KN+p\x80\xac\xe23IX"
+        answerbytes=self.ToBytes(theanswer)
+        print ("answer in bytes")
+        print (answerbytes)
+        print (answerbytes.decode("latin-1"))
+        print ("asnwer in ord")
+        for a in theanswer:
+            print (type(ord(a)))
+        print ("asnwerbytes in ord")
+        for a in answerbytes:
+            print (type(a))
 
-        encrypted_bytes = enc.encrypt(data)
-        print ("this is decoded bytes")
-        print (str(encrypted_bytes, 'utf8', 'ignore'))
-        # print (encrypted_data)
-        # print (encrypted_data)
-        return (encrypted_bytes)
-        # return self.ToUnicode(enc.encrypt(data), True)
-        # for e in encrypted_data:
-        #     string_encryption.append( chr(e))
-        # print ("this is string encryption")
-        # print (string_encryption)
+        return ((enc.encrypt(data).decode("utf-8")))
 
-        # return self.ToUnicode(enc.encrypt(data), True)
-
-        # for e in (enc.encrypt(data)):
-        #     string_encryption.append(chr(e))
-        # print (string_encryption)
-        # return string_encryption
-        # return self.ToUnicode(enc.encrypt(data))
-
-
-        #
-        # key_encode = key.encode('utf-8')
-        # data_encode = data.encode('utf-8')
-        # key_encode = base64.b64encode(key.encode('utf-8',errors = 'strict'))
-        # data_encode = base64.b64encode(data.encode('utf-8',errors = 'strict'))
-
-        # enc = AES.new(key_encode, self.mode)
-        # # data = str.encode(data)
-        #
-        # if self.use_checksum:
-        #     data_encode += struct.pack("i", zlib.crc32(data_encode))
-        #     print (type(data_encode))
-        #     print (data_encode)
-        # data_encode = data_encode.decode('utf-8', 'ignore')
-        #
-        # return (enc.encrypt(data_encode)).decode('utf-8', 'ignore')
-
-        # return b64encode(data_bytes).decode('utf-8')
-        # return enc.encrypt(data)
 
     def decrypt(self, edata, key, **kwargs):
         if self.auto_correct_key_length:
