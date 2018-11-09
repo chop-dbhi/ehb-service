@@ -9,6 +9,10 @@ from core.encryption.Exceptions import CheckSumFailure
 
 log = logging.getLogger(__name__)
 
+import sys
+reload(sys)
+sys.setdefaultencoding("latin-1")
+
 
 class AESEncryption(EncryptionService):
 
@@ -38,8 +42,19 @@ class AESEncryption(EncryptionService):
 
         if self.use_checksum:
             data += struct.pack("i", zlib.crc32(data))
+            print (data)
+            print (type(data))
 
-        return enc.encrypt(data)
+        b = bytearray()
+        b.extend(data)
+        # data = data.encode()
+        print (b)
+        print (type(b))
+
+        theanswer = enc.encrypt(b)
+        print(theanswer)
+
+        return theanswer
 
     def decrypt(self, edata, key, **kwargs):
         if self.auto_correct_key_length:
