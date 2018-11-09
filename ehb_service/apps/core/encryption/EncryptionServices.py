@@ -161,7 +161,18 @@ class AESEncryption(EncryptionService):
         for a in answerbytes:
             print (type(a))
 
-        encrypted_answer = enc.encrypt(data)
+        b = bytearray()
+        bytess = b''
+        for d in data:
+            print (d)
+            print (type(d))
+            character = chr(d)
+            bytess += character.encode('latin-1')
+            # ( chr(d).encode('latin-1'))
+
+        print (bytess)
+
+        encrypted_answer = enc.encrypt(bytess)
         for myint in encrypted_answer:
             char = chr(myint)
             print (char)
