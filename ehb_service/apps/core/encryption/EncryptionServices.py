@@ -49,8 +49,14 @@ class AESEncryption(EncryptionService):
         # data = data.encode()
         # print (b)
         # print (type(b))
-
-        theanswer = enc.encrypt(b)
+        bytestringg =''
+        print ("ords")
+        for ordint in b:
+            # print (ord(ordint))
+            print ((chr(ord(ordint))).encode())
+            bytestringg +=((chr(ord(ordint))).encode())
+        print (bytestringg)
+        theanswer = enc.encrypt(bytestringg)
         print(theanswer)
 
         return theanswer
