@@ -124,6 +124,13 @@ class AESEncryption(EncryptionService):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
+        testenc = AES.new(b'key}}}}}}}}}}}}}', self.mode)
+        testencryption = testenc.encrypt(b'testdata')
+        print ("this is test encryption")
+        print (testencryption)
+        print ("this is test encryption decoded ")
+        print (testencryption.decode('latin-1'))
+
         print ("this is key after corrected keylength")
         print (key)
 
