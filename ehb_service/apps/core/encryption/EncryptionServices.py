@@ -126,10 +126,17 @@ class AESEncryption(EncryptionService):
 
         testenc = AES.new(b'key}}}}}}}}}}}}}', self.mode)
         testencryption = testenc.encrypt(b'testdata')
+        print ("this is ord for testdata")
+        for b in b'testdata':
+            print (b)
         print ("this is test encryption")
         print (testencryption)
         print ("this is test encryption decoded ")
         print (testencryption.decode('latin-1'))
+
+        print ("this is ord in testencryption")
+        for b in testencryption:
+            print (b)
 
         print ("this is key after corrected keylength")
         print (key)
