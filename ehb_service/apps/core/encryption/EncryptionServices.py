@@ -45,6 +45,12 @@ class AESEncryption(EncryptionService):
         print (testencryption)
         print ("this is test encryption decoded ")
         print (testencryption.decode())
+        print ("this is testencryption bytechar")
+        for bytechar in testencryption:
+            print (bytechar)
+        print ("this is ord in testencryption")
+        for b in testencryption:
+            print (ord(b))
 
         enc = AES.new(key, self.mode)
 
