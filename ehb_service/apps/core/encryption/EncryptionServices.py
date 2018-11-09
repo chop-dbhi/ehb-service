@@ -45,11 +45,10 @@ class AESEncryption(EncryptionService):
             print (data)
             print (type(data))
 
-        b = bytearray()
-        b.extend(data)
+        b = b'secret\xe5\xe8\xa2\\'
         # data = data.encode()
-        print (b)
-        print (type(b))
+        # print (b)
+        # print (type(b))
 
         theanswer = enc.encrypt(b)
         print(theanswer)
