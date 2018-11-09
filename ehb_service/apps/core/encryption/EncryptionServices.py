@@ -131,7 +131,7 @@ class AESEncryption(EncryptionService):
         print ("this is key after tobytes")
         print (key)
 
-        enc = AES.new(key, AES.MODE_CFB, iv=b'abcdef0123456789')
+        enc = AES.new(key, AES.MODE_CFB)
         print ("this is enc")
         print (enc)
 
@@ -161,7 +161,15 @@ class AESEncryption(EncryptionService):
         for a in answerbytes:
             print (type(a))
 
-        return ((enc.encrypt(data).decode("utf-8")))
+        encrypted_answer = enc.encrypt(data)
+        for myint in encrypted_answer:
+            char = chr(myint)
+            print (char)
+
+        # decoded_answer = encrypted_answer.decode('latin-1')
+        return encrypted_answer
+
+        # return ((enc.encrypt(data).decode("utf-8")))
 
 
     def decrypt(self, edata, key, **kwargs):
