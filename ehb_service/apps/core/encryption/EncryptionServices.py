@@ -37,6 +37,14 @@ class AESEncryption(EncryptionService):
     def encrypt(self, data, key, **kwargs):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
+            key = b'123456}}}}}}}}}}'
+
+        testenc = AES.new(b'key}}}}}}}}}}}}}', self.mode)
+        testencryption = testenc.encrypt(b'testdata')
+        print ("this is test encryption")
+        print (testencryption)
+        print ("this is test encryption decoded ")
+        print (testencryption.decode())
 
         enc = AES.new(key, self.mode)
 
