@@ -13,67 +13,6 @@ log = logging.getLogger(__name__)
 
 class AESEncryption(EncryptionService):
 
-    # Consistently returns the new bytes() type from python-future. Assumes incoming
-    # strings are either UTF-8 or unicode (which is converted to UTF-8).
-    def ToBytes(self, value ):
-        if not value:
-            return bytes()
-        if type( value ) == bytes:
-            return value
-        # This is meant to catch Python 2's native str type.
-        if isinstance( value, bytes ):
-            return bytes( value, encoding = 'utf8' )
-
-        if isinstance( value, str ):
-        # On py2, with `from builtins import *` imported, the following is true:
-        #
-        #   bytes(str(u'abc'), 'utf8') == b"b'abc'"
-        #
-        # Obviously this is a bug in python-future. So we work around it. Also filed
-        # upstream at: https://github.com/PythonCharmers/python-future/issues/193
-        # We can't just return value.encode( 'utf8' ) on both py2 & py3 because on
-        # py2 that *sometimes* returns the built-in str type instead of the newbytes
-        # type from python-future.
-            # if PY2:
-            #     return bytes( value.encode( 'utf8' ), encoding = 'utf8' )
-            # else:
-            return bytes( value, encoding = 'latin-1' )
-
-        # This is meant to catch `int` and similar non-string/bytes types.
-        return ToBytes( str( value ) )
-
-    # Returns a unicode type; either the new python-future str type or the real
-    # unicode type. The difference shouldn't matter.
-    def ToUnicode(self, value, encryption=False ):
-        if not value:
-            return str()
-        if isinstance( value, str ):
-            return value
-        if isinstance( value, bytes ):
-            # All incoming text should be utf8
-            try:
-                unicode_value = str( value, 'utf8' )
-            except UnicodeDecodeError:
-
-                if encryption==True:
-                    return_value = []
-                    for b in value:
-                        try:
-                            print ("thisis b")
-                            print (b)
-                            print ("this is char b")
-                            print (chr(b))
-                            # char_s= (map(chr, bytes))
-                            # char_s = str((), 'utf8')
-                            # return_value.append(char_s)
-                        except UnicodeDecodeError:
-                            return_value.append(s)
-                    print ("this is return value")
-                    print (return_value)
-                    return return_value
-            return unicode_value
-        return str(value)
-
     def configure(self, **kwargs):
         self.mode = kwargs.get('mode', AES.MODE_CFB)
         self.auto_correct_key_length = kwargs.get('auto_correct_key_length', True)
@@ -116,7 +55,7 @@ class AESEncryption(EncryptionService):
         encrypted_data_bytes = enc.encrypt(data)
         iv = base64.b64encode(enc.iv).decode("utf8")
         encrypted_data = b64encode(encrypted_data_bytes).decode('utf-8')
-        
+
         return encrypted_data
 
 
