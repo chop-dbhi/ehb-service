@@ -46,7 +46,7 @@ class AESEncryption(EncryptionService):
 
         encrypted_data_bytes = enc.encrypt(data)
         iv = base64.b64encode(enc.iv).decode("utf8")
-        encrypted_data = b64encode(encrypted_data_bytes).decode('utf-8')
+        encrypted_data = base64.b64encode(encrypted_data_bytes).decode('utf-8')
 
         return encrypted_data
 
