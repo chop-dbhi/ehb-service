@@ -125,14 +125,14 @@ class AESEncryption(EncryptionService):
             key = self._correct_key_length(key)
 
         testenc = AES.new(b'key}}}}}}}}}}}}}', self.mode)
-        testencryption = testenc.encrypt(b'testdata')
+        testencryptionbytes = testenc.encrypt(b'testdata')
+        iv = base64.b64encode(testenc.iv).decode('latin1')
+        testencryption=base64.b64encode(testencryptionbytes).decode("latin1")
         print ("this is ord for testdata")
         for b in b'testdata':
             print (b)
         print ("this is test encryption")
         print (testencryption)
-        print ("this is test encryption decoded ")
-        print (testencryption.decode('latin-1'))
 
         print ("this is ord in testencryption")
         for b in testencryption:
@@ -198,6 +198,10 @@ class AESEncryption(EncryptionService):
 
 
     def decrypt(self, edata, key, **kwargs):
+        print ("this is edata")
+        print (edata)
+        print ("this is edata encoded")
+        print (edata.encode("latin1"))
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
@@ -206,6 +210,10 @@ class AESEncryption(EncryptionService):
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
+            print ("this is cs")
+            print (cs.decode("latin1"))
+            print ("this is data")
+            print (data.decode("latin1"))
             if not cs == struct.pack("i", zlib.crc32(data)):
                 raise CheckSumFailure('Checksum failed in decrypt')
         return data
