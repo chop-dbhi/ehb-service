@@ -35,14 +35,6 @@ class AESEncryption(EncryptionService):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
-        testenc = AES.new(b'key}}}}}}}}}}}}}', self.mode)
-        testencryptionbytes = testenc.encrypt(b'testdata')
-        iv = base64.b64encode(testenc.iv).decode('utf8')
-        testencryption=base64.b64encode(testencryptionbytes).decode("utf8")
-
-        print ("this is test encryption")
-        print (testencryption)
-
         # convert string to bytes
         key = key.encode("utf8")
         data = data.encode("utf8")
