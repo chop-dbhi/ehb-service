@@ -59,7 +59,6 @@ class AESEncryption(EncryptionService):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
-        edata = "XDFQdcfaD0XE6g=="
         # convert string to bytes
         key = key.encode("latin1")
         edata =  base64.b64decode(edata.encode("latin1"))

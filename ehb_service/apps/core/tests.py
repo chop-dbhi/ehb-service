@@ -23,17 +23,17 @@ class TestAESEncryption(TestCase):
     def test_encrypt(self):
         service = AESEncryption()
         service.configure()
-        self.assertEqual('KN+p\x80\xac\xe23IX', service.encrypt('secret', '123456'))
+        self.assertEqual('XDFQdcfaD0XE6g==', service.encrypt('secret', '123456'))
 
     def test_decrypt(self):
         service = AESEncryption()
         service.configure()
-        self.assertEqual('secret', service.decrypt('KN+p\x80\xac\xe23IX', '123456'))
+        self.assertEqual('secret', service.decrypt('XDFQdcfaD0XE6g==', '123456'))
 
     def test_is_encrypted(self):
         service = AESEncryption()
         service.configure()
-        self.assertTrue(service.is_encrypted('KN+p\x80\xac\xe23IX', '123456'))
+        self.assertTrue(service.is_encrypted('XDFQdcfaD0XE6g==', '123456'))
 
     def test_check_sum_length(self):
         service = AESEncryption()
