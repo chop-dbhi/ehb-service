@@ -84,9 +84,17 @@ class AESEncryption(EncryptionService):
 
         enc = AES.new(key, self.mode)
         data = enc.decrypt(edata)
+        print ("this is data before")
+        print (data)
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
+            print ("this is cs")
+            print (cs)
+            print ("this is data")
+            print (data)
+            print ("this is struct pack")
+            print (struct.pack("i", zlib.crc32(data)))
             if not cs == struct.pack("i", zlib.crc32(data)):
                 raise CheckSumFailure('Checksum failed in decrypt')
         return data
