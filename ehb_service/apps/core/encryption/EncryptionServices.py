@@ -39,35 +39,40 @@ class AESEncryption(EncryptionService):
         key = key.encode("utf8")
         data = data.encode("utf8")
 
-        enc = AES.new(key, AES.MODE_CFB)
+        enc = AES.new(key, AES.MODE_CFB, iv=b'0123456789abcdef')
 
         if self.use_checksum:
             data += struct.pack("i", zlib.crc32(data))
 
         encrypted_data_bytes = enc.encrypt(data)
-        iv = base64.b64encode(enc.iv).decode("utf8")
-        encrypted_data = base64.b64encode(encrypted_data_bytes).decode('utf-8')
 
-        return encrypted_data
+        return str(base64.b64encode(encrypted_data_bytes),'utf8')
 
 
     def decrypt(self, edata, key, **kwargs):
-        print ("this is edata")
-        print (edata)
-        print ("this is edata encoded")
-        print (edata.encode("latin1"))
+
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
-        enc = AES.new(key.encode("utf8"), self.mode)
-        data = enc.decrypt(edata.encode("utf8"))
+        # convert string to bytes
+        key = key.encode("utf8")
+        edata = edata.encode("utf8")
+
+
+        enc = AES.new(key, self.mode)
+        data = enc.decrypt(edata)
+
+        data = base64.b64encode(data)
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
             print ("this is cs")
-            print (cs.decode("latin1"))
+            print (cs)
             print ("this is data")
-            print (data.decode("latin1"))
+            print (data)
+            print ("this is struct pack data")
+            result = struct.pack("i", zlib.crc32(data))
+            print (result)
             if not cs == struct.pack("i", zlib.crc32(data)):
                 raise CheckSumFailure('Checksum failed in decrypt')
         return data
