@@ -27,6 +27,8 @@ class AESEncryption(EncryptionService):
         if l > AES.block_size:
             return key[0:AES.block_size]
         elif l < AES.block_size:
+            print ("this is key type")
+            print (type(key))
             return key + (AES.block_size-l)*self.padding
         else:
             return key
@@ -38,10 +40,11 @@ class AESEncryption(EncryptionService):
         # convert string to bytes. Using latin1 to allow for
         # extended ASCII Types > 127 because the cipher text
         # that is a result of encryption will return ASCII > 127
-        key = key.encode("latin1")
-        data = data.encode("latin1")
+        # key = key.encode("latin1")
+        # data = data.encode("latin1")
+        enc = AES.new(key, AES.MODE_CFB)
 
-        enc = AES.new(key, AES.MODE_CFB, iv=b'0123456789abcdef')
+        # enc = AES.new(key, AES.MODE_CFB, iv=b'0123456789abcdef')
 
         if self.use_checksum:
             # struct pack returns a byte object within the values of 'i'
@@ -52,19 +55,31 @@ class AESEncryption(EncryptionService):
         encrypted_data_bytes = enc.encrypt(data)
 
         # return string of encrypted data bytes
-        return (base64.b64encode(encrypted_data_bytes)).decode("latin1")
+        return encrypted_data_bytes
+        # return (base64.b64encode(encrypted_data_bytes)).decode("latin1")
 
 
     def decrypt(self, edata, key, **kwargs):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
+        print ("this is key")
+        print (key)
+        print ("this is edata")
+        print (edata)
+
         # convert string to bytes
         key = key.encode("latin1")
-        edata =  base64.b64decode(edata.encode("latin1"))
 
-        enc = AES.new(key, self.mode, iv=b'0123456789abcdef')
+        edata = edata.encode("latin1")
+        
+        # edata =  base64.b64decode(edata.encode("latin1"))
+
+        enc = AES.new(key, self.mode)
+        # enc = AES.new(key, self.mode, iv=b'0123456789abcdef')
         data = enc.decrypt(edata).decode("latin1")
+        print ("this is data decrypted")
+        print (data)
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
