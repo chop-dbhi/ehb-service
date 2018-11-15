@@ -73,10 +73,13 @@ class BaseField(models.Field):
             temp += 1
             mod = max(temp % 10, 1)
         random.seed(seed)
-        return ''.join([random.choice(string.printable) for i in range(length)])
+        random_padding = ''.join([random.choice(string.printable) for i in range(length)])
+        # convert string to bytes
+        return random_padding.encode("utf8")
+        # return ''.join([random.choice(string.printable) for i in range(length)])
 
     def _split_byte(self):
-        return '\0'
+        return b'\0'
 
     def _is_encrypted(self, value, key):
         '''
@@ -85,12 +88,21 @@ class BaseField(models.Field):
         before storing in db using the binascii.a2b_hex method which only operates
         on even length values
         '''
+        if isinstance(value, str):
 
-        if re.search('[^0-9a-f]', value) or (len(value) % 2) != 0:
-            return False
-        # Have the encryption service verify if this is encrypted
-        else:
-            return self.aes.is_encrypted(binascii.a2b_hex(value), key)
+            if re.search('[^0-9a-f]', value) or (len(value) % 2) != 0:
+                return False
+            # Have the encryption service verify if this is encrypted
+            else:
+                return self.aes.is_encrypted(binascii.a2b_hex(value), key)
+
+        elif isinstance(value, bytes):
+            if re.search(b'[^0-9a-f]', value) or (len(value) % 2) != 0:
+                return False
+            # Have the encryption service verify if this is encrypted
+            else:
+                return self.aes.is_encrypted(binascii.a2b_hex(value), key)
+
 
     def to_python(self, value):
         """Converts the input value into the expected Python data type, raising
@@ -122,8 +134,11 @@ class BaseField(models.Field):
 
         if len(value.strip()) == 0:
             return value
-
+        print ("this is encryption fields value")
+        print (value)
         value = smart_bytes(value, encoding='utf-8', strings_only=False, errors='strict')
+        print ("this is value after smart bytes")
+        print (value)
         if self.use_encryption:
 
             key = self.akms.get_key()
@@ -138,6 +153,7 @@ class BaseField(models.Field):
                 # Some encryption services add a checksum byte which throws off the pad_length
                 value += self._split_byte()
             value = binascii.b2a_hex(value)
+        value = value.decode("utf8")
 
         return value
 
@@ -194,6 +210,8 @@ class EncryptDateField(BaseField):
             dv = value
         else:
             input_text = super(EncryptDateField, self).to_python(value)
+            print ("this is input text")
+            print (input_text)
             dv = datetime.date(*[int(x) for x in input_text.split(':')])
 
         return dv
