@@ -90,6 +90,11 @@ class BaseField(models.Field):
             return False
         # Have the encryption service verify if this is encrypted
         else:
+            print ("thisis value in is encrypted")
+            print (value)
+            print ("I think this is where we call encryption services")
+            print ("this is what value is when binascii to hex does its thing")
+            print (binascii.a2b_hex(value))
             return self.aes.is_encrypted(binascii.a2b_hex(value), key)
 
     def to_python(self, value):
@@ -193,7 +198,11 @@ class EncryptDateField(BaseField):
         elif isinstance(value, datetime.date):
             dv = value
         else:
+            print ("this is input text value")
+            print (value)
             input_text = super(EncryptDateField, self).to_python(value)
+            print ("this is input text after to python completed")
+            print (input_text)
             dv = datetime.date(*[int(x) for x in input_text.split(':')])
 
         return dv

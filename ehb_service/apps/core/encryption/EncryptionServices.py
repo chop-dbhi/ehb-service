@@ -42,11 +42,15 @@ class AESEncryption(EncryptionService):
         return enc.encrypt(data)
 
     def decrypt(self, edata, key, **kwargs):
+        print ("this is edata")
+        print (edata)
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
         enc = AES.new(key, self.mode)
         data = enc.decrypt(edata)
+        print ("thisi s edata decrypted")
+        print (data)
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
