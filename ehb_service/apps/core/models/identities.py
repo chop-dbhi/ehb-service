@@ -144,7 +144,7 @@ class GroupEhbKey(GroupPropsKey):
 
     def _make_random_key(self, seed, ja, l, chars=string.ascii_uppercase + string.digits):
         random.seed(seed)
-        random.jumpahead(ja * 50)
+        # random.jumpahead(ja * 50)
         return ''.join(random.choice(chars) for idx in range(l))
 
     def _set_key(self):
@@ -229,11 +229,14 @@ class Group(CreatedModified):
         seed = self._salt_seed()
         chars = string.ascii_uppercase + string.digits
         random.seed(seed)
-        random.jumpahead(jump)
+        # random.jumpahead(jump)
 
         return ''.join(random.choice(chars) for idx in range(salt_length))
 
     def _hash_value(self, value):
+        print ("this is value")
+        print (value)
+        value = value.encode("utf8")
         h = hashlib.sha256()
         h.update(value)
         return h.hexdigest()
