@@ -99,6 +99,8 @@ class BaseField(models.Field):
         django.core.exceptions.ValidationError if the data can't be converted.
         Returns the converted value. Subclasses should override this."""
 
+        print ("TO PYTHON IN BASE CLASS GETS CALLED")
+
         if len(value.strip()) == 0:
             return value
         if self.use_encryption:
@@ -227,6 +229,7 @@ class EncryptDateField(BaseField):
         return super(EncryptDateField, self).formfield(**defaults)
 
     def to_python(self, value):
+        print ("TO PYTHON IN DATE CLASS GETS CLALED")
         dv = None
 
         if value in fields.EMPTY_VALUES:
