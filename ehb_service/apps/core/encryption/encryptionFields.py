@@ -100,12 +100,13 @@ class BaseField(models.Field):
             except ValueError:
                 hexValues = False
 
-            if hexValues == False or (len(value) % 2) != 0 or len(value) < 10:
+            if hexValues == False or (len(value) % 2) != 0 :
             # if (all(c in hex_digits for c in value)) == False or (len(value) % 2) != 0 or len(value) < 10:
             # if re.fullmatch('[^0-9a-f]', value) == None or (len(value) % 2) != 0:
-
-
                 return False
+            else:
+                # Have the encryption service verify if this is encrypted
+                return self.aes.is_encrypted(binascii.a2b_hex(value), key)
 
 
             # if re.search('[^0-9a-f]', value) or (len(value) % 2) != 0:
@@ -119,8 +120,6 @@ class BaseField(models.Field):
 
         if isinstance(value, bytes):
             print ("INSTANCE IS BYTES")
-
-
 
             if re.fullmatch(b'[^0-9a-f]', value) == None or (len(value) % 2) != 0:
             # if re.search(b'[^0-9a-f]', value) or (len(value) % 2) != 0:
@@ -146,18 +145,13 @@ class BaseField(models.Field):
             if self._is_encrypted(value, key):
                 # convert to bytes
                 value = value.encode("utf8")
-
                 #dehexify and decrypt
                 decrypted_value = self.aes.decrypt(binascii.a2b_hex(value), key)
-
                 #get rid of extra bytes
                 decrypted_value = decrypted_value.split(self._split_byte())
-
                 #forcing text
                 decrypted_value = force_text(decrypted_value[0])
-
                 return decrypted_value
-
 
                 # return force_text(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
             else:
