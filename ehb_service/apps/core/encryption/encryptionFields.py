@@ -8,6 +8,7 @@ from django import forms
 from django.db import models
 from django.forms import fields
 from django.utils.encoding import force_text, smart_bytes
+import sys
 
 from core.encryption.Factories import FactoryEncryptionServices as efac
 
@@ -88,22 +89,48 @@ class BaseField(models.Field):
         before storing in db using the binascii.a2b_hex method which only operates
         on even length values
         '''
+        hex_digits = set("0123456789abcdef")
+
         if isinstance(value, str):
+            # print ("INSTANCE IS STRING")
+            # print (sys._getframe().f_back.f_code.co_name)
+            hexValues = True
+            try:
+                int(value, 16)
+            except ValueError:
+                hexValues = False
 
-            if re.search('[^0-9a-f]', value) or (len(value) % 2) != 0:
+            if hexValues == False or (len(value) % 2) != 0 or len(value) < 10:
+            # if (all(c in hex_digits for c in value)) == False or (len(value) % 2) != 0 or len(value) < 10:
+            # if re.fullmatch('[^0-9a-f]', value) == None or (len(value) % 2) != 0:
+
+
+                return False
+
+
+            # if re.search('[^0-9a-f]', value) or (len(value) % 2) != 0:
+            #     print ("this is what re search is returning")
+            #     print (re.search('[^0-9a-f]', value))
+            #     return False
+            # # Have the encryption service verify if this is encrypted
+            # else:
+            #
+            #     return self.aes.is_encrypted(binascii.a2b_hex(value), key)
+
+        if isinstance(value, bytes):
+            print ("INSTANCE IS BYTES")
+
+
+
+            if re.fullmatch(b'[^0-9a-f]', value) == None or (len(value) % 2) != 0:
+            # if re.search(b'[^0-9a-f]', value) or (len(value) % 2) != 0:
+
                 return False
             # Have the encryption service verify if this is encrypted
-            else:
-
-                return self.aes.is_encrypted(binascii.a2b_hex(value), key)
-
-        elif isinstance(value, bytes):
-            if re.search(b'[^0-9a-f]', value) or (len(value) % 2) != 0:
-                return False
-            # Have the encryption service verify if this is encrypted
-            else:
-
-                return self.aes.is_encrypted(binascii.a2b_hex(value), key)
+            # else:
+            #
+            #     return self.aes.is_encrypted(binascii.a2b_hex(value), key)
+        return True
 
 
     def to_python(self, value):
@@ -111,15 +138,30 @@ class BaseField(models.Field):
         dexifying and decrypting the value. It raises
         django.core.exceptions.ValidationError if the data can't be converted.
         Returns the converted value. Subclasses should override this."""
+
         if len(value.strip()) == 0:
             return value
         if self.use_encryption:
             key = self.akms.get_key()
             if self._is_encrypted(value, key):
-                print ("300. WE ARE IN TO PYTHON OF BASE CLASS")
-                print (value)
-                return force_text(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
+                # convert to bytes
+                value = value.encode("utf8")
+
+                #dehexify and decrypt
+                decrypted_value = self.aes.decrypt(binascii.a2b_hex(value), key)
+
+                #get rid of extra bytes
+                decrypted_value = decrypted_value.split(self._split_byte())
+
+                #forcing text
+                decrypted_value = force_text(decrypted_value[0])
+
+                return decrypted_value
+
+
+                # return force_text(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
             else:
+
                 return value
         else:
             return value
@@ -146,24 +188,22 @@ class BaseField(models.Field):
 
             key = self.akms.get_key()
 
-            if value and not self._is_encrypted(value, key):
+            if value:
+
+            # if value and not self._is_encrypted(value, key):
                 pad_length = self._padding_length(value)
                 if pad_length > 0:
                     value += self._split_byte() + self._semi_random_padding_string(pad_length-1)
-            print ("20. this is value before encryption")
-            print (value)
+
             value = self.aes.encrypt(value, key)
-            print ("21. this is the value encrypted")
-            print (value)
+
 
             if len(value) % 2 != 0:
                 # Some encryption services add a checksum byte which throws off the pad_length
                 value += self._split_byte()
             value = binascii.b2a_hex(value)
-            print ("22. this is the hexified value")
-            print (value)
-            print ("this is value as string")
-            print (value.decode("utf8"))
+
+            # need to decode to string to store in database
             value = value.decode("utf8")
 
 
@@ -193,20 +233,20 @@ class EncryptCharField(BaseField):
 
         return super(EncryptCharField, self).formfield(**defaults)
 
-    def get_db_prep_value(self, value, connection=None, prepared=False):
-
-        if self.use_encryption:
-            key = self.akms.get_key()
-            if value and not self._is_encrypted(value, key):
-                if len(value) > self.user_specified_max_length:
-                    raise ValueError(
-                        "Field value longer than max allowed: {0} > {1}".format(
-                            str(len(value)),
-                            self.user_specified_max_length
-                        )
-                    )
-
-        return super(EncryptCharField, self).get_db_prep_value(value, connection=connection, prepared=prepared)
+    # def get_db_prep_value(self, value, connection=None, prepared=False):
+    #
+    #     if self.use_encryption:
+    #         key = self.akms.get_key()
+    #         if value and not self._is_encrypted(value, key):
+    #             if len(value) > self.user_specified_max_length:
+    #                 raise ValueError(
+    #                     "Field value longer than max allowed: {0} > {1}".format(
+    #                         str(len(value)),
+    #                         self.user_specified_max_length
+    #                     )
+    #                 )
+    #
+    #     return super(EncryptCharField, self).get_db_prep_value(value, connection=connection, prepared=prepared)
 
 
 class EncryptDateField(BaseField):
@@ -217,18 +257,13 @@ class EncryptDateField(BaseField):
 
     def from_db_value(self, value, expression, connection, context):
         dv = None
-
-
         if value in fields.EMPTY_VALUES:
             dv = value
         elif isinstance(value, datetime.date):
             dv = value
         else:
-
             input_text = super(EncryptDateField, self).to_python(value)
-
             dv = datetime.date(*[int(x) for x in input_text.split(':')])
-
         return dv
 
     def deconstruct(self):
@@ -245,37 +280,22 @@ class EncryptDateField(BaseField):
 
         return super(EncryptDateField, self).formfield(**defaults)
 
-    def to_python(self, value):
-        print ("WE ARE IN TO PYTHON OF ENCRYPT DATE FIELD")
-        dv = None
-
-        if value in fields.EMPTY_VALUES:
-            dv = value
-        elif isinstance(value, datetime.date):
-            dv = value
-        else:
-            input_text = super(EncryptDateField, self).to_python(value)
-            dv = datetime.date(*[int(x) for x in input_text.split(':')])
-
-        return dv
-
-    def get_db_prep_value(self, value, connection=None, prepared=False):
-        dt = value.strftime('%Y:%m:%d') if value else None
-
-        return super(EncryptDateField, self).get_db_prep_value(dt, connection=connection, prepared=prepared)
-
-# Basic Introspection rules so South plays nice
-rule_char = [
-    (
-        (models.CharField,),
-        [],
-        {},
-    )
-]
-rule_date = [
-    (
-        (models.DateField,),
-        [],
-        {},
-    )
-]
+    # def to_python(self, value):
+    #
+    #     dv = None
+    #
+    #     if value in fields.EMPTY_VALUES:
+    #         dv = value
+    #     elif isinstance(value, datetime.date):
+    #         dv = value
+    #     else:
+    #
+    #         input_text = super(EncryptDateField, self).to_python(value)
+    #         dv = datetime.date(*[int(x) for x in input_text.split(':')])
+    #
+    #     return dv
+    #
+    # def get_db_prep_value(self, value, connection=None, prepared=False):
+    #     dt = value.strftime('%Y:%m:%d') if value else None
+    #
+    #     return super(EncryptDateField, self).get_db_prep_value(dt, connection=connection, prepared=prepared)
