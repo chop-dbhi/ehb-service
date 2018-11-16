@@ -35,50 +35,35 @@ class AESEncryption(EncryptionService):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
-        # convert string to bytes. Using latin1 to allow for
-        # extended ASCII Types > 127 because the cipher text
-        # that is a result of encryption will return ASCII > 127
-        key = key.encode("latin1")
-        # data = base64.b64encode(data)
-        enc = AES.new(key, AES.MODE_CFB)
-
-        # enc = AES.new(key, AES.MODE_CFB, iv=b'0123456789abcdef')
+        # convert string to bytes.
+        key = key.encode("utf8")
+        enc = AES.new(key, self.mode, iv=b'0123456789abcdef')
 
         if self.use_checksum:
             # struct pack returns a byte object within the values of 'i'
-            # of zlib, which is a 32 bit representation of data.
-            # we add this to data
-            # print ("this is zlib data")
-            # print (zlib.crc32(data))
-            # data_to_add = struct.pack("I", zlib.crc32(data))
-            # print ("this is data to add")
-            # print (data_to_add)
+            # of zlib, which is a 32 bit representation of data that we add
+            # onto our data
             data += struct.pack("I", zlib.crc32(data))
 
-        encrypted_data_bytes = enc.encrypt(data)
+        # return encrypted data which is utf8 encoded (bytes)
+        return  enc.encrypt(data)
 
-        # return string of encrypted data bytes
-        return encrypted_data_bytes
-        # return (base64.b64encode(encrypted_data_bytes)).decode("latin1")
 
 
     def decrypt(self, edata, key, **kwargs):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
+
         # convert string to bytes
-        key = key.encode("latin1")
-
+        key = key.encode("utf8")
         enc = AES.new(key, self.mode, iv=b'0123456789abcdef')
-        # enc = AES.new(key, self.mode, iv=b'0123456789abcdef')
-        # data = enc.decrypt(edata).decode("latin1")
-        data = enc.decrypt(edata)
 
+        data = enc.decrypt(edata)
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
-            # convert back to bytes
-            # cs = cs.encode("latin1")
-            # check_data = data.encode("latin1")
+            # cs is the extra bytes that we added to data before
+            # (see encrypt for more info on what this is) 
             # if the byte object of the 32 bit representation of data
             # doesn't equal cs, we raise error
             if not cs == struct.pack("I", zlib.crc32(data)):
