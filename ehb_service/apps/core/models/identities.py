@@ -234,8 +234,6 @@ class Group(CreatedModified):
         return ''.join(random.choice(chars) for idx in range(salt_length))
 
     def _hash_value(self, value):
-        print ("this is value")
-        print (value)
         value = value.encode("utf8")
         h = hashlib.sha256()
         h.update(value)
