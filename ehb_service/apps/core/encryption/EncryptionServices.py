@@ -27,8 +27,6 @@ class AESEncryption(EncryptionService):
         if l > AES.block_size:
             return key[0:AES.block_size]
         elif l < AES.block_size:
-            print ("this is key type")
-            print (type(key))
             return key + (AES.block_size-l)*self.padding
         else:
             return key
@@ -58,10 +56,6 @@ class AESEncryption(EncryptionService):
             data += struct.pack("I", zlib.crc32(data))
 
         encrypted_data_bytes = enc.encrypt(data)
-        print ("this is encrypted data bytes")
-        print (encrypted_data_bytes.decode("latin1"))
-        print ("this is the length")
-        print (len(encrypted_data_bytes))
 
         # return string of encrypted data bytes
         return encrypted_data_bytes
@@ -71,12 +65,6 @@ class AESEncryption(EncryptionService):
     def decrypt(self, edata, key, **kwargs):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
-
-        print ("this is key")
-        print (key)
-        print ("this is edata")
-        print (edata)
-
         # convert string to bytes
         key = key.encode("latin1")
 
@@ -84,7 +72,7 @@ class AESEncryption(EncryptionService):
         # enc = AES.new(key, self.mode, iv=b'0123456789abcdef')
         # data = enc.decrypt(edata).decode("latin1")
         data = enc.decrypt(edata)
-        print ("this is data decrypted")
+        print ("3. This is the data decrypted ")
         print (data)
 
         if self.use_checksum:
@@ -106,6 +94,7 @@ class AESEncryption(EncryptionService):
                 return True
             except CheckSumFailure:
                 log.error("Checksum failure. Unable to decrypt")
+                print ("2.0 We are in false because we were unable to decrypt")
                 return False
 
     def check_sum_length(self, **kwargs):

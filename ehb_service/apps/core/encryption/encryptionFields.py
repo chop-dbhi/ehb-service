@@ -94,6 +94,7 @@ class BaseField(models.Field):
                 return False
             # Have the encryption service verify if this is encrypted
             else:
+
                 return self.aes.is_encrypted(binascii.a2b_hex(value), key)
 
         elif isinstance(value, bytes):
@@ -101,11 +102,13 @@ class BaseField(models.Field):
                 return False
             # Have the encryption service verify if this is encrypted
             else:
+
                 return self.aes.is_encrypted(binascii.a2b_hex(value), key)
 
 
     def to_python(self, value):
-        """Converts the input value into the expected Python data type, raising
+        """Converts the input value into the expected Python data type by
+        dexifying and decrypting the value. It raises
         django.core.exceptions.ValidationError if the data can't be converted.
         Returns the converted value. Subclasses should override this."""
         if len(value.strip()) == 0:
@@ -113,6 +116,8 @@ class BaseField(models.Field):
         if self.use_encryption:
             key = self.akms.get_key()
             if self._is_encrypted(value, key):
+                print ("2. We are giong to dexify to get the bytes")
+                print (binascii.a2b_hex(value))
                 return force_text(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
             else:
                 return value
@@ -134,11 +139,9 @@ class BaseField(models.Field):
 
         if len(value.strip()) == 0:
             return value
-        print ("this is encryption fields value")
-        print (value)
+
         value = smart_bytes(value, encoding='utf-8', strings_only=False, errors='strict')
-        print ("this is value after smart bytes")
-        print (value)
+
         if self.use_encryption:
 
             key = self.akms.get_key()
@@ -163,6 +166,8 @@ class EncryptCharField(BaseField):
     def from_db_value(self, value, expression, connection, context):
         if value is None:
             return value
+        print ("1. This value should be a long hex string")
+        print (value)
         return super(EncryptCharField, self).to_python(value)
 
     def get_internal_type(self):
@@ -209,9 +214,9 @@ class EncryptDateField(BaseField):
         elif isinstance(value, datetime.date):
             dv = value
         else:
+
             input_text = super(EncryptDateField, self).to_python(value)
-            print ("this is input text")
-            print (input_text)
+
             dv = datetime.date(*[int(x) for x in input_text.split(':')])
 
         return dv
