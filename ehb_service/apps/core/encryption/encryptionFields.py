@@ -87,10 +87,11 @@ class BaseField(models.Field):
         '''
 
         if re.search('[^0-9a-f]', value) or (len(value) % 2) != 0:
+            print ("we always return false?")
             return False
         # Have the encryption service verify if this is encrypted
         else:
-
+            print ("we are in else")
             return self.aes.is_encrypted(binascii.a2b_hex(value), key)
 
     def to_python(self, value):
