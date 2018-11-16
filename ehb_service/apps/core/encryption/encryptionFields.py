@@ -116,8 +116,8 @@ class BaseField(models.Field):
         if self.use_encryption:
             key = self.akms.get_key()
             if self._is_encrypted(value, key):
-                print ("2. We are giong to dexify to get the bytes")
-                print (binascii.a2b_hex(value))
+                print ("300. WE ARE IN TO PYTHON OF BASE CLASS")
+                print (value)
                 return force_text(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
             else:
                 return value
@@ -150,13 +150,22 @@ class BaseField(models.Field):
                 pad_length = self._padding_length(value)
                 if pad_length > 0:
                     value += self._split_byte() + self._semi_random_padding_string(pad_length-1)
+            print ("20. this is value before encryption")
+            print (value)
             value = self.aes.encrypt(value, key)
+            print ("21. this is the value encrypted")
+            print (value)
 
             if len(value) % 2 != 0:
                 # Some encryption services add a checksum byte which throws off the pad_length
                 value += self._split_byte()
             value = binascii.b2a_hex(value)
-        value = value.decode("utf8")
+            print ("22. this is the hexified value")
+            print (value)
+            print ("this is value as string")
+            print (value.decode("utf8"))
+            value = value.decode("utf8")
+
 
         return value
 
@@ -166,8 +175,7 @@ class EncryptCharField(BaseField):
     def from_db_value(self, value, expression, connection, context):
         if value is None:
             return value
-        print ("1. This value should be a long hex string")
-        print (value)
+
         return super(EncryptCharField, self).to_python(value)
 
     def get_internal_type(self):
@@ -186,6 +194,7 @@ class EncryptCharField(BaseField):
         return super(EncryptCharField, self).formfield(**defaults)
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
+
         if self.use_encryption:
             key = self.akms.get_key()
             if value and not self._is_encrypted(value, key):
@@ -208,6 +217,7 @@ class EncryptDateField(BaseField):
 
     def from_db_value(self, value, expression, connection, context):
         dv = None
+
 
         if value in fields.EMPTY_VALUES:
             dv = value
@@ -236,6 +246,7 @@ class EncryptDateField(BaseField):
         return super(EncryptDateField, self).formfield(**defaults)
 
     def to_python(self, value):
+        print ("WE ARE IN TO PYTHON OF ENCRYPT DATE FIELD")
         dv = None
 
         if value in fields.EMPTY_VALUES:

@@ -38,7 +38,7 @@ class AESEncryption(EncryptionService):
         # convert string to bytes. Using latin1 to allow for
         # extended ASCII Types > 127 because the cipher text
         # that is a result of encryption will return ASCII > 127
-        key = key.encode("utf8")
+        key = key.encode("latin1")
         # data = base64.b64encode(data)
         enc = AES.new(key, AES.MODE_CFB)
 
@@ -72,8 +72,7 @@ class AESEncryption(EncryptionService):
         # enc = AES.new(key, self.mode, iv=b'0123456789abcdef')
         # data = enc.decrypt(edata).decode("latin1")
         data = enc.decrypt(edata)
-        print ("3. This is the data decrypted ")
-        print (data)
+
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
@@ -94,7 +93,7 @@ class AESEncryption(EncryptionService):
                 return True
             except CheckSumFailure:
                 log.error("Checksum failure. Unable to decrypt")
-                print ("2.0 We are in false because we were unable to decrypt")
+
                 return False
 
     def check_sum_length(self, **kwargs):
