@@ -90,22 +90,25 @@ class BaseField(models.Field):
             return False
         # Have the encryption service verify if this is encrypted
         else:
-            print ("thisis value in is encrypted")
-            print (value)
-            print ("I think this is where we call encryption services")
-            print ("this is what value is when binascii to hex does its thing")
-            print (binascii.a2b_hex(value))
+
             return self.aes.is_encrypted(binascii.a2b_hex(value), key)
 
     def to_python(self, value):
         """Converts the input value into the expected Python data type, raising
         django.core.exceptions.ValidationError if the data can't be converted.
         Returns the converted value. Subclasses should override this."""
+
         if len(value.strip()) == 0:
             return value
         if self.use_encryption:
             key = self.akms.get_key()
+            print ("we are in to python. this is value")
+            print (value)
             if self._is_encrypted(value, key):
+                print ("5. we are back in fields and am about to call the force unicode")
+                print ("6. this is converting the data from the hexstr to bytes")
+                print (binascii.a2b_hex(value))
+                print ("7. we are bck in decrypt (should go to 2)")
                 return force_unicode(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
             else:
                 return value
@@ -150,6 +153,8 @@ class BaseField(models.Field):
 class EncryptCharField(BaseField):
 
     def from_db_value(self, value, expression, connection, context):
+        print ("1. This is value from db")
+        print (value)
         if value is None:
             return value
         return super(EncryptCharField, self).to_python(value)
@@ -170,6 +175,7 @@ class EncryptCharField(BaseField):
         return super(EncryptCharField, self).formfield(**defaults)
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
+        print ("WE ARE IN DET DB PREP VALUE")
         if self.use_encryption:
             key = self.akms.get_key()
             if value and not self._is_encrypted(value, key):
@@ -198,11 +204,9 @@ class EncryptDateField(BaseField):
         elif isinstance(value, datetime.date):
             dv = value
         else:
-            print ("this is input text value")
-            print (value)
+
             input_text = super(EncryptDateField, self).to_python(value)
-            print ("this is input text after to python completed")
-            print (input_text)
+
             dv = datetime.date(*[int(x) for x in input_text.split(':')])
 
         return dv
