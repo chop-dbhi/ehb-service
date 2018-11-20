@@ -145,8 +145,9 @@ class GroupEhbKey(GroupPropsKey):
     def _make_random_key(self, seed, ja, l, chars=string.ascii_uppercase + string.digits):
         random.seed(seed)
         # print ("this is random state")
-        state = random.getstate()
+
         # random.setstate(state*50)
+        # for i in range(ja): dummy = random.random()
         random.jumpahead(ja * 50)
         # print ("this is random state AFTER the jumpahead")
         # print (random.getstate())
@@ -234,6 +235,7 @@ class Group(CreatedModified):
         seed = self._salt_seed()
         chars = string.ascii_uppercase + string.digits
         random.seed(seed)
+        # for i in range(jump): dummy = random.random()
         random.jumpahead(jump)
 
         return ''.join(random.choice(chars) for idx in range(salt_length))
