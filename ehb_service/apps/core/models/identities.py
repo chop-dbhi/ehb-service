@@ -144,7 +144,12 @@ class GroupEhbKey(GroupPropsKey):
 
     def _make_random_key(self, seed, ja, l, chars=string.ascii_uppercase + string.digits):
         random.seed(seed)
+        # print ("this is random state")
+        state = random.getstate()
+        # random.setstate(state*50)
         random.jumpahead(ja * 50)
+        # print ("this is random state AFTER the jumpahead")
+        # print (random.getstate())
         return ''.join(random.choice(chars) for idx in range(l))
 
     def _set_key(self):
