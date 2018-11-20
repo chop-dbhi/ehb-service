@@ -14,6 +14,7 @@ date_help_text = "Please use date format: <em>YYYY-MM-DD</em>"
 
 
 class CreatedModified(models.Model):
+    wh = random.WichmannHill()
     created = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Record Creation DateTime',
@@ -143,9 +144,12 @@ class GroupEhbKey(GroupPropsKey):
     key = EncryptCharField(max_length=255, unique=True, verbose_name='EHB KEY', editable=False, blank=True)
 
     def _make_random_key(self, seed, ja, l, chars=string.ascii_uppercase + string.digits):
-        random.seed(seed)
+        wh.seed(seed)
+        wh.jumpahead(ja*50)
+        return ''.join(wh.choice(chars) for idx in range(l))
+        # random.seed(seed)
         # random.jumpahead(ja * 50)
-        return ''.join(random.choice(chars) for idx in range(l))
+        # return ''.join(random.choice(chars) for idx in range(l))
 
     def _set_key(self):
         '''Generate a unique key'''
@@ -200,6 +204,7 @@ class Group(CreatedModified):
     desc_help = 'Please briefly describe this Group.'
     description = models.TextField(verbose_name='Group Description', help_text=desc_help)
 
+
     def _create_ehb_key(self):
         '''generate an ehb_key for this Group'''
         # if the key already exists then this model is being edited but this key should not change
@@ -228,10 +233,16 @@ class Group(CreatedModified):
         salt_length = self._salt_length()
         seed = self._salt_seed()
         chars = string.ascii_uppercase + string.digits
-        random.seed(seed)
+        wh.seed(seed)
+        wh.sample(seed, salt_length)
+        wh.jumpahead(jump)
+        return ''.join(wh.choice(chars) for idx in range(salt_length))
+        # random.seed(seed)
+        # random.sample(seed, salt_length)
+
         # random.jumpahead(jump)
 
-        return ''.join(random.choice(chars) for idx in range(salt_length))
+        # return ''.join(random.choice(chars) for idx in range(salt_length))
 
     def _hash_value(self, value):
         value = value.encode("utf8")
