@@ -90,6 +90,7 @@ class BaseField(models.Field):
         on even length values
         '''
         hex_digits = set("0123456789abcdef")
+        hex_digits_bytes = set (b'012346789abcdef')
 
         if isinstance(value, str):
             # print ("INSTANCE IS STRING")
@@ -119,17 +120,23 @@ class BaseField(models.Field):
             #     return self.aes.is_encrypted(binascii.a2b_hex(value), key)
 
         if isinstance(value, bytes):
-            print ("INSTANCE IS BYTES")
+            # return True
 
-            if re.fullmatch(b'[^0-9a-f]', value) == None or (len(value) % 2) != 0:
+            hexValues = True
+            try:
+                int(value, 16)
+            except ValueError:
+                hexValues = False
+
+            if hexValues == False or (len(value) % 2) != 0 :
+            # if re.fullmatch(b'[^0-9a-f]', value) == None or (len(value) % 2) != 0:
             # if re.search(b'[^0-9a-f]', value) or (len(value) % 2) != 0:
 
                 return False
             # Have the encryption service verify if this is encrypted
-            # else:
-            #
-            #     return self.aes.is_encrypted(binascii.a2b_hex(value), key)
-        return True
+            else:
+             return self.aes.is_encrypted(binascii.a2b_hex(value), key)
+        # return True
 
 
     def to_python(self, value):
@@ -143,6 +150,7 @@ class BaseField(models.Field):
         if self.use_encryption:
             key = self.akms.get_key()
             if self._is_encrypted(value, key):
+                # print ("we passed is encrypted")
                 # convert to bytes
                 value = value.encode("utf8")
                 #dehexify and decrypt
@@ -169,7 +177,10 @@ class BaseField(models.Field):
 
         https://docs.djangoproject.com/en/dev/ref/unicode/
         '''
-
+        print ("we are in the other get db prep value")
+        print (value)
+        # if isinstance(value, datetime.date):
+        #     print (sys._getframe().f_back.f_code.co_name)
         if value is None:
             return value
 
@@ -182,7 +193,8 @@ class BaseField(models.Field):
 
             key = self.akms.get_key()
 
-            if value:
+            if value and not self._is_encrypted(value, key):
+                print ("we passed the is encrypted if statement")
 
             # if value and not self._is_encrypted(value, key):
                 pad_length = self._padding_length(value)
@@ -190,6 +202,7 @@ class BaseField(models.Field):
                     value += self._split_byte() + self._semi_random_padding_string(pad_length-1)
 
             value = self.aes.encrypt(value, key)
+            print ("we passed encryption in aes")
 
 
             if len(value) % 2 != 0:
@@ -200,13 +213,15 @@ class BaseField(models.Field):
             # need to decode to string to store in database
             value = value.decode("utf8")
 
-
+            print ("we are able to return value")
+            print (value)
         return value
 
 
 class EncryptCharField(BaseField):
 
     def from_db_value(self, value, expression, connection, context):
+
         if value is None:
             return value
 
@@ -227,20 +242,20 @@ class EncryptCharField(BaseField):
 
         return super(EncryptCharField, self).formfield(**defaults)
 
-    # def get_db_prep_value(self, value, connection=None, prepared=False):
-    #
-    #     if self.use_encryption:
-    #         key = self.akms.get_key()
-    #         if value and not self._is_encrypted(value, key):
-    #             if len(value) > self.user_specified_max_length:
-    #                 raise ValueError(
-    #                     "Field value longer than max allowed: {0} > {1}".format(
-    #                         str(len(value)),
-    #                         self.user_specified_max_length
-    #                     )
-    #                 )
-    #
-    #     return super(EncryptCharField, self).get_db_prep_value(value, connection=connection, prepared=prepared)
+    def get_db_prep_value(self, value, connection=None, prepared=False):
+
+        if self.use_encryption:
+            key = self.akms.get_key()
+            if value and not self._is_encrypted(value, key):
+                if len(value) > self.user_specified_max_length:
+                    raise ValueError(
+                        "Field value longer than max allowed: {0} > {1}".format(
+                            str(len(value)),
+                            self.user_specified_max_length
+                        )
+                    )
+
+        return super(EncryptCharField, self).get_db_prep_value(value, connection=connection, prepared=prepared)
 
 
 class EncryptDateField(BaseField):
@@ -274,22 +289,27 @@ class EncryptDateField(BaseField):
 
         return super(EncryptDateField, self).formfield(**defaults)
 
-    # def to_python(self, value):
-    #
-    #     dv = None
-    #
-    #     if value in fields.EMPTY_VALUES:
-    #         dv = value
-    #     elif isinstance(value, datetime.date):
-    #         dv = value
-    #     else:
-    #
-    #         input_text = super(EncryptDateField, self).to_python(value)
-    #         dv = datetime.date(*[int(x) for x in input_text.split(':')])
-    #
-    #     return dv
-    #
-    # def get_db_prep_value(self, value, connection=None, prepared=False):
-    #     dt = value.strftime('%Y:%m:%d') if value else None
-    #
-    #     return super(EncryptDateField, self).get_db_prep_value(dt, connection=connection, prepared=prepared)
+    def to_python(self, value):
+
+        dv = None
+
+        if value in fields.EMPTY_VALUES:
+            dv = value
+        elif isinstance(value, datetime.date):
+            dv = value
+        else:
+
+            input_text = super(EncryptDateField, self).to_python(value)
+            dv = datetime.date(*[int(x) for x in input_text.split(':')])
+
+        return dv
+
+    def get_db_prep_value(self, value, connection=None, prepared=False):
+        # print ("this is the value")
+        # print (value)
+        # print (type(value))
+        if isinstance(value, datetime.date):
+            value = value.strftime('%Y:%m:%d')
+        # dt = value.strftime('%Y:%m:%d') if value else None
+
+        return super(EncryptDateField, self).get_db_prep_value(value, connection=connection, prepared=prepared)
