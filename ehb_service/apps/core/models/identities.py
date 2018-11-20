@@ -145,7 +145,7 @@ class GroupEhbKey(GroupPropsKey):
 
     def _make_random_key(self, seed, ja, l, chars=string.ascii_uppercase + string.digits):
         random.seed(seed)
-        random.jumpahead(ja * 50)
+        # random.jumpahead(ja * 50)
         return ''.join(random.choice(chars) for idx in range(l))
 
     def _set_key(self):
@@ -233,7 +233,7 @@ class Group(CreatedModified):
 
         random.seed(seed)
 
-        random.jumpahead(jump)
+        # random.jumpahead(jump)
 
         return ''.join(random.choice(chars) for idx in range(salt_length))
 
