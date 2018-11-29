@@ -1,6 +1,7 @@
 import random
+import string
 
-class encryptionPrepFunctions(object):
+class encryptionBaseMethods(object):
 
     @staticmethod
     def _max_db_length(unique, user_specified_length, block_size, aes_object):
@@ -29,7 +30,7 @@ class encryptionPrepFunctions(object):
         return block_size - ((len(value)+2) % block_size) + 2
 
     @staticmethod
-    def _semi_random_padding_string(self, length):
+    def _semi_random_padding_string(length):
         '''
         Would like to add some random padding, but it needs to be reproducable
         for values of the same length to ensure uniqueness requirements are satisfied,
