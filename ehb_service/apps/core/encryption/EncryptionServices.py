@@ -39,19 +39,20 @@ class AESEncryption(EncryptionService):
         if self.use_checksum:
             data += struct.pack("i", zlib.crc32(data))
 
-        return enc.encrypt(data)
+        encrypted_data = enc.encrypt(data)
+        print ("this is encrypted data")
+        print (encrypted_data)
+        return encrypted_data
+        # return enc.encrypt(data)
 
     def decrypt(self, edata, key, **kwargs):
-        print ("2. we are in encryption services decrypt. This is edata handed to it")
-        print ("i expect it to be the same as value from db")
-        print (edata)
+
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
         enc = AES.new(key, self.mode)
         data = enc.decrypt(edata)
-        print ("3. thisi s the data after its been decrypted ")
-        print (data)
+
 
 
         if self.use_checksum:
@@ -65,7 +66,7 @@ class AESEncryption(EncryptionService):
         if self.use_checksum:
             try:
                 self.decrypt(edata, key)
-                print ("4. we return true for it being encrypted ")
+
                 return True
             except CheckSumFailure:
                 log.error("Checksum failure. Unable to decrypt")
