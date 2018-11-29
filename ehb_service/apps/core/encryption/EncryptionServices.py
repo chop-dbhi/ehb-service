@@ -46,7 +46,11 @@ class AESEncryption(EncryptionService):
             data += struct.pack("I", zlib.crc32(data))
 
         # return encrypted data which is utf8 encoded (bytes)
-        return  enc.encrypt(data)
+        enrypted_data = enc.encrypt(data)
+        print ("this is the encrytped data")
+        print (enrypted_data)
+        return enrypted_data
+        # return  enc.encrypt(data)
 
 
 
@@ -57,13 +61,12 @@ class AESEncryption(EncryptionService):
         # convert string to bytes
         key = key.encode("utf8")
         enc = AES.new(key, self.mode, iv=b'0123456789abcdef')
-
         data = enc.decrypt(edata)
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
             # cs is the extra bytes that we added to data before
-            # (see encrypt for more info on what this is) 
+            # (see encrypt for more info on what this is)
             # if the byte object of the 32 bit representation of data
             # doesn't equal cs, we raise error
             if not cs == struct.pack("I", zlib.crc32(data)):
