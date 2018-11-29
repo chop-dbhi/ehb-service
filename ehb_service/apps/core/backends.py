@@ -118,7 +118,7 @@ class LdapBackend(ModelBackend):
                     return
 
             # Now do the actual search
-            filter = self.settings['SEARCH_FILTER'] % username
+            filter = self.settings['SEARCH_FILTER'].format(username)
             result = conn.search_s(
                 self.settings['SEARCHDN'],
                 self.settings['SCOPE'], filter, attrsonly=1)
