@@ -145,6 +145,7 @@ class GroupEhbKey(GroupPropsKey):
 
     def _make_random_key(self, seed, ja, l, chars=string.ascii_uppercase + string.digits):
         random.seed(seed)
+        for i in range(ja): dummy = random.random()
         # random.jumpahead(ja * 50)
         return ''.join(random.choice(chars) for idx in range(l))
 
@@ -232,6 +233,7 @@ class Group(CreatedModified):
         chars = string.ascii_uppercase + string.digits
 
         random.seed(seed)
+        for i in range(jump): dummy = random.random()
 
         # random.jumpahead(jump)
 
