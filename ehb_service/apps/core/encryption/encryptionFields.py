@@ -12,6 +12,8 @@ import sys
 
 from core.encryption.Factories import FactoryEncryptionServices as efac
 
+from core.encryption.encryptionFieldsBase import encryptionPrepFunctions as enpr
+
 
 class BaseField(models.Field):
 
@@ -29,30 +31,31 @@ class BaseField(models.Field):
         if self.use_encryption:
             user_specified_length = kwargs.get('max_length', 20)
             unique = kwargs.get('unique', False)
-            max_length, usl = self._max_db_length(unique, user_specified_length)
+            max_length, usl = enpr._max_db_length (unique, user_specified_length, self.block_size, self.aes)
+            # max_length, usl = self._max_db_length(unique, user_specified_length)
             self.user_specified_max_length = usl
             kwargs['max_length'] = max_length
 
         models.Field.__init__(self, *args, **kwargs)
 
-    def _max_db_length(self, unique, user_specified_length):
-
-        def encrypted_length(usl):
-            ml = usl + 2
-            modulus = ml % self.block_size
-            if modulus > 0:
-                ml += self.block_size - modulus
-            return (ml + self.aes.check_sum_length()) * 2
-
-        if unique:
-            l = encrypted_length(user_specified_length)
-            while(l > 255):
-                user_specified_length -= 1
-                l = encrypted_length(user_specified_length)
-            return (l, user_specified_length)
-
-        else:
-            return (encrypted_length(user_specified_length), user_specified_length)
+    # def _max_db_length(self, unique, user_specified_length):
+    #
+    #     def encrypted_length(usl):
+    #         ml = usl + 2
+    #         modulus = ml % self.block_size
+    #         if modulus > 0:
+    #             ml += self.block_size - modulus
+    #         return (ml + self.aes.check_sum_length()) * 2
+    #
+    #     if unique:
+    #         l = encrypted_length(user_specified_length)
+    #         while(l > 255):
+    #             user_specified_length -= 1
+    #             l = encrypted_length(user_specified_length)
+    #         return (l, user_specified_length)
+    #
+    #     else:
+    #         return (encrypted_length(user_specified_length), user_specified_length)
 
     def _padding_length(self, value):
         # The total length of the encrypted value including zero byte must be even in order
@@ -89,120 +92,95 @@ class BaseField(models.Field):
         before storing in db using the binascii.a2b_hex method which only operates
         on even length values
         '''
-        hex_digits = set("0123456789abcdef")
-        hex_digits_bytes = set (b'012346789abcdef')
+        hexValues = True
+        # test to see if value is a hexadecimal
+        try:
+            int(value, 16)
+        except ValueError:
+            hexValues = False
 
-        if isinstance(value, str):
-            # print ("INSTANCE IS STRING")
-            # print (sys._getframe().f_back.f_code.co_name)
-            hexValues = True
-            try:
-                int(value, 16)
-            except ValueError:
-                hexValues = False
-
-            if hexValues == False or (len(value) % 2) != 0 :
-            # if (all(c in hex_digits for c in value)) == False or (len(value) % 2) != 0 or len(value) < 10:
-            # if re.fullmatch('[^0-9a-f]', value) == None or (len(value) % 2) != 0:
-                return False
-            else:
-                # Have the encryption service verify if this is encrypted
-                return self.aes.is_encrypted(binascii.a2b_hex(value), key)
-
-
-            # if re.search('[^0-9a-f]', value) or (len(value) % 2) != 0:
-            #     print ("this is what re search is returning")
-            #     print (re.search('[^0-9a-f]', value))
-            #     return False
-            # # Have the encryption service verify if this is encrypted
-            # else:
-            #
-            #     return self.aes.is_encrypted(binascii.a2b_hex(value), key)
-
-        if isinstance(value, bytes):
-            # return True
-
-            hexValues = True
-            try:
-                int(value, 16)
-            except ValueError:
-                hexValues = False
-
-            if hexValues == False or (len(value) % 2) != 0 :
-            # if re.fullmatch(b'[^0-9a-f]', value) == None or (len(value) % 2) != 0:
-            # if re.search(b'[^0-9a-f]', value) or (len(value) % 2) != 0:
-
-                return False
+        if hexValues == False or (len(value) % 2) != 0 :
+            return False
+        else:
             # Have the encryption service verify if this is encrypted
-            else:
-             return self.aes.is_encrypted(binascii.a2b_hex(value), key)
-        # return True
+            # return True
+            # value = value.encode("utf8")
+            return self.aes.is_encrypted(binascii.a2b_hex(value), key)
 
 
+    # def get_decrypted_value (self, value):
     def to_python(self, value):
         """Converts the input value into the expected Python data type by
-        dexifying and decrypting the value. It raises
+        dehexifying and decrypting the value. It raises
         django.core.exceptions.ValidationError if the data can't be converted.
-        Returns the converted value. Subclasses should override this."""
+        Returns the converted value. """
+
+        # if value is already date time object,
+        # doesn't need decryption
+        # if isinstance(value, datetime.date):
+        #     return value
 
         if len(value.strip()) == 0:
             return value
+
         if self.use_encryption:
             key = self.akms.get_key()
             if self._is_encrypted(value, key):
-                # print ("we passed is encrypted")
                 # convert to bytes
-                value = value.encode("utf8")
-                #dehexify and decrypt
+                # value = value.encode("utf8")
+                # dehexify and decrypt
                 decrypted_value = self.aes.decrypt(binascii.a2b_hex(value), key)
-                #get rid of extra bytes
+                # get rid of extra bytes
                 decrypted_value = decrypted_value.split(self._split_byte())
-                #forcing text
+                # forcing to string text
                 decrypted_value = force_text(decrypted_value[0])
                 return decrypted_value
-
                 # return force_text(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
             else:
-
                 return value
         else:
             return value
 
+    # def get_encrypted_value (self, value, connection=None, prepared=False):
     def get_db_prep_value(self, value, connection=None, prepared=False):
         '''
         Perform preliminary non-db specific value checks and conversions:
-        convert value from unicode to full byte string, otherwise encryption
+        convert value from unicode to full byte, encrypted string, otherwise encryption
         service may fail according to django docs this is different than str(value)
         and necessary to django internals
 
         https://docs.djangoproject.com/en/dev/ref/unicode/
         '''
-        print ("we are in the other get db prep value")
-        print (value)
-        # if isinstance(value, datetime.date):
-        #     print (sys._getframe().f_back.f_code.co_name)
+
         if value is None:
             return value
+
+        # if isinstance(value, datetime.date):
+        #     value = value.strftime('%Y:%m:%d')
 
         if len(value.strip()) == 0:
             return value
 
+        # convert string value to bytes
         value = smart_bytes(value, encoding='utf-8', strings_only=False, errors='strict')
 
         if self.use_encryption:
-
             key = self.akms.get_key()
-
             if value and not self._is_encrypted(value, key):
-                print ("we passed the is encrypted if statement")
+                if len(value) > self.user_specified_max_length:
+                    raise ValueError(
+                        "Field value longer than max allowed: {0} > {1}".format(
+                            str(len(value)),
+                            self.user_specified_max_length
+                        )
+                    )
 
-            # if value and not self._is_encrypted(value, key):
+
                 pad_length = self._padding_length(value)
                 if pad_length > 0:
                     value += self._split_byte() + self._semi_random_padding_string(pad_length-1)
 
             value = self.aes.encrypt(value, key)
-            print ("we passed encryption in aes")
 
 
             if len(value) % 2 != 0:
@@ -212,19 +190,14 @@ class BaseField(models.Field):
 
             # need to decode to string to store in database
             value = value.decode("utf8")
-
-            print ("we are able to return value")
-            print (value)
         return value
 
 
 class EncryptCharField(BaseField):
 
     def from_db_value(self, value, expression, connection, context):
-
         if value is None:
             return value
-
         return super(EncryptCharField, self).to_python(value)
 
     def get_internal_type(self):
@@ -271,6 +244,9 @@ class EncryptDateField(BaseField):
         elif isinstance(value, datetime.date):
             dv = value
         else:
+            # input_text = self.to_python(value)
+            print ("this is the value")
+            print (value)
             input_text = super(EncryptDateField, self).to_python(value)
             dv = datetime.date(*[int(x) for x in input_text.split(':')])
         return dv
@@ -305,9 +281,7 @@ class EncryptDateField(BaseField):
         return dv
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
-        # print ("this is the value")
-        # print (value)
-        # print (type(value))
+
         if isinstance(value, datetime.date):
             value = value.strftime('%Y:%m:%d')
         # dt = value.strftime('%Y:%m:%d') if value else None
