@@ -31,13 +31,15 @@ class AESEncryption(EncryptionService):
         else:
             return key
 
+    # assumes that key is in string format and data is in bytes
+    # returns encrypted data in bytes
     def encrypt(self, data, key, **kwargs):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
         # convert string to bytes.
         key = key.encode("utf8")
-        enc = AES.new(key, self.mode, iv=b'0123456789abcdef')
+        enc = AES.new(key, self.mode, IV=b'0123456789abcdef')
 
         if self.use_checksum:
             # struct pack returns a byte object within the values of 'i'
@@ -47,21 +49,20 @@ class AESEncryption(EncryptionService):
 
         # return encrypted data which is utf8 encoded (bytes)
         enrypted_data = enc.encrypt(data)
-        print ("this is the encrytped data")
-        print (enrypted_data)
-        return enrypted_data
-        # return  enc.encrypt(data)
+        return  enc.encrypt(data)
 
 
-
+    # assumes key is in string format and data is in bytes
+    # returns decrypted data in byte format
     def decrypt(self, edata, key, **kwargs):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
 
         # convert string to bytes
         key = key.encode("utf8")
-        enc = AES.new(key, self.mode, iv=b'0123456789abcdef')
+        enc = AES.new(key, self.mode, IV=b'0123456789abcdef')
         data = enc.decrypt(edata)
+        print (data)
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
