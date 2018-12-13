@@ -8,6 +8,7 @@ from base import *
 env = environ.Env()
 env.read_env('{0}.env'.format(env('APP_ENV')))
 
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', [])
 TIME_ZONE = env('TIME_ZONE', default='America/New_York')
 DEBUG = env('DEBUG', default=True)
 DATABASES = {
