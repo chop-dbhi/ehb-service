@@ -23,17 +23,17 @@ class TestAESEncryption(TestCase):
     def test_encrypt(self):
         service = AESEncryption()
         service.configure()
-        self.assertEqual(b'\xe4W\xc2\x19\x0c\x7f7\xd3\xd0&', service.encrypt(b'secret', '123456'))
+        self.assertEqual(b'\\1Pu\xc7\xda\x0fE\xc4\xea', service.encrypt(b'secret', '123456'))
 
     def test_decrypt(self):
         service = AESEncryption()
         service.configure()
-        self.assertEqual(b'secret', service.decrypt(b'\xe4W\xc2\x19\x0c\x7f7\xd3\xd0&', '123456'))
+        self.assertEqual(b'secret', service.decrypt(b'\\1Pu\xc7\xda\x0fE\xc4\xea', '123456'))
 
     def test_is_encrypted(self):
         service = AESEncryption()
         service.configure()
-        self.assertTrue(service.is_encrypted(b'\xe4W\xc2\x19\x0c\x7f7\xd3\xd0&', '123456'))
+        self.assertTrue(service.is_encrypted(b'\\1Pu\xc7\xda\x0fE\xc4\xea', '123456'))
 
     def test_check_sum_length(self):
         service = AESEncryption()
