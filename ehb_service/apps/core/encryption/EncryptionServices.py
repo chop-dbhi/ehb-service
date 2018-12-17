@@ -48,7 +48,6 @@ class AESEncryption(EncryptionService):
             data += struct.pack("I", zlib.crc32(data))
 
         # return encrypted data which is utf8 encoded (bytes)
-        enrypted_data = enc.encrypt(data)
         return  enc.encrypt(data)
 
 
@@ -62,7 +61,6 @@ class AESEncryption(EncryptionService):
         key = key.encode("utf8")
         enc = AES.new(key, self.mode, IV=b'0123456789abcdef')
         data = enc.decrypt(edata)
-        print (data)
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
