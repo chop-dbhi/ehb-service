@@ -3,6 +3,7 @@ import re
 import binascii
 import random
 import string
+import logging
 
 from django import forms
 from django.db import models
@@ -11,8 +12,8 @@ from django.utils.encoding import force_text, smart_bytes
 import sys
 
 from core.encryption.Factories import FactoryEncryptionServices as efac
-
 from core.encryption.encryptionFieldsBase import encryptionBaseMethods as ebm
+log = logging.getLogger(__name__)
 
 
 class BaseField(models.Field):
@@ -189,7 +190,10 @@ class EncryptDateField(BaseField):
             dv = value
         else:
             input_text = self.get_decrypted_value(value)
-            dv = datetime.date(*[int(x) for x in input_text.split(':')])
+            try:
+                dv = datetime.date(*[int(x) for x in input_text.split(':')])
+            except ValueError:
+                log.error("Decryption failed - old ehb values need to be updated")
         return dv
 
     def deconstruct(self):
