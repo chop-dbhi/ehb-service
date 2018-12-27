@@ -271,6 +271,9 @@ class Group(CreatedModified):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
+
 
 class SubjectGroup(CreatedModified):
 
@@ -280,6 +283,9 @@ class SubjectGroup(CreatedModified):
 
     class Meta(CreatedModified.Meta):
         ordering = ['group']
+
+    def __str__(self):
+        return self.group
 
 
 # class ExternalRecordRelation(CreatedModified):
@@ -330,7 +336,7 @@ class ExternalRecordLabel(CreatedModified):
 
     def __str__(self):
         return self.label
-        
+
 
 class ExternalRecord(CreatedModified):
     '''
