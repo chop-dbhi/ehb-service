@@ -63,7 +63,7 @@ class Organization(CreatedModified):
     class Meta(CreatedModified.Meta):
         ordering = ['name']
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -116,14 +116,13 @@ class Subject(CreatedModified):
 
         return response
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0}, {1} : {2} : {3}".format(
             self.last_name,
             self.first_name,
             self.organization.name,
             self.organization_subject_id
         )
-
 
 class GroupPropsKey(CreatedModified):
 
@@ -181,7 +180,7 @@ class GroupEhbKey(GroupPropsKey):
         self._set_key()
         super(GroupEhbKey, self).save()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.key
 
 class Group(CreatedModified):
@@ -268,9 +267,6 @@ class Group(CreatedModified):
     class Meta(CreatedModified.Meta):
         ordering = ['name']
 
-    def __unicode__(self):
-        return self.name
-
     def __str__(self):
         return self.name
 
@@ -317,7 +313,7 @@ class ExternalSystem(CreatedModified):
     class Meta(CreatedModified.Meta):
         ordering = ['name']
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -330,9 +326,6 @@ class ExternalRecordLabel(CreatedModified):
 
     id = models.AutoField(primary_key=True)
     label = models.CharField(max_length=100, verbose_name="Label")
-
-    def __unicode__(self):
-        return self.label
 
     def __str__(self):
         return self.label
@@ -389,7 +382,7 @@ class ExternalRecord(CreatedModified):
         response['path'] = self.path
         return response
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0}, {1} IN {2} ID {3}".format(
             self.subject.last_name,
             self.subject.first_name,
@@ -425,7 +418,7 @@ class Relation(CreatedModified):
             'desc': self.desc
         }
 
-    def __unicode__(self):
+    def __str__(self):
         return "<{0}> {1}".format(self.typ, self.desc)
 
 
@@ -444,7 +437,7 @@ class ExternalRecordRelation(CreatedModified):
           'relation_description': self.relation_type.desc
         }
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} related to {1}, -- Type: {2}".format(
               self.external_record,
               self.related_record,
@@ -485,7 +478,7 @@ class PedigreeSubjectRelation(CreatedModified):
           'subject_2_role': self.subject_2_role.responseFieldDict()
         }
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} is {1} to {2}, {3}".format(
               self.subject_1,
               self.subject_1_role,
@@ -509,7 +502,7 @@ class SubjectValidation(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     regex = models.CharField(max_length=70)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} Subject validation".format(self.organization.name)
 
     class Meta:
