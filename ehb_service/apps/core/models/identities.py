@@ -420,7 +420,7 @@ class ExternalRecordRelation(CreatedModified):
     id = models.AutoField(primary_key=True)
     external_record = models.ForeignKey(ExternalRecord, related_name='external_record', default=None, null=True, on_delete=models.CASCADE)
     related_record = models.ForeignKey(ExternalRecord, related_name='related_record', default=None, null=True, on_delete=models.CASCADE)
-    relation_type = models.ForeignKey(Relation, on_delete=models.CASCADE)
+    relation_type = models.ForeignKey(Relation, null=True, on_delete=models.CASCADE)
 
     def to_dict(self):
         return {
