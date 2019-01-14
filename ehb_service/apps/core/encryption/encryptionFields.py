@@ -220,7 +220,10 @@ class EncryptDateField(BaseField):
             dv = value
         else:
             input_text = self.get_decrypted_value(value)
-            dv = datetime.date(*[int(x) for x in input_text.split('-')])
+            try:
+                dv = datetime.date(*[int(x) for x in input_text.split('-')])
+            except:
+                dv = datetime.date(*[int(x) for x in input_text.split(':')])
 
         return dv
 
