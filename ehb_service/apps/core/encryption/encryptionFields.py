@@ -48,6 +48,7 @@ class BaseField(models.Field):
         '''
         hexValues = True
         # test to see if value is a hexadecimal
+        value = value.strip()
         try:
             int(value, 16)
         except ValueError:
@@ -57,6 +58,17 @@ class BaseField(models.Field):
             return False
         else:
             # Have the encryption service verify if this is encrypted
+            # getting rid of extra space at the end of the data
+            # value = value.strip()
+            # try:
+            #     encrypted = self.aes.is_encrypted(binascii.a2b_hex(value), key)
+            # except binascii.Error:
+            #     # extra space at the end of the data
+            #     print ("this value is not hex")
+            #     print (value)
+            #     encrypted = False
+            #
+            # return encrypted
             return self.aes.is_encrypted(binascii.a2b_hex(value), key)
 
 
@@ -218,7 +230,7 @@ class EncryptDateField(BaseField):
             dv = value
         else:
             input_text = self.get_decrypted_value(value)
-            dv = datetime.date(*[int(x) for x in input_text.split(':')])
+            dv = datetime.date(*[int(x) for x in input_text.split('-')])
 
         return dv
 
