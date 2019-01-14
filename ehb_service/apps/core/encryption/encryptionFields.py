@@ -33,7 +33,6 @@ class BaseField(models.Field):
             user_specified_length = kwargs.get('max_length', 20)
             unique = kwargs.get('unique', False)
             max_length, usl = ebm._max_db_length (unique, user_specified_length, self.block_size, self.aes)
-            # max_length, usl = self._max_db_length(unique, user_specified_length)
             self.user_specified_max_length = usl
             kwargs['max_length'] = max_length
 
@@ -82,7 +81,6 @@ class BaseField(models.Field):
                 # forcing to string text
                 decrypted_value = force_text(decrypted_value[0])
                 return decrypted_value
-                # return force_text(self.aes.decrypt(binascii.a2b_hex(value), key).split(self._split_byte())[0])
             else:
                 return value
         else:

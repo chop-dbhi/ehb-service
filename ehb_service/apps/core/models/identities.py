@@ -145,7 +145,6 @@ class GroupEhbKey(GroupPropsKey):
     def _make_random_key(self, seed, ja, l, chars=string.ascii_uppercase + string.digits):
         random.seed(seed)
         for i in range(ja): dummy = random.random()
-        # random.jumpahead(ja * 50)
         return ''.join(random.choice(chars) for idx in range(l))
 
     def _set_key(self):
@@ -201,7 +200,6 @@ class Group(CreatedModified):
     desc_help = 'Please briefly describe this Group.'
     description = models.TextField(verbose_name='Group Description', help_text=desc_help)
 
-
     def _create_ehb_key(self):
         '''generate an ehb_key for this Group'''
         # if the key already exists then this model is being edited but this key should not change
@@ -230,11 +228,8 @@ class Group(CreatedModified):
         salt_length = self._salt_length()
         seed = self._salt_seed()
         chars = string.ascii_uppercase + string.digits
-
         random.seed(seed)
         for i in range(jump): dummy = random.random()
-
-        # random.jumpahead(jump)
 
         return ''.join(random.choice(chars) for idx in range(salt_length))
 
@@ -282,7 +277,6 @@ class SubjectGroup(CreatedModified):
 
     def __str__(self):
         return self.group
-
 
 # class ExternalRecordRelation(CreatedModified):
 #    id = models.IntegerField(primary_key=True)
