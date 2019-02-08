@@ -1,15 +1,17 @@
 import json
 
-from restlib2.resources import Resource
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
 
 from core.models.identities import Relation, PedigreeSubjectRelation
 from core.forms import PedigreeSubjectRelationForm
 from api.helpers import FormHelpers
 
 
-class RelationResource(Resource):
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.Relation'
+class RelationView(APIView):
 
     def get(self, request, **kwargs):
         relations = Relation.objects.all()
@@ -17,10 +19,10 @@ class RelationResource(Resource):
         for relation in relations:
             d.append(relation.to_dict())
 
-        return (json.dumps(d))
+        return Response(d)
 
 
-class PedigreeSubjectRelationResource(Resource):
+class PedigreeSubjectRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.PedigreeSubjectRelation'
 
@@ -82,7 +84,7 @@ class PedigreeSubjectRelationResource(Resource):
         if subject_id:
             relationships = self.relationships_by_subject(subject_id)
 
-        return relationships
+        return Response(relationships)
 
     def put(self, request):
         """This method is intended for updating an existing protocol relationship"""
@@ -105,4 +107,4 @@ class PedigreeSubjectRelationResource(Resource):
                     'protocol_id': relationship.get('protocol_id')
                 }
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
-            return json.dumps(response)
+            return Response(response)

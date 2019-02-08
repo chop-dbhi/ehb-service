@@ -8,6 +8,7 @@ from base import *
 env = environ.Env()
 env.read_env('{0}.env'.format(env('APP_ENV')))
 
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', [])
 TIME_ZONE = env('TIME_ZONE', default='America/New_York')
 DEBUG = env('DEBUG', default=True)
 DATABASES = {
@@ -63,3 +64,19 @@ if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(FORCE_SCRIPT_NAME, ADMIN_MEDIA_PREFIX[1:])
     STATIC_URL = os.path.join(FORCE_SCRIPT_NAME, STATIC_URL[1:])
     MEDIA_URL = os.path.join(FORCE_SCRIPT_NAME, MEDIA_URL[1:])
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'api.authentication.APITokenAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    ),
+}

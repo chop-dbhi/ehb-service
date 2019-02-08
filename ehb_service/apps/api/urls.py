@@ -1,61 +1,56 @@
-from django.conf.urls import url, patterns, include  # noqa
+from django.conf.urls import url, include  # noqa
+from api.views import subject, relation, organization, group, externalsystem,externalrecord
 
-subject_patterns = patterns(
-    'api.resources.subject',
-    url(r'^$', 'SubjectResource'),
-    url(r'^id/(?P<pk>\d+)/$', 'SubjectResource'),
-    url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w*[-]*\w*)/$', 'SubjectResource'),
-    url(r'^externalrecsys/(?P<externalrecsys>\d+)/erid/(?P<erid>.*)/$', 'SubjectResource'),
-)
 
-organization_patterns = patterns(
-    'api.resources.organization',
-    url(r'^$', 'OrganizationResource'),
-    url(r'^id/(?P<pk>\d+)/$', 'OrganizationResource'),
-    url(r'^query/$', 'OrganizationQuery'),
-)
+subject_patterns = ([
+    url(r'^$', subject.SubjectView.as_view()),
+    url(r'^id/(?P<pk>\d+)/$', subject.SubjectView.as_view()),
+    url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w*[-]*\w*)/$', subject.SubjectView.as_view()),
+    url(r'^externalrecsys/(?P<externalrecsys>\d+)/erid/(?P<erid>.*)/$', subject.SubjectView.as_view()),],
+    'api')
 
-externalSystem_patterns = patterns(
-    'api.resources.externalsystem',
-    url(r'^$', 'ExternalSystemResource'),
-    url(r'^id/(?P<pk>\d+)/$', 'ExternalSystemResource'),
-    url(r'^id/(?P<pk>\d+)/subjects/$', 'ExternalSystemSubjects'),
-    url(r'^id/(?P<pk>\d+)/organization/(?P<org_pk>\d+)/subjects/$', 'ExternalSystemSubjects'),
-    url(r'^id/(?P<pk>\d+)/records/$', 'ExternalSystemRecords'),
-    url(r'^id/(?P<pk>\d+)/organization/(?P<org_pk>\d+)/records/$', 'ExternalSystemRecords'),
-    url(r'^query/$', 'ExternalSystemQuery'),
-)
+organization_patterns = ([
+    url(r'^$', organization.OrganizationView.as_view()),
+    url(r'^id/(?P<pk>\d+)/$', organization.OrganizationView.as_view()),
+    url(r'^query/$', organization.OrganizationQuery.as_view()),],
+    'api')
 
-externalRecord_patterns = patterns(
-    'api.resources.externalrecord',
-    url(r'^$', 'ExternalRecordResource'),
-    url(r'^id/(?P<pk>\d+)/$', 'ExternalRecordResource'),
-    url(r'^id/(?P<pk>\d+)/links/$', 'ExternalRecordRelationResource'),
-    url(r'^id/(?P<pk>\d+)/links/(?P<link>\d+)/$', 'ExternalRecordRelationResource'),
-    url(r'^query/$', 'ExternalRecordQuery'),
-    url(r'^labels/$', 'ExternalRecordLabelResource'),
-    url(r'^labels/(?P<pk>\d+)/$', 'ExternalRecordLabelResource'),
-)
+externalSystem_patterns = ([
+    url(r'^$', externalsystem.ExternalSystemView.as_view()),
+    url(r'^id/(?P<pk>\d+)/$', externalsystem.ExternalSystemView.as_view()),
+    url(r'^id/(?P<pk>\d+)/subjects/$', externalsystem.ExternalSystemSubjects.as_view()),
+    url(r'^id/(?P<pk>\d+)/organization/(?P<org_pk>\d+)/subjects/$', externalsystem.ExternalSystemSubjects.as_view()),
+    url(r'^id/(?P<pk>\d+)/records/$', externalsystem.ExternalSystemRecords.as_view()),
+    url(r'^id/(?P<pk>\d+)/organization/(?P<org_pk>\d+)/records/$', externalsystem.ExternalSystemRecords.as_view()),
+    url(r'^query/$', externalsystem.ExternalSystemQuery.as_view()),],
+    'api')
 
-group_patterns = patterns(
-    'api.resources.group',
-    url(r'^$', 'GroupResource'),
-    url(r'^id/(?P<pk>\d+)/subjects/$', 'SubjectGroupResource'),
-    url(r'^id/(?P<grp_pk>\d+)/subjects/id/(?P<x_pk>\d+)/$', 'SubjectGroupResource'),
-    url(r'^id/(?P<pk>\d+)/records/$', 'RecordGroupResource'),
-    url(r'^id/(?P<grp_pk>\d+)/records/id/(?P<x_pk>\d+)/$', 'RecordGroupResource'),
-)
+externalRecord_patterns = ([
+    url(r'^$', externalrecord.ExternalRecordView.as_view()),
+    url(r'^id/(?P<pk>\d+)/$', externalrecord.ExternalRecordView.as_view()),
+    url(r'^id/(?P<pk>\d+)/links/$', externalrecord.ExternalRecordRelationView.as_view()),
+    url(r'^id/(?P<pk>\d+)/links/(?P<link>\d+)/$', externalrecord.ExternalRecordRelationView.as_view()),
+    url(r'^query/$', externalrecord.ExternalRecordQuery.as_view()),
+    url(r'^labels/$', externalrecord.ExternalRecordLabelView.as_view()),
+    url(r'^labels/(?P<pk>\d+)/$', externalrecord.ExternalRecordLabelView.as_view()),],
+    'api')
 
-pedigreeRelationship_patterns = patterns(
-    'api.resources.relation',
-    url(r'^$', 'PedigreeSubjectRelationResource'),
-    url(r'^protocol_id/(?P<protocol_id>\d+)/$', 'PedigreeSubjectRelationResource'),
-    url(r'^subject_id/(?P<subject_id>\d+)/$', 'PedigreeSubjectRelationResource'),
-    #url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'PedigreeSubjectRelationResource'),
-)
+group_patterns = ([
+    url(r'^$', group.GroupView.as_view()),
+    url(r'^id/(?P<pk>\d+)/subjects/$', group.SubjectGroupView.as_view()),
+    url(r'^id/(?P<grp_pk>\d+)/subjects/id/(?P<x_pk>\d+)/$', group.SubjectGroupView.as_view()),
+    url(r'^id/(?P<pk>\d+)/records/$', group.RecordGroupView.as_view()),
+    url(r'^id/(?P<grp_pk>\d+)/records/id/(?P<x_pk>\d+)/$', group.RecordGroupView.as_view()),],
+    'api')
 
-urlpatterns = patterns(
-    '',
+pedigreeRelationship_patterns = ([
+    url(r'^$', relation.PedigreeSubjectRelationView.as_view()),
+    url(r'^protocol_id/(?P<protocol_id>\d+)/$', relation.PedigreeSubjectRelationView.as_view()),
+    url(r'^subject_id/(?P<subject_id>\d+)/$', relation.PedigreeSubjectRelationView.as_view()),],
+    'api')
+    #url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'PedigreeSubjectRelationView'),
+
+urlpatterns = [
     url(r'^subject/', include(subject_patterns,
         namespace='subject')),
     url(r'^externalsystem/', include(externalSystem_patterns,
@@ -66,8 +61,8 @@ urlpatterns = patterns(
         namespace='organization')),
     url(r'^group/', include(group_patterns,
         namespace='group')),
-    url(r'^links/$', 'api.resources.relation.RelationResource'),
+    url(r'^links/$', relation.RelationView.as_view()),
     url(r'^pedigree/', include(pedigreeRelationship_patterns,
         namespace='pedigree')),
-
-)
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+]

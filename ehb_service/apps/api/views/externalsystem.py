@@ -1,9 +1,11 @@
 import json
 import logging
 
-from restlib2.resources import Resource
-from restlib2.http import codes
-from django.http import HttpResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
 
 from api.helpers import FormHelpers
 from constants import ErrorConstants
@@ -12,9 +14,7 @@ from core.forms import ExternalSystemForm
 
 log = logging.getLogger(__name__)
 
-class ExternalSystemCrossReference(Resource):
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.ExternalSystem'
+class ExternalSystemCrossReference(APIView):
 
     class Meta(object):
         abstract = True
@@ -29,11 +29,11 @@ class ExternalSystemCrossReference(Resource):
             es = ExternalSystem.objects.get(pk=pk)
         except ExternalSystem.DoesNotExist:
             log.error("ExternalSystem[{0}] not found".format(pk))
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
         if es:
             response = []
             func(es, response)
-            return json.dumps(response)
+            return Response(response)
 
     def getOrganization(self, org_id):
         org = None
@@ -46,7 +46,7 @@ class ExternalSystemRecords(ExternalSystemCrossReference):
 
     def get(self, request, pk, **kwargs):
         '''
-        This resource provides a response with all of the external records that are
+        This View provides a response with all of the external records that are
         associated with this external system. If the org_pk is provided,
         then only external records whos subject record belong to the organization
         will be returned. If the path is provide only external records with the
@@ -57,7 +57,7 @@ class ExternalSystemRecords(ExternalSystemCrossReference):
             org = self.getOrganization(kwargs.pop('org_pk', None))
         except Organization.DoesNotExist:
             log.error("Unable to retrieve ExternalSystemRecords. Organization not found")
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         def process(es, response):
             qs = ExternalRecord.objects.filter(external_system=es)
@@ -76,7 +76,7 @@ class ExternalSystemSubjects(ExternalSystemCrossReference):
 
     def get(self, request, pk, **kwargs):
         '''
-        This resource provides a response with all of the subjects that have
+        This View provides a response with all of the subjects that have
         records associated with this external system. If the org_pk is provided,
         then only subject records that belong to this organization will be returned
         '''
@@ -84,7 +84,7 @@ class ExternalSystemSubjects(ExternalSystemCrossReference):
             org = self.getOrganization(kwargs.pop('org_pk', None))
         except Organization.DoesNotExist:
             log.error("Unable to retrieve ExternalSystemSubjects. Organization not found")
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         def process(es, response):
             if not org:
@@ -98,10 +98,7 @@ class ExternalSystemSubjects(ExternalSystemCrossReference):
         return self._read_and_action(request, process, pk)
 
 
-class ExternalSystemQuery(Resource):
-
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.ExternalSystem'
+class ExternalSystemQuery(APIView):
 
     def post(self, request):
         """This method is intended querying for ExternalSystem records by name"""
@@ -169,13 +166,9 @@ class ExternalSystemQuery(Resource):
                         }
                     )
 
-            return json.dumps(response)
+            return Response(response)
 
-
-class ExternalSystemResource(Resource):
-
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.ExternalSystem'
+class ExternalSystemView(APIView):
 
     def get(self, request, pk):
         es = None
@@ -184,11 +177,10 @@ class ExternalSystemResource(Resource):
             es = ExternalSystem.objects.get(pk=pk)
         except ExternalSystem.DoesNotExist:
             log.error("ExternalSystem[{0}] not found".format(pk))
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         r = es.responseFieldDict()
-
-        return json.dumps(r)
+        return Response(r)
 
     def post(self, request):
         """This method is intended for adding new ExternalSystem records"""
@@ -202,7 +194,7 @@ class ExternalSystemResource(Resource):
 
             FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
 
-        return json.dumps(response)
+        return Response(response)
 
     def put(self, request):
         """This method is intended for updating an existing ExternalSystem record"""
@@ -215,7 +207,7 @@ class ExternalSystemResource(Resource):
 
             if not pkval or not s:
                 log.error("Unable to update ExternalSystem. Identifier not provided")
-                return HttpResponse(status=codes.bad_request)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
             try:
                 es = ExternalSystem.objects.get(pk=pkval)
@@ -238,13 +230,13 @@ class ExternalSystemResource(Resource):
                         ]
                     }
                 )
-        return json.dumps(response)
+        return Response(response)
 
     def delete(self, request, pk):
         try:
             es = ExternalSystem.objects.get(pk=pk)
             es.delete()
-            return HttpResponse(status=codes.ok)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except ExternalSystem.DoesNotExist:
             log.error("Unable to delete ExternalSystem. ExternalSystem[{0}] no found".format(pk))
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)

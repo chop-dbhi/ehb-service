@@ -1,9 +1,11 @@
 import json
 import logging
 
-from django.http import HttpResponse
-from restlib2.resources import Resource
-from restlib2.http import codes
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
 
 from api.helpers import FormHelpers
 from constants import ErrorConstants
@@ -13,9 +15,7 @@ from core.forms import SubjectForm
 log = logging.getLogger(__name__)
 
 
-class SubjectResource(Resource):
-    supported_accept_types = ['application/json', 'application/xml']
-    model = 'core.models.identities.Subject'
+class SubjectView (APIView):
 
     def _read_and_action(self, request, sfunc, **kwargs):
         pk = kwargs.pop("pk", None)
@@ -30,7 +30,7 @@ class SubjectResource(Resource):
                 s = Subject.objects.get(pk=pk)
             except Subject.DoesNotExist:
                 log.error("Subject[{0}] not found".format(pk))
-                return HttpResponse(status=codes.not_found)
+                return Response (status=status.HTTP_404_NOT_FOUND)
 
         # search for subjects based on their orginization and subj ID
         if orgpk and org_sub_id:
@@ -41,18 +41,23 @@ class SubjectResource(Resource):
                     s = subs[0]
                 else:
                     log.error("Subject not found in Organization: {0} with provided Organization ID".format(org))
-                    return HttpResponse(status=codes.not_found)
+                    return Response ( status=status.HTTP_404_NOT_FOUND)
             except Organization.DoesNotExist:
                 log.error("Subject not found. Given Organization does not exist")
-                return HttpResponse(status=codes.not_found)
+                return Response (status=status.HTTP_404_NOT_FOUND)
 
         # search for subjects based on an external record id
         if external_sys and external_id:
             try:
                 s = self.search_sub_by_external_record_id(external_sys, external_id)
+                try:
+                    if s.status_code == 404:
+                        return Response (status=status.HTTP_404_NOT_FOUND)
+                except:
+                    'external record was found' #continue
             except Organization.DoesNotExist:
                 log.error("Subject not found. Given External Record does not exist")
-                return HttpResponse(status=codes.not_found)
+                return Response ( status=status.HTTP_404_NOT_FOUND)
 
         if s:
             return sfunc(s)
@@ -60,13 +65,13 @@ class SubjectResource(Resource):
     def get(self, request, **kwargs):
         def onSuccess(s):
             r = s.responseFieldDict()
-            return json.dumps(r)
+            return Response(r)
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def delete(self, request, **kwargs):
         def onSuccess(s):
             s.delete()
-            return HttpResponse(status=codes.ok)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def post(self, request):
@@ -83,8 +88,7 @@ class SubjectResource(Resource):
                     'organization_id': s.get('organization')
                 }
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
-
-            return json.dumps(response)
+            return Response(response)
 
     def put(self, request):
         """This method is intended for updating an existing Subject record"""
@@ -96,7 +100,7 @@ class SubjectResource(Resource):
 
             if not pkval or not s:
                 log.error("Unable to update Subject. No identifier provided")
-                return HttpResponse(status=codes.bad_request)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
             try:
                 subj = Subject.objects.get(pk=pkval)
                 fn = s.get('first_name', subj.first_name)
@@ -126,14 +130,13 @@ class SubjectResource(Resource):
                         ]
                     }
                 )
-
-        return json.dumps(response)
+        return Response(response)
 
     def search_sub_by_external_record_id(self, external_sys, external_id):
         ex_record = ExternalRecord.objects.filter(external_system=external_sys).filter(record_id=external_id)
         if ex_record.__len__() != 1:
             log.error("External Record id {0} does not exist".format(ex_record))
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
         for s in ex_record:
             sub = s.subject.id
         s = Subject.objects.get(pk=sub)

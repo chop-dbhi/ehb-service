@@ -72,7 +72,7 @@ class ExternalSystemForm(ModelForm):
         return m
 
     '''This version of save as well as new is_valid and errors methods will be
-    needed if the POST method for ExternalSystemResource is going to support
+    needed if the POST method for ExternalSystemView is going to support
     the addition of ExternalRecords at the time a new ExternalSystem is created
      def save(self,commit=True):
 

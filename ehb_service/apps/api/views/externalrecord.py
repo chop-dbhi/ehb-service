@@ -1,25 +1,23 @@
 import json
 import logging
 
-from restlib2.resources import Resource
-from restlib2.http import codes
-from django.http import HttpResponse
 from django.db.models import Q
 from core.forms import ExternalRecordForm, ExternalRecordRelationForm
 from constants import ErrorConstants
 from api.helpers import FormHelpers
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
 
 from core.models.identities import ExternalRecord, \
     ExternalRecordRelation, ExternalRecordLabel, Subject, ExternalSystem
 
 log = logging.getLogger(__name__)
 
-
-class ExternalRecordQuery(Resource):
-
-    supported_accept_types = ['application/json']
-
-    model = 'core.models.identities.ExternalRecord'
+class ExternalRecordQuery(APIView):
 
     def responseLabels(self, subjid, subj_org, subj_org_id, esid, esname, esurl, path):
 
@@ -152,10 +150,9 @@ class ExternalRecordQuery(Resource):
                         path
                     )
 
-            return json.dumps(response)
+            return Response(response)
 
-
-class ExternalRecordResource(Resource):
+class ExternalRecordView(APIView):
 
     supported_accept_types = ['application/json', 'application/xml']
 
@@ -167,11 +164,11 @@ class ExternalRecordResource(Resource):
             er = ExternalRecord.objects.get(pk=pk)
         except ExternalRecord.DoesNotExist:
             log.error("Unable to retrieve ExternalRecord[{0}]. It does not exists.".format(pk))
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
         if er:
             r = er.responseFieldDict()
 
-            return json.dumps(r)
+            return Response (r)
 
     def post(self, request):
         """This method is intended for adding new ExternalRecord records"""
@@ -199,7 +196,7 @@ class ExternalRecordResource(Resource):
 
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
 
-            return json.dumps(response)
+            return Response(response)
 
     def put(self, request):
         """This method is intended for updating an existing ExternalRecord record"""
@@ -216,7 +213,7 @@ class ExternalRecordResource(Resource):
 
                 if not pkval or not s:
                     log.error("Unable to update existing ExternalRecord no identifier provided")
-                    return HttpResponse(status=codes.unprocessable_entity)
+                    return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
                 try:
                     er = ExternalRecord.objects.get(pk=pkval)
@@ -255,22 +252,22 @@ class ExternalRecordResource(Resource):
                         }
                     )
 
-            return json.dumps(response)
+            return Response(response)
 
     def delete(self, request, pk):
         try:
             er = ExternalRecord.objects.get(pk=pk)
             er.delete()
-            return HttpResponse(status=codes.ok)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         except ExternalRecord.DoesNotExist:
             log.error("Unable to delete ExternalRecord as it does not exist")
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class ExternalRecordLabelResource(Resource):
+class ExternalRecordLabelView(APIView):
     '''
-    Provide a resource to provide ExternalRecord labels.
+    Provide a View to provide ExternalRecord labels.
     '''
     supported_accept_type = ['application/json']
     model = 'core.models.identities.ExternalRecordLabel'
@@ -281,7 +278,7 @@ class ExternalRecordLabelResource(Resource):
             return json.dumps({"id": erl.id, "label": erl.label})
         except ExternalRecordLabel.DoesNotExist:
             log.error("Unable to retrieve ExternalRecord label. Label not found.")
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
         response = []
@@ -291,16 +288,12 @@ class ExternalRecordLabelResource(Resource):
                 "id": label.id,
                 "label": label.label
             })
-        return json.dumps(response)
+        return Response(response)
 
-
-class ExternalRecordRelationResource(Resource):
+class ExternalRecordRelationView(APIView):
     '''
-    Provide a resource to provide related ExternalRecords.
+    Provide a View to provide related ExternalRecords.
     '''
-    supported_accept_type = ['application/json']
-    model = 'core.models.identities.ExternalRecordRelation'
-
     def get(self, request, pk, link=None):
 
         response = []
@@ -326,9 +319,9 @@ class ExternalRecordRelationResource(Resource):
                 d['external_record'] = r['external_record']
             data.append(d)
         if link:
-            return json.dumps(data[0])
+            return Response(data[0])
         else:
-            return json.dumps(data)
+            return Response(data)
 
     def post(self, request, pk):
         '''
@@ -356,7 +349,7 @@ class ExternalRecordRelationResource(Resource):
             form = ExternalRecordRelationForm(s)
             r = FormHelpers.processFormJsonResponse(form, response, invalid_dict=args, valid_dict=args)
 
-            return json.dumps(r)
+            return Response(r)
 
     def delete(self, request, pk, link):
         '''
@@ -364,10 +357,20 @@ class ExternalRecordRelationResource(Resource):
         via the URL
         '''
 
+        response = []
         try:
             record = ExternalRecordRelation.objects.get(pk=link)
             record.delete()
+            response.append(
+                {
+                    "success": True
+                }
+            )
         except ExternalRecordRelation.DoesNotExist:
-            return (json.dumps({'error': 'Record relation does not exist', 'success': False}))
-
-        return (json.dumps({"success": True}))
+            response.append(
+                {
+                    'error': 'Record relation does not exist',
+                    'success': False
+                }
+            )
+        return Response(response)
