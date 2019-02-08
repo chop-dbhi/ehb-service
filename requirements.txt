@@ -16,7 +16,8 @@ restlib2==0.3.9
 # if the data model is spread out across multiple databases. Note: SQLite
 # is supported natively by Python 2.5+
 
-psycopg2-binary
+
+psycopg2-binary==2.7.5
 # python-mysql
 # cx_Oracle
 
