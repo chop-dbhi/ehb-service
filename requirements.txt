@@ -17,7 +17,8 @@ tzlocal==1.5.1
 # if the data model is spread out across multiple databases. Note: SQLite
 # is supported natively by Python 2.5+
 
-psycopg2
+
+psycopg2-binary==2.7.5
 # python-mysql
 # cx_Oracle
 

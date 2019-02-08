@@ -1,10 +1,11 @@
 from django.conf.urls import url, include  # noqa
 from api.views import subject, relation, organization, group, externalsystem,externalrecord
 
+
 subject_patterns = ([
     url(r'^$', subject.SubjectView.as_view()),
     url(r'^id/(?P<pk>\d+)/$', subject.SubjectView.as_view()),
-    url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', subject.SubjectView.as_view()),
+    url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w*[-]*\w*)/$', subject.SubjectView.as_view()),
     url(r'^externalrecsys/(?P<externalrecsys>\d+)/erid/(?P<erid>.*)/$', subject.SubjectView.as_view()),],
     'api')
 
