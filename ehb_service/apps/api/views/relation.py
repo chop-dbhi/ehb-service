@@ -1,15 +1,17 @@
 import json
 
-from restlib2.resources import Resource
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
 
 from core.models.identities import Relation, PedigreeSubjectRelation
 from core.forms import PedigreeSubjectRelationForm
 from api.helpers import FormHelpers
 
 
-class RelationResource(Resource):
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.Relation'
+class RelationView(APIView):
 
     def get(self, request, **kwargs):
         relations = Relation.objects.all()
@@ -17,15 +19,12 @@ class RelationResource(Resource):
         for relation in relations:
             d.append(relation.to_dict())
 
-        return (json.dumps(d))
+        return Response(d)
 
 
-class PedigreeSubjectRelationResource(Resource):
+class PedigreeSubjectRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.PedigreeSubjectRelation'
-
-    def output_relationship_types(self):
-        return self.append_query_to_dict(Relation.objects.filter(typ__istartswith='familial'))
 
     def output_relationships(self, relationship, relationships_dict):
         relationships_dict.append({
@@ -52,6 +51,9 @@ class PedigreeSubjectRelationResource(Resource):
         all_protocol_relationships = PedigreeSubjectRelation.objects.filter(protocol_id=protocol_id)
         for relationship in all_protocol_relationships:
             self.output_relationships(relationship, relationships)
+
+    def output_relationship_types(self):
+            return self.append_query_to_dict(Relation.objects.filter(typ__istartswith='familial'))
 
     def relationships_by_subject(self, subject_id):
         relationships = []
@@ -84,11 +86,11 @@ class PedigreeSubjectRelationResource(Resource):
         # get list of relationships based on subject id
         if subject_id:
             relationships = self.relationships_by_subject(subject_id)
-
-        # get list of relationship types
+        # get list of familial relationship types
         else:
             relationships = self.output_relationship_types()
-        return relationships
+
+        return Response(relationships)
 
     def put(self, request):
         """This method is intended for updating an existing protocol relationship"""
@@ -111,4 +113,4 @@ class PedigreeSubjectRelationResource(Resource):
                     'protocol_id': relationship.get('protocol_id')
                 }
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
-            return json.dumps(response)
+            return Response(response)

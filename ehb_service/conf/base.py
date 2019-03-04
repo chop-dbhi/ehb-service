@@ -18,9 +18,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    # third-party
-    'restlib2',
-    'south',
+    'rest_framework',
 
     'core',
     'api',
@@ -40,14 +38,14 @@ EMAIL_SUBJECT_PREFIX = '[eHB] '
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = None
+from tzlocal import get_localzone
+TIME_ZONE = get_localzone().zone
 
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = False
-USE_ETAGS = True
 
 
 #------------------------------------
@@ -97,30 +95,42 @@ ROOT_URLCONF = 'ehb_service.conf.urls'
 #------------------------------------
 #MIDDLEWARE
 #------------------------------------
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
 
 #    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'api.middleware.TokenMiddleware',
-    'django.middleware.common.BrokenLinkEmailsMiddleware'
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
+    'django.middleware.http.ConditionalGetMiddleware',
 #    'django.middleware.cache.FetchFromCacheMiddleware',
-)
+]
 
 #------------------------------------
 #TEMPLATES
 #------------------------------------
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, PROJECT_MODULE_NAME, 'templates'),
-)
-
-TEMPLATE_CONTEXT_PROCESSORS += (
-    'django.core.context_processors.request',
-)
-
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(PROJECT_ROOT, PROJECT_MODULE_NAME, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors':[
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.request',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 #------------------------------------
 # AUTHENTICATION
 #------------------------------------

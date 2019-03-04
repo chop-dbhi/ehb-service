@@ -1,6 +1,6 @@
 import logging
 import xml.dom.minidom as xml
-from resources.constants import ErrorConstants
+from views.constants import ErrorConstants
 from core.models.identities import ExternalRecord, Subject
 
 log = logging.getLogger(__name__)

@@ -8,7 +8,6 @@ from django import forms
 from django.db import models
 from django.forms import fields
 from django.utils.encoding import force_unicode, smart_str
-from south.modelsinspector import add_introspection_rules
 
 from core.encryption.Factories import FactoryEncryptionServices as efac
 
@@ -118,6 +117,9 @@ class BaseField(models.Field):
         https://docs.djangoproject.com/en/dev/ref/unicode/
         '''
 
+        if value is None:
+            return value
+
         if len(value.strip()) == 0:
             return value
 
@@ -142,10 +144,18 @@ class BaseField(models.Field):
 
 class EncryptCharField(BaseField):
 
-    __metaclass__ = models.SubfieldBase
+    def from_db_value(self, value, expression, connection, context):
+        if value is None:
+            return value
+        return super(EncryptCharField, self).to_python(value)
 
     def get_internal_type(self):
         return 'CharField'
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(EncryptCharField, self).deconstruct()
+        kwargs["max_length"] = 255
+        return name, path, args, kwargs
 
     def formfield(self, **kwargs):
         "Returns a django.forms.Field instance for this database Field."
@@ -170,11 +180,28 @@ class EncryptCharField(BaseField):
 
 
 class EncryptDateField(BaseField):
-    __metaclass__ = models.SubfieldBase
 
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 10  # YYYY:MM:DD format
         super(EncryptDateField, self).__init__(*args, **kwargs)
+
+    def from_db_value(self, value, expression, connection, context):
+        dv = None
+
+        if value in fields.EMPTY_VALUES:
+            dv = value
+        elif isinstance(value, datetime.date):
+            dv = value
+        else:
+            input_text = super(EncryptDateField, self).to_python(value)
+            dv = datetime.date(*[int(x) for x in input_text.split(':')])
+
+        return dv
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(EncryptDateField, self).deconstruct()
+        kwargs["max_length"] = 10
+        return name, path, args, kwargs
 
     def get_internal_type(self):
         return 'CharField'
@@ -218,6 +245,3 @@ rule_date = [
         {},
     )
 ]
-
-add_introspection_rules(rule_char, ["^core\.encryption\.encryptionFields\.EncryptCharField"])
-add_introspection_rules(rule_date, ["^core\.encryption\.encryptionFields\.EncryptDateField"])

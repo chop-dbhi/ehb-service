@@ -1,0 +1,7 @@
+{
+  "tests.py::TestAESEncryption::test_check_sum_length": true, 
+  "tests.py::TestAESEncryption::test_correct_key_length": true, 
+  "tests.py::TestAESEncryption::test_decrypt": true, 
+  "tests.py::TestAESEncryption::test_encrypt": true, 
+  "tests.py::TestAESEncryption::test_is_encrypted": true
+}

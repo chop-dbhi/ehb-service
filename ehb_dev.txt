@@ -1,0 +1,26 @@
+DEBUG=1
+#SECRET_KEY=5(732efl$r)w@k05u&(lnmke9vw0f*u67!28i8fhk4(romn6#3
+SECRET_KEY=s)qo-8ly9_u9tx5qkeg9y+0#xn4pehaiuj%5i4o8*1*xzrygtu
+#DATABASE_URL=sqlite:///ehb_test.db
+DATABASE_URL=postgresql://postgres:6m3Pt5tZkZ@reslndbhieigd01.research.chop.edu:5433/ehb_service
+ALLOWED_HOSTS=reslndbhiops02.research.chop.edu
+LDAP_DEBUG=0
+LDAP_PREBINDDN=cn=Version Control,ou=AdminUsers,ou=Res,dc=research,dc=chop,dc=edu
+LDAP_SEARCHDN=dc=chop,dc=edu
+LDAP_SEARCH_FILTER=(sAMAccountName={0})
+LDAP_PREBINDPW=VC0nt5ol#$
+LDAP_SERVER_URI=ldap://chop.edu:3268
+LDAP_URL=ldap://chop.edu:3268
+LDAP_MAX_AGE=180
+
+EMAIL_HOST=localhost
+EMAIL_PORT=25
+EMAIL_DOMAIN=example.com
+
+EHB_USE_ENCRYPTION=1
+EHB_KMS_SECRET=bfyXag7wYkLzv6T9pr6RKXWvfXqmfypM
+EHB_CLIENT_KEY_SEED=483751990
+EHB_GROUP_KEY_SEED=924178356
+
+REDIS_HOST=redis
+REDIS_PORT=6379

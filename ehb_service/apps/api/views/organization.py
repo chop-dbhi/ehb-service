@@ -1,9 +1,11 @@
 import json
 import logging
 
-from restlib2.resources import Resource
-from restlib2.http import codes
-from django.http import HttpResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
 
 from api.helpers import FormHelpers
 from constants import ErrorConstants
@@ -12,9 +14,7 @@ from core.forms import OrganizationForm
 
 log = logging.getLogger(__name__)
 
-class OrganizationQuery(Resource):
-    supported_accept_types = ['application/json', 'application/xml']
-    model = 'core.models.identities.Organization'
+class OrganizationQuery(APIView):
 
     def post(self, request):
         """This method is intended querying for Organization records by name"""
@@ -58,13 +58,23 @@ class OrganizationQuery(Resource):
                             ]
                         }
                     )
+        elif content_type == "application/xml":
+            log.error("XML content type not supported. Invalid query. Consider changing to json")
+            response.append(
+                {
+                    "errors": [
+                        {
+                            "Query": ErrorConstants.ERROR_INVALID_QUERY
+                        }
+                    ]
+                }
+            )
+            return Response(status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+        return Response(response)
 
-            return json.dumps(response)
 
 
-class OrganizationResource(Resource):
-    supported_accept_types = ['application/json']
-    model = 'core.models.identities.Organization'
+class OrganizationView(APIView):
 
     def _read_and_action(self, request, func, **kwargs):
         pk = kwargs.pop("pk")
@@ -75,20 +85,19 @@ class OrganizationResource(Resource):
                 org = Organization.objects.get(pk=pk)
             except Organization.DoesNotExist:
                 log.error("Organization not found")
-                return HttpResponse(status=codes.not_found)
+                return Response(status=status.HTTP_404_NOT_FOUND)
             return func(org)
 
     def get(self, request, **kwargs):
         def onSuccess(org):
             r = org.responseFieldDict()
-            return json.dumps(r)
-
+            return Response(r)
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def delete(self, request, **kwargs):
         def onSuccess(org):
             org.delete()
-            return HttpResponse(status=codes.ok)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return self._read_and_action(request, onSuccess, **kwargs)
 
     def post(self, request):
@@ -101,7 +110,7 @@ class OrganizationResource(Resource):
                 form = OrganizationForm(org)
                 args = {'name': name}
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
-            return json.dumps(response)
+            return Response(response)
 
     def put(self, request, **kwargs):
         """This method is intended for updating an existing Organization record"""
@@ -114,7 +123,7 @@ class OrganizationResource(Resource):
                 pkval = item.get('id')
                 if not pkval:
                     log.error('Unable to update Organization. No identifier provided')
-                    return HttpResponse(status=codes.unprocessable_entity)
+                    return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
                 try:
                     org = Organization.objects.get(pk=int(pkval))
                     n = item.get('name', org.name)
@@ -135,5 +144,4 @@ class OrganizationResource(Resource):
                             ]
                         }
                     )
-
-            return json.dumps(response)
+            return Response(response)

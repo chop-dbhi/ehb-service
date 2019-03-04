@@ -20,7 +20,6 @@ class CreatedModified(models.Model):
         help_text=date_help_text
     )
     modified = models.DateTimeField(
-        auto_now_add=True,
         auto_now=True,
         verbose_name='Record Last Modified DateTime',
         help_text=date_help_text
@@ -76,7 +75,7 @@ class Subject(CreatedModified):
     first_name = EncryptCharField(max_length=50, verbose_name='First Name')
     last_name = EncryptCharField(max_length=70, verbose_name='Last Name')
     # This is the organization that created the subject record, e.g. CHOP
-    organization = models.ForeignKey(Organization)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     # This is the organization's id for this subject, e.g. MRN value
     organization_subject_id = EncryptCharField(max_length=120, verbose_name='Organization Subject Record ID')
     dob = EncryptDateField(verbose_name='Date Of Birth', help_text=date_help_text)
@@ -197,7 +196,7 @@ class Group(CreatedModified):
     client_key = models.CharField(max_length=255, verbose_name='Client KEY', editable=True)
     is_locking = models.BooleanField(default=False, verbose_name='Lock Group')
     # this cannot use onetoone because I don't want the ehb_keys to EVER be deleted
-    ehb_key = models.ForeignKey(GroupEhbKey, editable=False, blank=True, unique=True)
+    ehb_key = models.ForeignKey(GroupEhbKey, editable=False, blank=True, unique=True, on_delete=models.CASCADE)
     desc_help = 'Please briefly describe this Group.'
     description = models.TextField(verbose_name='Group Description', help_text=desc_help)
 
@@ -270,7 +269,7 @@ class SubjectGroup(CreatedModified):
 
     subjects = models.ManyToManyField(Subject)
 
-    group = models.ForeignKey(Group, unique=True)
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
 
     class Meta(CreatedModified.Meta):
         ordering = ['group']
@@ -329,9 +328,9 @@ class ExternalRecord(CreatedModified):
     an external system record tracked by the eHB
     '''
 
-    subject = models.ForeignKey(Subject)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     # ExternalSystem where the external records exist
-    external_system = models.ForeignKey(ExternalSystem, verbose_name="External System")
+    external_system = models.ForeignKey(ExternalSystem, verbose_name="External System", on_delete=models.CASCADE)
     # Path to the table, directory, other where a collection of record ids exist on the external_system
     path = models.CharField(max_length=255, blank=True, verbose_name='Path to record collection')
     # This is the record id for this subject in the the external system
@@ -340,7 +339,7 @@ class ExternalRecord(CreatedModified):
     record_id = models.CharField(max_length=50, verbose_name=rec_verb)
     # To track pedigree
     # relation = models.ForeignKey(ExternalRecordRelation, verbose_name="Record Relationship (Pedigree)", null=True)
-    label = models.ForeignKey(ExternalRecordLabel, verbose_name="Label", default=1, blank=True)
+    label = models.ForeignKey(ExternalRecordLabel, verbose_name="Label", default=1, null=True, on_delete=models.CASCADE)
     cleanmsg = 'There is already an entry with this path & record id for this external system'
 
     # class Meta(CreatedModified.Meta):
@@ -416,9 +415,9 @@ class Relation(CreatedModified):
 
 class ExternalRecordRelation(CreatedModified):
     id = models.AutoField(primary_key=True)
-    external_record = models.ForeignKey(ExternalRecord, related_name='external_record', default=None, null=True)
-    related_record = models.ForeignKey(ExternalRecord, related_name='related_record', default=None, null=True)
-    relation_type = models.ForeignKey(Relation)
+    external_record = models.ForeignKey(ExternalRecord, related_name='external_record', default=None, null=True, on_delete=models.CASCADE)
+    related_record = models.ForeignKey(ExternalRecord, related_name='related_record', default=None, null=True, on_delete=models.CASCADE)
+    relation_type = models.ForeignKey(Relation, on_delete=models.CASCADE)
 
     def to_dict(self):
         return {
@@ -442,19 +441,23 @@ class PedigreeSubjectRelation(CreatedModified):
     subject_1 = models.ForeignKey(Subject,
                                   related_name='subject_1',
                                   default=None,
-                                  null=True)
+                                  null=True,
+                                  on_delete=models.CASCADE)
     subject_2 = models.ForeignKey(Subject,
                                   related_name='subject_2',
                                   default=None,
-                                  null=True)
+                                  null=True,
+                                  on_delete=models.CASCADE)
     subject_1_role = models.ForeignKey(Relation,
                                        related_name='subject_1_role',
                                        default=None,
-                                       null=True)
+                                       null=True,
+                                       on_delete=models.CASCADE)
     subject_2_role = models.ForeignKey(Relation,
                                        related_name='subject_2_role',
                                        default=None,
-                                       null=True)
+                                       null=True,
+                                       on_delete=models.CASCADE)
     protocol_id = models.CharField(max_length=100)
 
     def to_dict(self):
@@ -478,7 +481,7 @@ class PedigreeSubjectRelation(CreatedModified):
 class ExternalRecordGroup(CreatedModified):
 
     external_records = models.ManyToManyField(ExternalRecord)
-    group = models.ForeignKey(Group, unique=True)
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
 
     class Meta(CreatedModified.Meta):
         ordering = ['group']
@@ -487,7 +490,7 @@ class ExternalRecordGroup(CreatedModified):
 class SubjectValidation(models.Model):
 
     id = models.AutoField(primary_key=True)
-    organization = models.ForeignKey(Organization)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     regex = models.CharField(max_length=70)
 
     def __unicode__(self):

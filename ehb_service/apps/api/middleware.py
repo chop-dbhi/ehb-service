@@ -17,14 +17,22 @@ class TokenMiddleware(object):
         'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type',
     }
 
+    def __init__(self, get_response):
+        self.get_response=get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        return response
+
     def process_request(self, request):
 
         SITE_ALLOW = [
             settings.FORCE_SCRIPT_NAME + '/admin/',
-            settings.FORCE_SCRIPT_NAME + '/'
+            settings.FORCE_SCRIPT_NAME + '/',
+            settings.FORCE_SCRIPT_NAME + '/admin/login/'
         ]
 
-        if getattr(request, 'user', None) and request.user.is_authenticated():
+        if getattr(request, 'user', None) and request.user.is_authenticated:
             return
 
         # Token-based authentication is attempting to be used, bypass CSRF
@@ -44,7 +52,7 @@ class TokenMiddleware(object):
                     )
                 )
                 return HttpResponseForbidden('403 - Forbidden')
-        if not request.user.is_authenticated() and request.path not in SITE_ALLOW:
+        if not request.user.is_authenticated and request.path not in SITE_ALLOW:
             return HttpResponseForbidden('403 - Forbidden')
 
     def process_response(self, request, response, **kwargs):

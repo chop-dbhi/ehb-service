@@ -1,8 +1,12 @@
 from django.http import HttpResponse
-from restlib2.resources import Resource
-from restlib2.http import codes
 import json
 import logging
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
 
 from core.models.identities import Group, SubjectGroup, Subject, ExternalRecord, ExternalRecordGroup
 from core.forms import GroupForm
@@ -12,7 +16,7 @@ from constants import ErrorConstants
 log = logging.getLogger(__name__)
 
 
-class ClientKeyResource(Resource):
+class ClientKeyView(APIView):
     # def decode_key(self, key, request):
     #     enc_key = request.META.get(key)
     #     if enc_key:
@@ -26,7 +30,7 @@ class ClientKeyResource(Resource):
     #        return self.decode_key('HTTP_GROUP_CLIENT_KEY', request)
 
 
-class XGroupResource(ClientKeyResource):
+class XGroupView(ClientKeyView):
     mimetypes = ('application/json', 'application/xml')
 
     def XModel(self):
@@ -54,21 +58,21 @@ class XGroupResource(ClientKeyResource):
             # First need to check that if this group is locked also check client_key
             if grp.is_locking and not grp.verify_client_key(self.client_key(request)):
                 log.error("Cannot verify client key on a locked group")
-                return HttpResponse(status=codes.forbidden)
+                return Response(status=status.HTTP_403_FORBIDDEN)
 
             try:
                 response = []
                 X_grp = XGroup.objects.get(group=grp)
                 for x in self.XGroupItems(X_grp).all():
                     response.append(x.responseFieldDict())
-                return json.dumps(response)
+                return Response(response)
             except XGroup.DoesNotExist:
                 log.error("No records found for group [{0}].".format(pk))
-                return HttpResponse(status=codes.not_found)
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
         except Group.DoesNotExist:
             log.error("Group [{0}] does not exist.".format(pk))
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, pk):
         response = []
@@ -79,7 +83,7 @@ class XGroupResource(ClientKeyResource):
             # First need to check that if this group is locked. If it is also check client_key
             if grp.is_locking and not grp.verify_client_key(self.client_key(request)):
                 log.error("Group query made with incorrect client key or the group is locked")
-                return HttpResponse(status=codes.forbidden)
+                return Response(status=status.HTTP_403_FORBIDDEN)
 
             # Find the corresponding subject group, create if needed
             XGroup = self.XGroupModel()
@@ -104,11 +108,11 @@ class XGroupResource(ClientKeyResource):
                     log.error("Unable to add {0} to the group as it x_id:{0} does not exist".format(x_id))
                     response.append({'id': x_id, 'success': False, 'errors': ErrorConstants.ERROR_ID_NOT_FOUND})
 
-            return json.dumps(response)
+            return Response(response)
 
         except Group.DoesNotExist:
             log.error("Group {0} does not exist".format(pk))
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, grp_pk, x_pk):
         try:
@@ -117,7 +121,7 @@ class XGroupResource(ClientKeyResource):
             # First need to check that if this group is locked. If it is also check client_key
             if grp.is_locking and not grp.verify_client_key(self.client_key(request)):
                 log.error("Group query made with incorrect client key or the group is locked")
-                return HttpResponse(status=codes.forbidden)
+                return Response(status=status.HTTP_403_FORBIDDEN)
 
             # Find the corresponding subject group
             XGroup = self.XGroupModel()
@@ -127,7 +131,7 @@ class XGroupResource(ClientKeyResource):
                 X_grp = XGroup.objects.get(group=grp)
             except XGroup.DoesNotExist:
                 log.error("Sub group {0} does not exist.".format(grp))
-                return HttpResponse(status=codes.not_found)
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
             # Remove subject from Group
             X = self.XModel()
@@ -135,21 +139,21 @@ class XGroupResource(ClientKeyResource):
             try:
                 x = X.objects.get(pk=x_pk)
                 self.XGroupItems(X_grp).remove(x)
-                return HttpResponse(status=codes.ok)
+                return Response(status=status.HTTP_204_NO_CONTENT)
             except X.DoesNotExist:
                 log.error('Unable to delete record from group. Record does not exist')
-                return HttpResponse(status=codes.not_found)
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
         except Group.DoesNotExist:
             log.error("Group {0} does not exist.".format(grp_pk))
-            return HttpResponse(status=codes.not_found)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, **kwargs):
         '''PUTS are not supported, should use POST'''
-        return HttpResponse(status=codes.method_not_allowed)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class SubjectGroupResource(XGroupResource):
+class SubjectGroupView(XGroupView):
     def XModel(self):
         return Subject
 
@@ -163,7 +167,7 @@ class SubjectGroupResource(XGroupResource):
         return xgroup.subjects
 
 
-class RecordGroupResource(XGroupResource):
+class RecordGroupView(XGroupView):
     def XModel(self):
         return ExternalRecord
 
@@ -177,7 +181,7 @@ class RecordGroupResource(XGroupResource):
         return xgroup.external_records
 
 
-class GroupResource(ClientKeyResource):
+class GroupView(ClientKeyView):
 
     def get(self, request):
         dict_ = request.GET
@@ -194,7 +198,7 @@ class GroupResource(ClientKeyResource):
 
                 if not Group.objects.all():
                     log.error('Unable to retrieve Groups from configured database')
-                    return HttpResponse(status=codes.requested_range_not_satisfiable)
+                    return Response(status=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
 
                 if key == 'id':
                     group = Group.objects.filter(pk=val)
@@ -208,13 +212,13 @@ class GroupResource(ClientKeyResource):
                     rd.pop('client_key')
                     rd.pop('ehb_key_id')
                     rd['ehb_key'] = g.ehb_key.key
-                    return json.dumps(rd)
+                    return Response(rd)
                 else:
                     log.error('Unable to find group with provided criteria')
-                    return HttpResponse(status=codes.requested_range_not_satisfiable)
+                    return Response(status=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
 
             except Exception:
-                return HttpResponse(status=codes.bad_request)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
         '''This method is intended for creating Groups.'''
@@ -229,7 +233,7 @@ class GroupResource(ClientKeyResource):
                 grp = Group.objects.get(pk=rd.get('id'))
                 rd['ehb_key'] = grp.ehb_key.key
 
-        return json.dumps(response)
+        return Response(response)
 
     def put(self, request):
         '''This method is intended for updating Groups.'''
@@ -241,20 +245,20 @@ class GroupResource(ClientKeyResource):
 
             if not (pkval and g):
                 log.error("Unable to update group. No group or ID provided")
-                return HttpResponse(status=codes.bad_request)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
             current_client_key = g.get('current_client_key', None)
 
             if not current_client_key:
                 log.error("Unable to update group. No client key provided")
-                return HttpResponse(status=codes.bad_request)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
             try:
                 grp = Group.objects.get(pk=pkval)
 
                 if not grp.verify_client_key(current_client_key):
                     log.error("Unable to update group. Bad client key")
-                    return HttpResponse(status=codes.unauthorized)
+                    return Response(status=status.HTTP_401_UNAUTHORIZED)
 
                 name = g.get('name', grp.name)
                 lock = g.get('is_locking', grp.is_locking)
@@ -268,7 +272,7 @@ class GroupResource(ClientKeyResource):
                     grp = Group.objects.get(pk=rd.get('id'))
                     rd['ehb_key'] = grp.ehb_key.key
                 else:
-                    return HttpResponse
+                    return Response
             except Group.DoesNotExist:
                 log.error("Unable to update group. Group does not exist.")
                 response.append(
@@ -283,14 +287,14 @@ class GroupResource(ClientKeyResource):
                     }
                 )
 
-        return json.dumps(response)
+        return Response(response)
 
     def delete(self, request):
         ck = self.client_key(request)
 
         if not ck:
             log.error("Unable to delete group. Client key not provided")
-            return HttpResponse(status=codes.forbidden)
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
         qs = request.META.get('QUERY_STRING')
 
@@ -315,13 +319,13 @@ class GroupResource(ClientKeyResource):
 
                 if not grp.verify_client_key(ck):
                     log.error("Unable to delete group. Bad client key")
-                    return HttpResponse(status=codes.forbidden)
+                    return Response(status=status.HTTP_403_FORBIDDEN)
                 grp.delete()
 
-                return HttpResponse(status=codes.ok)
+                return Response(status=status.HTTP_204_NO_CONTENT)
             except Group.DoesNotExist:
                 log.error("Unable to delete group. Group not found")
-                return HttpResponse(status=codes.not_found)
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
         log.error("Unable to delete group. No query string provided")
-        return HttpResponse(status=codes.bad_request)
+        return Response(status=status.HTTP_400_BAD_REQUEST)

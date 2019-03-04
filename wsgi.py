@@ -31,5 +31,5 @@ sys.path.insert(0, PROJECT_SRC_PATH)
 sys.path.insert(0, PROJECT_APPS_PATH)
 
 # finally.. define the WSGI handler as the entry point to the application
-from django.core.handlers.wsgi import WSGIHandler
-application = WSGIHandler()
+from django.core.wsgi import get_wsgi_application
+application=get_wsgi_application()

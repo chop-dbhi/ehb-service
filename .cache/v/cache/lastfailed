@@ -1,0 +1,7 @@
+{
+  "ehb_service/apps/core/tests.py::TestAESEncryption::test_check_sum_length": true, 
+  "ehb_service/apps/core/tests.py::TestAESEncryption::test_correct_key_length": true, 
+  "ehb_service/apps/core/tests.py::TestAESEncryption::test_decrypt": true, 
+  "ehb_service/apps/core/tests.py::TestAESEncryption::test_encrypt": true, 
+  "ehb_service/apps/core/tests.py::TestAESEncryption::test_is_encrypted": true
+}

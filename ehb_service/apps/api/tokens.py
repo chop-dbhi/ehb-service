@@ -111,8 +111,10 @@ token_generator = TokenGenerator()
 
 def get_request_token(request):
     "Attempts to retrieve a token from the request."
-    if 'token' in request.REQUEST:
-        return request.REQUEST['token']
+    if 'token' in request.POST:
+        return request.POST['token']
+    elif 'token' in request.GET:
+        return request.GET['token']
     if 'HTTP_API_TOKEN' in request.META:
         return request.META['HTTP_API_TOKEN']
     return ''
