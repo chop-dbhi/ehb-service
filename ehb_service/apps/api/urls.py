@@ -46,7 +46,8 @@ group_patterns = ([
 pedigreeRelationship_patterns = ([
     url(r'^$', relation.PedigreeSubjectRelationView.as_view()),
     url(r'^protocol_id/(?P<protocol_id>\d+)/$', relation.PedigreeSubjectRelationView.as_view()),
-    url(r'^subject_id/(?P<subject_id>\d+)/$', relation.PedigreeSubjectRelationView.as_view()),],
+    url(r'^subject_id/(?P<subject_id>\d+)/$', relation.PedigreeSubjectRelationView.as_view()),
+    url(r'^relationship_types', relation.PedigreeSubjectRelationView.as_view()), ],
     'api')
     #url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'PedigreeSubjectRelationView'),
 

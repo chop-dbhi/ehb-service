@@ -26,6 +26,9 @@ class PedigreeSubjectRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.PedigreeSubjectRelation'
 
+    def output_relationship_types(self):
+        return self.append_query_to_dict(Relation.objects.filter(typ__istartswith='familial'))
+
     def output_relationships(self, relationship, relationships_dict):
         relationships_dict.append({
             "subject_org_id": relationship.subject_1.organization_subject_id,
@@ -83,6 +86,9 @@ class PedigreeSubjectRelationView(APIView):
         # get list of relationships based on subject id
         if subject_id:
             relationships = self.relationships_by_subject(subject_id)
+        # get familial relationship types
+        else:
+            relationships = self.output_relationship_types()
 
         return Response(relationships)
 
