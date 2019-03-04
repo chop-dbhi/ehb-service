@@ -50,6 +50,7 @@ pedigreeRelationship_patterns = patterns(
     url(r'^$', 'PedigreeSubjectRelationResource'),
     url(r'^protocol_id/(?P<protocol_id>\d+)/$', 'PedigreeSubjectRelationResource'),
     url(r'^subject_id/(?P<subject_id>\d+)/$', 'PedigreeSubjectRelationResource'),
+    url(r'^relationship_types', 'PedigreeSubjectRelationResource'),
     #url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'PedigreeSubjectRelationResource'),
 )
 
