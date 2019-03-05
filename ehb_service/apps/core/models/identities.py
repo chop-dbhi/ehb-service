@@ -397,7 +397,7 @@ class Relation(CreatedModified):
             ('familial-sibling', 'Familial-Sibling'),
             ('familial-half-sibling', 'Familial-Half-Sibling'),
             ('familial-grandparent', 'Familial-Grandparent'),
-            ('familial-grandchild', 'Familial-Grandchild')
+            ('familial-grandchild', 'Familial-Grandchild'),
             ('familial-cousin', 'Familial-Cousin'),
             ('familial-nephew-niece', 'Familial-Nephew-Niece'),
             ('familial-aunt-uncle', 'Familial-Aunt-Uncle'),
