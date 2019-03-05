@@ -395,7 +395,15 @@ class Relation(CreatedModified):
             ('familial-parent', 'Familial-Parent'),
             ('familial-child', 'Familial-Child'),
             ('familial-sibling', 'Familial-Sibling'),
-            ('familial-half-sibling', 'Familial-half-Sibling'),
+            ('familial-half-sibling', 'Familial-Half-Sibling'),
+            ('familial-grandparent', 'Familial-Grandparent'),
+            ('familial-grandchild', 'Familial-Grandchild')
+            ('familial-cousin', 'Familial-Cousin'),
+            ('familial-nephew-niece', 'Familial-Nephew-Niece'),
+            ('familial-aunt-uncle', 'Familial-Aunt-Uncle'),
+            ('familial-great-aunt-uncle', 'Familial-Great-Aunt-Uncle'),
+            ('familial-grand-nephew-niece', 'Familial-grand-nephew-niece'),
+            ('familial', 'Familial'),
             ('diagnosis', 'Diagnosis')
         ],
         default='Label'
