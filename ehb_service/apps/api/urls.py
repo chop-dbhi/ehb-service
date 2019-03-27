@@ -1,5 +1,5 @@
 from django.conf.urls import url, include  # noqa
-from api.views import subject, relation, organization, group, externalsystem,externalrecord
+from api.views import subject, relation, organization, group, externalsystem, externalrecord
 
 
 subject_patterns = ([
@@ -49,7 +49,6 @@ pedigreeRelationship_patterns = ([
     url(r'^subject_id/(?P<subject_id>\d+)/$', relation.PedigreeSubjectRelationView.as_view()),
     url(r'^relationship_types', relation.PedigreeSubjectRelationView.as_view()), ],
     'api')
-    #url(r'^organization/(?P<org_pk>\d+)/osid/(?P<osid>\w+)/$', 'PedigreeSubjectRelationView'),
 
 urlpatterns = [
     url(r'^subject/', include(subject_patterns,
@@ -62,7 +61,7 @@ urlpatterns = [
         namespace='organization')),
     url(r'^group/', include(group_patterns,
         namespace='group')),
-    url(r'^links/$', relation.RelationView.as_view()),
+    # url(r'^links/$', relation.RelationView.as_view()),
     url(r'^pedigree/', include(pedigreeRelationship_patterns,
         namespace='pedigree')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
