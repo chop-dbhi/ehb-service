@@ -444,7 +444,7 @@ class ExternalRecordRelation(CreatedModified):
               )
 
 
-class PedigreeSubjectRelation(CreatedModified):
+class SubjectFamRelation(CreatedModified):
     id = models.AutoField(primary_key=True)
     subject_1 = models.ForeignKey(Subject,
                                   related_name='subject_1',

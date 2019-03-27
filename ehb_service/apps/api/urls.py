@@ -43,11 +43,11 @@ group_patterns = ([
     url(r'^id/(?P<grp_pk>\d+)/records/id/(?P<x_pk>\d+)/$', group.RecordGroupView.as_view()),],
     'api')
 
-pedigreeRelationship_patterns = ([
-    url(r'^$', relation.PedigreeSubjectRelationView.as_view()),
-    url(r'^protocol_id/(?P<protocol_id>\d+)/$', relation.PedigreeSubjectRelationView.as_view()),
-    url(r'^subject_id/(?P<subject_id>\d+)/$', relation.PedigreeSubjectRelationView.as_view()),
-    url(r'^relationship_types', relation.PedigreeSubjectRelationView.as_view()), ],
+famRelationship_patterns = ([
+    url(r'^$', relation.SubjectFamRelationView.as_view()),
+    url(r'^protocol_id/(?P<protocol_id>\d+)/$', relation.SubjectFamRelationView.as_view()),
+    url(r'^subject_id/(?P<subject_id>\d+)/$', relation.SubjectFamRelationView.as_view()),
+    url(r'^relationship_types', relation.SubjectFamRelationView.as_view()), ],
     'api')
 
 urlpatterns = [
@@ -62,7 +62,7 @@ urlpatterns = [
     url(r'^group/', include(group_patterns,
         namespace='group')),
     # url(r'^links/$', relation.RelationView.as_view()),
-    url(r'^pedigree/', include(pedigreeRelationship_patterns,
-        namespace='pedigree')),
+    url(r'^famRelation/', include(famRelationship_patterns,
+        namespace='famRelation')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

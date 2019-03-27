@@ -6,14 +6,14 @@ from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework import permissions
 
-from core.models.identities import Relation, PedigreeSubjectRelation
-from core.forms import PedigreeSubjectRelationForm
+from core.models.identities import Relation, SubjectFamRelation
+from core.forms import SubjectFamRelationForm
 from api.helpers import FormHelpers
 
 
-class PedigreeSubjectRelationView(APIView):
+class SubjectFamRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
-    model = 'core.models.identities.PedigreeSubjectRelation'
+    model = 'core.models.identities.SubjectFamRelation'
 
     def output_relationship_types(self):
         return self.append_query_to_dict(Relation.objects.filter(typ__istartswith='familial'))
@@ -24,17 +24,17 @@ class PedigreeSubjectRelationView(APIView):
         return relationships_dict
 
     def relationships_by_protocol(self, protocol_id):
-        all_protocol_relationships = PedigreeSubjectRelation.objects.filter(protocol_id=protocol_id)
+        all_protocol_relationships = SubjectFamRelation.objects.filter(protocol_id=protocol_id)
         return(self.output_relationships(all_protocol_relationships))
 
     def relationships_by_subject(self, subject_id):
         relationships_dict = []
 
-        subject_1_rel_obj = PedigreeSubjectRelation.objects.filter(
+        subject_1_rel_obj = SubjectFamRelation.objects.filter(
                                 subject_1=subject_id)
         self.output_relationships(subject_1_rel_obj, relationships_dict)
-        
-        subject_2_rel_obj = PedigreeSubjectRelation.objects.filter(
+
+        subject_2_rel_obj = SubjectFamRelation.objects.filter(
                                 subject_2=subject_id)
         self.output_relationships(subject_2_rel_obj, relationships_dict)
         return relationships_dict
@@ -72,7 +72,7 @@ class PedigreeSubjectRelationView(APIView):
         if content_type == "application/json":
 
             for relationship in request.data:
-                form = PedigreeSubjectRelationForm(relationship)
+                form = SubjectFamRelationForm(relationship)
                 args = {
                     'subject_1': relationship.get('subject_1'),
                     'subject_2': relationship.get('subject_2'),
