@@ -433,7 +433,7 @@
       }
   }, {
       "pk": 2,
-      "model": "core.PedigreeSubjectRelation",
+      "model": "core.SubjectFamRelation",
       "fields":{
           "subject_1": 3,
           "subject_2": 4,
