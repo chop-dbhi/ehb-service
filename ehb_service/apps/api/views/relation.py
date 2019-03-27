@@ -10,6 +10,15 @@ from core.models.identities import Relation, SubjectFamRelation
 from core.forms import SubjectFamRelationForm
 from api.helpers import FormHelpers
 
+class LinkRelationView(APIView):
+
+    def get(self, request, **kwargs):
+        relations = Relation.objects.all()
+        d = []
+        for relation in relations:
+            d.append(relation.to_dict())
+
+        return Response(d)
 
 class SubjectFamRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
