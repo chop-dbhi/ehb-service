@@ -61,7 +61,7 @@ urlpatterns = [
         namespace='organization')),
     url(r'^group/', include(group_patterns,
         namespace='group')),
-    # url(r'^links/$', relation.RelationView.as_view()),
+    url(r'^links/$', relation.RelationView.as_view()),
     url(r'^famRelation/', include(famRelationship_patterns,
         namespace='famRelation')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
