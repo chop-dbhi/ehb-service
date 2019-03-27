@@ -11,17 +11,6 @@ from core.forms import PedigreeSubjectRelationForm
 from api.helpers import FormHelpers
 
 
-class RelationView(APIView):
-
-    def get(self, request, **kwargs):
-        relations = Relation.objects.all()
-        d = []
-        for relation in relations:
-            d.append(relation.to_dict())
-
-        return Response(d)
-
-
 class PedigreeSubjectRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.PedigreeSubjectRelation'
@@ -29,47 +18,26 @@ class PedigreeSubjectRelationView(APIView):
     def output_relationship_types(self):
         return self.append_query_to_dict(Relation.objects.filter(typ__istartswith='familial'))
 
-    def output_relationships(self, relationship, relationships_dict):
-        relationships_dict.append({
-            "subject_org_id": relationship.subject_1.organization_subject_id,
-            "subject_org": relationship.subject_1.organization.name,
-            "subject_id": relationship.subject_1.id,
-            "role": relationship.subject_1_role.desc,
-            "related_subject_org_id": relationship.subject_2.organization_subject_id,
-            "related_subject_org": relationship.subject_2.organization.name,
-            "related_subject_id": relationship.subject_2.id
-        })
-        relationships_dict.append({
-            "subject_org_id": relationship.subject_2.organization_subject_id,
-            "subject_org": relationship.subject_2.organization.name,
-            "subject_id": relationship.subject_2.id,
-            "role": relationship.subject_2_role.desc,
-            "related_subject_org_id": relationship.subject_1.organization_subject_id,
-            "related_subject_org": relationship.subject_1.organization.name,
-            "related_subject_id": relationship.subject_1.id
-        })
+    def output_relationships(self, relationship_objects, relationships_dict=[]):
+        for rel in relationship_objects:
+            relationships_dict.append(rel.to_dict())
+        return relationships_dict
 
     def relationships_by_protocol(self, protocol_id):
-        relationships = []
         all_protocol_relationships = PedigreeSubjectRelation.objects.filter(protocol_id=protocol_id)
-        for relationship in all_protocol_relationships:
-            self.output_relationships(relationship, relationships)
+        return(self.output_relationships(all_protocol_relationships))
 
     def relationships_by_subject(self, subject_id):
-        relationships = []
-        relationships_subs1 = PedigreeSubjectRelation.objects.filter(
+        relationships_dict = []
+
+        subject_1_rel_obj = PedigreeSubjectRelation.objects.filter(
                                 subject_1=subject_id)
-        # if given subject is 'subject 1' get subject1 role and subject 2
-        for relationship in relationships_subs1:
-            self.output_relationships(relationship, relationships)
-
-        # if given subject is 'subject 2' get subject2 role and subject 1
-        relationships_subs2 = PedigreeSubjectRelation.objects.filter(
+        self.output_relationships(subject_1_rel_obj, relationships_dict)
+        
+        subject_2_rel_obj = PedigreeSubjectRelation.objects.filter(
                                 subject_2=subject_id)
-        for relationship in relationships_subs2:
-            self.output_relationships(relationship, relationships)
-
-        return relationships
+        self.output_relationships(subject_2_rel_obj, relationships_dict)
+        return relationships_dict
 
     def append_query_to_dict(self, query):
         dict = []
@@ -84,7 +52,7 @@ class PedigreeSubjectRelationView(APIView):
         if protocol_id:
             relationships = self.relationships_by_protocol(protocol_id)
         # get list of relationships based on subject id
-        if subject_id:
+        elif subject_id:
             relationships = self.relationships_by_subject(subject_id)
         # get familial relationship types
         else:
