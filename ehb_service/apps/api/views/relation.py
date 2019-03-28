@@ -1,4 +1,5 @@
 import json
+import logging
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from rest_framework import permissions
 from core.models.identities import Relation, SubjectFamRelation
 from core.forms import SubjectFamRelationForm
 from api.helpers import FormHelpers
+log = logging.getLogger(__name__)
 
 class LinkRelationView(APIView):
 
@@ -19,6 +21,7 @@ class LinkRelationView(APIView):
             d.append(relation.to_dict())
 
         return Response(d)
+
 
 class SubjectFamRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
@@ -71,7 +74,48 @@ class SubjectFamRelationView(APIView):
 
     def put(self, request):
         """This method is intended for updating an existing protocol relationship"""
-        pass
+        # This API request will take in ID and subject relationship attributes
+        # {
+        #     "id": "x",              PK of subject relationship
+        #     "subject_1": 6738,      PK of subject
+        #     "subject_2": 6739,      PK of subject
+        #     "subject_1_role": 14,   PK of subject role
+        #     "subject_2_role": 15,   PK of subject role
+        #     "protocol_id": 1        PK of protocol in the BRP
+        # }
+        response = []
+
+        for item in request.data:
+            pkval = item.get('id')
+            subj_relation = SubjectFamRelation.objects.get(pk=pkval)
+
+            if not pkval:
+                log.error("Unable to update Subject relationship. No identifier provided")
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            try:
+                args = {
+                    "subject_1": item.get('subject_1'),
+                    "subject_2": item.get('subject_2'),
+                    "subject_1_role": item.get('subject_1_role'),
+                    "subject_2_role": item.get('subject_2_role'),
+                    "protocol_id": item.get('protocol_id', subj_relation.protocol_id)
+                }
+                form = SubjectFamRelationForm(args, instance=subj_relation)
+                FormHelpers.processFormJsonResponse(form, response, invalid_dict={'id': pkval})
+            except SubjectFamRelation.DoesNotExist:
+                log.error("Unable to update Subject relationship. Subject relationship[{0}] does not exist".format(pkval))
+                response.append(
+                    {
+                        'id': pkval,
+                        'success': False,
+                        'errors': [
+                            {
+                                'id': ErrorConstants.ERROR_RECORD_ID_NOT_FOUND
+                            }
+                        ]
+                    }
+                )
+        return Response(response)
 
     def post(self, request):
         """This method is intended for adding new Protocol Relationships"""
