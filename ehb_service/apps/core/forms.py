@@ -8,7 +8,7 @@ import re
 from django.forms import ModelForm
 from django.forms.utils import ErrorList
 from models.identities import Subject, ExternalRecord, ExternalSystem, \
-    Organization, Group, ExternalRecordRelation, PedigreeSubjectRelation
+    Organization, Group, ExternalRecordRelation, SubjectFamRelation
 
 
 class SubjectForm(ModelForm):
@@ -99,7 +99,7 @@ class ExternalSystemForm(ModelForm):
             print err'''
 
 
-class PedigreeSubjectRelationForm(ModelForm):
+class SubjectFamRelationForm(ModelForm):
     def clean(self):
         validation = {}
         validation['subject_1'] = self.cleaned_data.get('subject_1')
@@ -183,4 +183,4 @@ class PedigreeSubjectRelationForm(ModelForm):
 
     class Meta:
         fields = "__all__"
-        model = PedigreeSubjectRelation
+        model = SubjectFamRelation

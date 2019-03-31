@@ -6,7 +6,7 @@ from parameterized import parameterized
 from django.db.models import Q
 
 from django.test import TestCase
-from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem, PedigreeSubjectRelation, ExternalRecordGroup
+from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem, SubjectFamRelation, ExternalRecordGroup
 
 from mock import patch
 
@@ -1394,7 +1394,7 @@ class TestOrganization(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertTrue(mock_log.error.called)
 
-##### for the pedigree feature #####
+##### for the famRelation feature #####
 
     #Positive relationships
     @parameterized.expand([
@@ -1419,9 +1419,9 @@ class TestOrganization(TestCase):
     ("12","9", "role1=fetus role2=mother"),
     ("12","8", "role1=fetus role2=father")
     ])
-    def test_pedigree_add_positive(self,role_1,role_2,comment):
-        pre_count = PedigreeSubjectRelation.objects.count()
-        pedigree = {
+    def test_famRelation_add_positive(self,role_1,role_2,comment):
+        pre_count = SubjectFamRelation.objects.count()
+        famRelation = {
             'subject_1': '2',
             'subject_2': '3',
             'subject_1_role': role_1,
@@ -1429,13 +1429,13 @@ class TestOrganization(TestCase):
             'protocol_id': '1'
         }
         response = self.client.post(
-            '/api/pedigree/',
+            '/api/famRelation/',
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
-            data=json.dumps([pedigree])
+            data=json.dumps([famRelation])
         )
 
-        post_count = PedigreeSubjectRelation.objects.count()
+        post_count = SubjectFamRelation.objects.count()
         self.assertEqual(response.status_code, 200)
         j = json.loads(response.content)
         r = j[0]
@@ -1504,9 +1504,9 @@ class TestOrganization(TestCase):
     ("12","12", "role1=fetus role2=fetus"),
     ("12","10", "role1=fetus role2=daughter")
     ])
-    def test_pedigree_add_negative(self,role_1,role_2,comment):
-        pre_count = PedigreeSubjectRelation.objects.count()
-        pedigree = {
+    def test_famRelation_add_negative(self,role_1,role_2,comment):
+        pre_count = SubjectFamRelation.objects.count()
+        famRelation = {
             'subject_1': '2',
             'subject_2': '3',
             'subject_1_role': role_1,
@@ -1514,13 +1514,13 @@ class TestOrganization(TestCase):
             'protocol_id': '1'
         }
         response = self.client.post(
-            '/api/pedigree/',
+            '/api/famRelation/',
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json',
-            data=json.dumps([pedigree])
+            data=json.dumps([famRelation])
         )
 
-        post_count = PedigreeSubjectRelation.objects.count()
+        post_count = SubjectFamRelation.objects.count()
         self.assertEqual(response.status_code, 200)
         j = json.loads(response.content)
         r = j[0]
@@ -1532,10 +1532,10 @@ class TestOrganization(TestCase):
         self.assertTrue(pre_count == post_count)
 
     # def test_get_relationships_for_protocol(self):
-    #     relationship_count = PedigreeSubjectRelation.objects.filter(
+    #     relationship_count = SubjectFamRelation.objects.filter(
     #                             protocol_id=1).count()
     #     response = self.client.get(
-    #         '/api/pedigree/protocol_id/1/',
+    #         '/api/famRelation/protocol_id/1/',
     #         HTTP_API_TOKEN='secretkey123',
     #         content_type='application/json')
     #     self.assertEqual(response.status_code, 200)
@@ -1543,11 +1543,11 @@ class TestOrganization(TestCase):
     #     self.assertEqual(len(j), relationship_count)
     #
     # def test_get_relationships_for_subject(self):
-    #     relationship_count = PedigreeSubjectRelation.objects.filter(
+    #     relationship_count = SubjectFamRelation.objects.filter(
     #                                 Q(subject_1=3) |
     #                                 Q(subject_2=3)).count()
     #     response = self.client.get(
-    #         '/api/pedigree/subject_id/3/',
+    #         '/api/famRelation/subject_id/3/',
     #         HTTP_API_TOKEN='secretkey123',
     #         content_type='application/json')
     #     self.assertEqual(response.status_code, 200)
