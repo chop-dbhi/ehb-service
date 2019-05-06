@@ -1,6 +1,5 @@
 # eHB Service
 
-[![Circle CI](https://circleci.com/gh/chop-dbhi/ehb-service/tree/master.svg?style=svg)](https://circleci.com/gh/chop-dbhi/ehb-service/tree/master)
 
 ### Overview
 Federal privacy laws allow for an individual or group of individuals to serve
