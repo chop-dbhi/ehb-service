@@ -345,7 +345,7 @@ class ExternalRecordRelationView(APIView):
             args['related_record'] = request.data.get('related_record')
             args['relation_type'] = request.data.get('relation_type')
             if len(ExternalRecordRelation.objects.filter(external_record=args['external_record'], related_record=args['related_record'], relation_type=args['relation_type'])) > 0:
-                return json.dumps({'success': False, 'error': 'Record relation already exists'})
+                return Response(json.dumps({'success': False, 'error': 'Record relation already exists'}))
             form = ExternalRecordRelationForm(s)
             r = FormHelpers.processFormJsonResponse(form, response, invalid_dict=args, valid_dict=args)
 
@@ -363,7 +363,7 @@ class ExternalRecordRelationView(APIView):
             record.delete()
             response.append(
                 {
-                    "success": True
+                    'success': True
                 }
             )
         except ExternalRecordRelation.DoesNotExist:
