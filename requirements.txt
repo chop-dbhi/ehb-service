@@ -6,11 +6,10 @@
 
 # Core requirements
 Django==1.11.16
-uWSGI
 django-environ==0.4.1
 djangorestframework==3.8.2
 tzlocal==1.5.1
-
+uWSGI
 # Database bindings - uncomment any of the below libraries depending on the
 # database that will be used for the project. Since Django 1.2, multi-database
 # support has been added, therefore Django can connect to multiple databases
@@ -30,7 +29,7 @@ django-redis-sessions==0.5.6
 python-ldap
 
 #encryption algorithms
-pycrypto==2.3
+pycryptodome
 
 # Testing
 mock

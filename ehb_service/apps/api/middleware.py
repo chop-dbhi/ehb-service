@@ -57,7 +57,7 @@ class TokenMiddleware(object):
 
     def process_response(self, request, response, **kwargs):
 
-        for k, v in self.preflight_headers.iteritems():
+        for k, v in self.preflight_headers.items():
             response[k.title()] = v
 
         if request.method not in self.methods:

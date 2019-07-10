@@ -11,7 +11,7 @@ from rest_framework import permissions
 from core.models.identities import Group, SubjectGroup, Subject, ExternalRecord, ExternalRecordGroup
 from core.forms import GroupForm
 from api.helpers import FormHelpers
-from constants import ErrorConstants
+from .constants import ErrorConstants
 
 log = logging.getLogger(__name__)
 

@@ -3,7 +3,7 @@ import environ
 
 from django.core.exceptions import ImproperlyConfigured
 
-from base import *
+from .base import *
 
 env = environ.Env()
 env.read_env('{0}.env'.format(env('APP_ENV')))
@@ -38,7 +38,8 @@ EHB_ENCRYPTION_SERVICE = {
 EHB_KEY_MANAGEMENT_SERVICE = {
     'class': 'LocalKMS',
     'kwargs': {
-        'key': env('EHB_KMS_SECRET')
+        'key': env('EHB_KMS_SECRET'),
+        'iv' : env("EHB_KMS_IV", default = None)
     },
     'module': 'core.encryption.KMServices'
 }

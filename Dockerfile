@@ -1,3 +1,27 @@
+FROM alpine:3.3
+
+RUN apk add --update \
+    bash \
+    postgresql-dev \
+    gcc \
+    python3 \
+    python3-dev \
+    build-base \
+    git \
+    openldap-dev \
+    linux-headers \
+    pcre-dev \
+    musl-dev \
+    postgresql-dev \
+    mailcap \
+    vim \
+  && rm -rf /var/cache/apk/* && \
+  python3 -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip3 install --upgrade pip setuptools && \
+    rm -r /root/.cache &&\
+    apk upgrade
+
 
 FROM python:2.7.14
 
@@ -37,8 +61,11 @@ RUN mkdir /opt/app
 
 ENV APP_NAME ehbservice
 ENV APP_ENV test
-
+RUN mkdir -p /opt/app/
 ADD . /opt/app
+
+RUN pip3 install -r /opt/app/requirements.txt
+
 ADD test.env_example /opt/app/test.env
 
 WORKDIR /opt/app/

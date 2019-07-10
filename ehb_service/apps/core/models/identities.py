@@ -14,6 +14,7 @@ date_help_text = "Please use date format: <em>YYYY-MM-DD</em>"
 
 
 class CreatedModified(models.Model):
+
     created = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Record Creation DateTime',
@@ -27,7 +28,7 @@ class CreatedModified(models.Model):
 
     class Meta(object):
         abstract = True
-        app_label = u'core'
+        app_label = 'core'
 
     def save(self, force_insert=False, force_update=False, using=None):
         now = datetime.now()
@@ -42,7 +43,7 @@ class CreatedModified(models.Model):
     def responseFieldDict(self):
         response = {}
 
-        for k in self.__dict__.keys():
+        for k in list(self.__dict__.keys()):
             if not k.startswith('_'):
                 response[k] = (str(self.__dict__.get(k)))
 
@@ -62,7 +63,7 @@ class Organization(CreatedModified):
     class Meta(CreatedModified.Meta):
         ordering = ['name']
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -115,7 +116,7 @@ class Subject(CreatedModified):
 
         return response
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0}, {1} : {2} : {3}".format(
             self.last_name,
             self.first_name,
@@ -123,12 +124,11 @@ class Subject(CreatedModified):
             self.organization_subject_id
         )
 
-
 class GroupPropsKey(CreatedModified):
 
     class Meta(object):
         abstract = True
-        app_label = u'core'
+        app_label = 'core'
 
     def ehb_prop(self, GROUP, KEY, default=None):
         EHB_PROPS = settings.EHB_PROPS
@@ -144,7 +144,7 @@ class GroupEhbKey(GroupPropsKey):
 
     def _make_random_key(self, seed, ja, l, chars=string.ascii_uppercase + string.digits):
         random.seed(seed)
-        random.jumpahead(ja * 50)
+        for i in range(ja): dummy = random.random()
         return ''.join(random.choice(chars) for idx in range(l))
 
     def _set_key(self):
@@ -179,7 +179,7 @@ class GroupEhbKey(GroupPropsKey):
         self._set_key()
         super(GroupEhbKey, self).save()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.key
 
 class Group(CreatedModified):
@@ -229,11 +229,12 @@ class Group(CreatedModified):
         seed = self._salt_seed()
         chars = string.ascii_uppercase + string.digits
         random.seed(seed)
-        random.jumpahead(jump)
+        for i in range(jump): dummy = random.random()
 
         return ''.join(random.choice(chars) for idx in range(salt_length))
 
     def _hash_value(self, value):
+        value = value.encode("utf8")
         h = hashlib.sha256()
         h.update(value)
         return h.hexdigest()
@@ -261,7 +262,7 @@ class Group(CreatedModified):
     class Meta(CreatedModified.Meta):
         ordering = ['name']
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -274,6 +275,8 @@ class SubjectGroup(CreatedModified):
     class Meta(CreatedModified.Meta):
         ordering = ['group']
 
+    def __str__(self):
+        return self.group
 
 # class ExternalRecordRelation(CreatedModified):
 #    id = models.IntegerField(primary_key=True)
@@ -304,7 +307,7 @@ class ExternalSystem(CreatedModified):
     class Meta(CreatedModified.Meta):
         ordering = ['name']
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -318,7 +321,7 @@ class ExternalRecordLabel(CreatedModified):
     id = models.AutoField(primary_key=True)
     label = models.CharField(max_length=100, verbose_name="Label")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.label
 
 
@@ -373,7 +376,7 @@ class ExternalRecord(CreatedModified):
         response['path'] = self.path
         return response
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0}, {1} IN {2} ID {3}".format(
             self.subject.last_name,
             self.subject.first_name,
@@ -417,7 +420,7 @@ class Relation(CreatedModified):
             'desc': self.desc
         }
 
-    def __unicode__(self):
+    def __str__(self):
         return "<{0}> {1}".format(self.typ, self.desc)
 
 
@@ -425,7 +428,7 @@ class ExternalRecordRelation(CreatedModified):
     id = models.AutoField(primary_key=True)
     external_record = models.ForeignKey(ExternalRecord, related_name='external_record', default=None, null=True, on_delete=models.CASCADE)
     related_record = models.ForeignKey(ExternalRecord, related_name='related_record', default=None, null=True, on_delete=models.CASCADE)
-    relation_type = models.ForeignKey(Relation, on_delete=models.CASCADE)
+    relation_type = models.ForeignKey(Relation, null=True, on_delete=models.CASCADE)
 
     def to_dict(self):
         return {
@@ -436,7 +439,7 @@ class ExternalRecordRelation(CreatedModified):
           'relation_description': self.relation_type.desc
         }
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} related to {1}, -- Type: {2}".format(
               self.external_record,
               self.related_record,
@@ -477,7 +480,7 @@ class SubjectFamRelation(CreatedModified):
           'subject_2_role': self.subject_2_role.responseFieldDict()
         }
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} is {1} to {2}, {3}".format(
               self.subject_1,
               self.subject_1_role,
@@ -501,8 +504,8 @@ class SubjectValidation(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     regex = models.CharField(max_length=70)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} Subject validation".format(self.organization.name)
 
     class Meta:
-        app_label = u'core'
+        app_label = 'core'
