@@ -22,14 +22,14 @@ psycopg2-binary==2.7.5
 # cx_Oracle
 
 # Cache backend support
-django-redis-sessions==0.5.6
+django-redis-sessions==0.6.1
 
 # For LDAP supoort, install python-ldap. If the PyPi version does not
 # install properly, try using the one in the src/ directory
-python-ldap
+python-ldap==3.2.0
 
 #encryption algorithms
-pycryptodome
+pycryptodome==3.8.2
 
 # Testing
 mock
