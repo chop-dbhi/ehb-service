@@ -1,4 +1,5 @@
 import json
+import logging
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -6,12 +7,12 @@ from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework import permissions
 
-from core.models.identities import Relation, PedigreeSubjectRelation
-from core.forms import PedigreeSubjectRelationForm
+from core.models.identities import Relation, SubjectFamRelation
+from core.forms import SubjectFamRelationForm
 from api.helpers import FormHelpers
+log = logging.getLogger(__name__)
 
-
-class RelationView(APIView):
+class LinkRelationView(APIView):
 
     def get(self, request, **kwargs):
         relations = Relation.objects.all()
@@ -22,51 +23,33 @@ class RelationView(APIView):
         return Response(d)
 
 
-class PedigreeSubjectRelationView(APIView):
+class SubjectFamRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
-    model = 'core.models.identities.PedigreeSubjectRelation'
+    model = 'core.models.identities.SubjectFamRelation'
 
-    def output_relationships(self, relationship, relationships_dict):
-        relationships_dict.append({
-            "subject_org_id": relationship.subject_1.organization_subject_id,
-            "subject_org": relationship.subject_1.organization.name,
-            "subject_id": relationship.subject_1.id,
-            "role": relationship.subject_1_role.desc,
-            "related_subject_org_id": relationship.subject_2.organization_subject_id,
-            "related_subject_org": relationship.subject_2.organization.name,
-            "related_subject_id": relationship.subject_2.id
-        })
-        relationships_dict.append({
-            "subject_org_id": relationship.subject_2.organization_subject_id,
-            "subject_org": relationship.subject_2.organization.name,
-            "subject_id": relationship.subject_2.id,
-            "role": relationship.subject_2_role.desc,
-            "related_subject_org_id": relationship.subject_1.organization_subject_id,
-            "related_subject_org": relationship.subject_1.organization.name,
-            "related_subject_id": relationship.subject_1.id
-        })
+    def output_relationship_types(self):
+        return self.append_query_to_dict(Relation.objects.filter(typ__istartswith='familial'))
+
+    def output_relationships(self, relationship_objects, relationships_dict=[]):
+        for rel in relationship_objects:
+            relationships_dict.append(rel.to_dict())
+        return relationships_dict
 
     def relationships_by_protocol(self, protocol_id):
-        relationships = []
-        all_protocol_relationships = PedigreeSubjectRelation.objects.filter(protocol_id=protocol_id)
-        for relationship in all_protocol_relationships:
-            self.output_relationships(relationship, relationships)
+        all_protocol_relationships = SubjectFamRelation.objects.filter(protocol_id=protocol_id)
+        return(self.output_relationships(all_protocol_relationships))
 
     def relationships_by_subject(self, subject_id):
-        relationships = []
-        relationships_subs1 = PedigreeSubjectRelation.objects.filter(
+        relationships_dict = []
+
+        subject_1_rel_obj = SubjectFamRelation.objects.filter(
                                 subject_1=subject_id)
-        # if given subject is 'subject 1' get subject1 role and subject 2
-        for relationship in relationships_subs1:
-            self.output_relationships(relationship, relationships)
+        self.output_relationships(subject_1_rel_obj, relationships_dict)
 
-        # if given subject is 'subject 2' get subject2 role and subject 1
-        relationships_subs2 = PedigreeSubjectRelation.objects.filter(
+        subject_2_rel_obj = SubjectFamRelation.objects.filter(
                                 subject_2=subject_id)
-        for relationship in relationships_subs2:
-            self.output_relationships(relationship, relationships)
-
-        return relationships
+        self.output_relationships(subject_2_rel_obj, relationships_dict)
+        return relationships_dict
 
     def append_query_to_dict(self, query):
         dict = []
@@ -81,14 +64,58 @@ class PedigreeSubjectRelationView(APIView):
         if protocol_id:
             relationships = self.relationships_by_protocol(protocol_id)
         # get list of relationships based on subject id
-        if subject_id:
+        elif subject_id:
             relationships = self.relationships_by_subject(subject_id)
+        # get familial relationship types
+        else:
+            relationships = self.output_relationship_types()
 
         return Response(relationships)
 
     def put(self, request):
         """This method is intended for updating an existing protocol relationship"""
-        pass
+        # This API request will take in ID and subject relationship attributes
+        # {
+        #     "id": "x",              PK of subject relationship
+        #     "subject_1": 6738,      PK of subject
+        #     "subject_2": 6739,      PK of subject
+        #     "subject_1_role": 14,   PK of subject role
+        #     "subject_2_role": 15,   PK of subject role
+        #     "protocol_id": 1        PK of protocol in the BRP
+        # }
+        response = []
+
+        for item in request.data:
+            pkval = item.get('id')
+            subj_relation = SubjectFamRelation.objects.get(pk=pkval)
+
+            if not pkval:
+                log.error("Unable to update Subject relationship. No identifier provided")
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            try:
+                args = {
+                    "subject_1": item.get('subject_1'),
+                    "subject_2": item.get('subject_2'),
+                    "subject_1_role": item.get('subject_1_role'),
+                    "subject_2_role": item.get('subject_2_role'),
+                    "protocol_id": item.get('protocol_id', subj_relation.protocol_id)
+                }
+                form = SubjectFamRelationForm(args, instance=subj_relation)
+                FormHelpers.processFormJsonResponse(form, response, invalid_dict={'id': pkval})
+            except SubjectFamRelation.DoesNotExist:
+                log.error("Unable to update Subject relationship. Subject relationship[{0}] does not exist".format(pkval))
+                response.append(
+                    {
+                        'id': pkval,
+                        'success': False,
+                        'errors': [
+                            {
+                                'id': ErrorConstants.ERROR_RECORD_ID_NOT_FOUND
+                            }
+                        ]
+                    }
+                )
+        return Response(response)
 
     def post(self, request):
         """This method is intended for adding new Protocol Relationships"""
@@ -98,7 +125,7 @@ class PedigreeSubjectRelationView(APIView):
         if content_type == "application/json":
 
             for relationship in request.data:
-                form = PedigreeSubjectRelationForm(relationship)
+                form = SubjectFamRelationForm(relationship)
                 args = {
                     'subject_1': relationship.get('subject_1'),
                     'subject_2': relationship.get('subject_2'),

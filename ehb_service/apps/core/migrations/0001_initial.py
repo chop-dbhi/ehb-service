@@ -132,7 +132,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='PedigreeSubjectRelation',
+            name='SubjectFamRelation',
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True, help_text=b'Please use date format: <em>YYYY-MM-DD</em>', verbose_name=b'Record Creation DateTime')),
                 ('modified', models.DateTimeField(auto_now=True, help_text=b'Please use date format: <em>YYYY-MM-DD</em>', verbose_name=b'Record Last Modified DateTime')),
@@ -196,22 +196,22 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name='pedigreesubjectrelation',
+            model_name='SubjectFamRelation',
             name='subject_1',
             field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='subject_1', to='core.Subject'),
         ),
         migrations.AddField(
-            model_name='pedigreesubjectrelation',
+            model_name='SubjectFamRelation',
             name='subject_1_role',
             field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='subject_1_role', to='core.Relation'),
         ),
         migrations.AddField(
-            model_name='pedigreesubjectrelation',
+            model_name='SubjectFamRelation',
             name='subject_2',
             field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='subject_2', to='core.Subject'),
         ),
         migrations.AddField(
-            model_name='pedigreesubjectrelation',
+            model_name='SubjectFamRelation',
             name='subject_2_role',
             field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='subject_2_role', to='core.Relation'),
         ),
