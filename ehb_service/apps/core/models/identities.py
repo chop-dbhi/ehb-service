@@ -276,7 +276,7 @@ class SubjectGroup(CreatedModified):
         ordering = ['group']
 
     def __str__(self):
-        return self.group
+        return "{0}".format(self.group)
 
 # class ExternalRecordRelation(CreatedModified):
 #    id = models.IntegerField(primary_key=True)
