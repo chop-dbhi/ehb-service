@@ -184,14 +184,13 @@ class RecordGroupView(XGroupView):
 class GroupView(ClientKeyView):
 
     def get(self, request):
+        groupId = None
         dict_ = request.GET
         key = 'id'
         val = dict_.get(key)
-
         if not val:
             key = 'name'
             val = dict_.get(key)
-
         if val:
             group = None
             try:
@@ -203,7 +202,12 @@ class GroupView(ClientKeyView):
                 if key == 'id':
                     group = Group.objects.filter(pk=val)
                 else:
-                    group = Group.objects.filter(name=val)
+                    groups = Group.objects.all()
+                    # search through django query set to get decrypted values for name
+                    for g in groups:
+                        if g.name == val:
+                            groupId = g.id
+                    group = Group.objects.filter(pk=groupId)
 
                 if group.__len__() == 1:
                     g = group[0]
