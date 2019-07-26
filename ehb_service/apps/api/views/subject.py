@@ -8,7 +8,7 @@ from rest_framework.decorators import permission_classes
 from rest_framework import permissions
 
 from api.helpers import FormHelpers
-from constants import ErrorConstants
+from .constants import ErrorConstants
 from core.models.identities import Subject, Organization, ExternalRecord
 from core.forms import SubjectForm
 
