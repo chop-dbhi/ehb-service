@@ -275,7 +275,7 @@ class ExternalRecordLabelView(APIView):
     def get(self, request, pk):
         try:
             erl = ExternalRecordLabel.objects.get(pk=pk)
-            return json.dumps({"id": erl.id, "label": erl.label})
+            return Response(json.dumps({"id": erl.id, "label": erl.label}))
         except ExternalRecordLabel.DoesNotExist:
             log.error("Unable to retrieve ExternalRecord label. Label not found.")
             return Response(status=status.HTTP_404_NOT_FOUND)
