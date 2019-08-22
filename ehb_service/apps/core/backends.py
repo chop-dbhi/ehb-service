@@ -113,12 +113,12 @@ class LdapBackend(ModelBackend):
                         self.settings['PREBINDDN'],
                         self.settings['PREBINDPW']
                     )
-                except ldap.LDAPError, exc:
+                except ldap.LDAPError as exc:
                     log.error(exc)
                     return
 
             # Now do the actual search
-            filter = self.settings['SEARCH_FILTER'] % username
+            filter = self.settings['SEARCH_FILTER'].format(username)
             result = conn.search_s(
                 self.settings['SEARCHDN'],
                 self.settings['SCOPE'], filter, attrsonly=1)
@@ -167,7 +167,7 @@ class LdapBackend(ModelBackend):
             # Try to bind as the provided user. We leave the bind until
             # the end for other ldap.search_s call to work authenticated.
             conn.bind_s(bind_string, password)
-        except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM), e:
+        except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM) as e:
             log.error(e)
             return
         finally:

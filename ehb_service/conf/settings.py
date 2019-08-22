@@ -3,7 +3,7 @@ import environ
 
 from django.core.exceptions import ImproperlyConfigured
 
-from base import *
+from .base import *
 
 env = environ.Env()
 env.read_env('{0}.env'.format(env('APP_ENV')))
@@ -38,7 +38,8 @@ EHB_ENCRYPTION_SERVICE = {
 EHB_KEY_MANAGEMENT_SERVICE = {
     'class': 'LocalKMS',
     'kwargs': {
-        'key': env('EHB_KMS_SECRET')
+        'key': env('EHB_KMS_SECRET'),
+        'iv' : env("EHB_KMS_IV", default = None)
     },
     'module': 'core.encryption.KMServices'
 }
@@ -55,8 +56,10 @@ EHB_PROPS = {
 FORCE_SCRIPT_NAME = env('FORCE_SCRIPT_NAME', default='')
 
 SESSION_ENGINE = 'redis_sessions.session'
-SESSION_REDIS_HOST = env('REDIS_HOST', default='localhost')
-SESSION_REDIS_PORT = env('REDIS_PORT', default=6379)
+SESSION_REDIS = {
+    'host': env('REDIS_HOST'),
+    'port': env('REDIS_PORT')
+}
 
 SESSION_COOKIE_NAME = 'ehb_sessionid'
 
