@@ -1,8 +1,9 @@
 import struct
 import zlib
 import logging
+import base64
 
-from Crypto.Cipher import AES
+from Crypto.Cipher import AES, DES
 
 from core.encryption.EncryptionServiceBase import EncryptionService
 from core.encryption.Exceptions import CheckSumFailure
@@ -30,38 +31,54 @@ class AESEncryption(EncryptionService):
         else:
             return key
 
-    def encrypt(self, data, key, **kwargs):
+    # assumes that key is in string format and data is in bytes
+    # returns encrypted data in bytes
+    def encrypt(self, data, key, iv, **kwargs):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
+        # convert string to bytes.
+        key = key.encode("utf8")
 
-        enc = AES.new(key, self.mode)
+        enc = AES.new(key, self.mode, IV= iv)
 
         if self.use_checksum:
-            data += struct.pack("i", zlib.crc32(data))
+            # struct pack returns a byte object within the values of 'i'
+            # of zlib, which is a 32 bit representation of data that we add
+            # onto our data
+            data += struct.pack("I", zlib.crc32(data))
+        # return encrypted data which is utf8 encoded (bytes)
+        return  enc.encrypt(data)
 
-        return enc.encrypt(data)
 
-    def decrypt(self, edata, key, **kwargs):
+    # assumes key is in string format and data is in bytes
+    # returns decrypted data in byte format
+    def decrypt(self, edata, key, iv,  **kwargs):
         if self.auto_correct_key_length:
             key = self._correct_key_length(key)
+        key = key.encode("utf8")
 
-        enc = AES.new(key, self.mode)
+        enc = AES.new(key, self.mode, IV= iv) 
         data = enc.decrypt(edata)
 
         if self.use_checksum:
             cs, data = (data[-4:], data[:-4])
-            if not cs == struct.pack("i", zlib.crc32(data)):
+            # cs is the extra bytes that we added to data before
+            # (see encrypt for more info on what this is)
+            # if the byte object of the 32 bit representation of data
+            # doesn't equal cs, we raise error
+            if not cs == struct.pack("I", zlib.crc32(data)):
                 raise CheckSumFailure('Checksum failed in decrypt')
         return data
 
-    def is_encrypted(self, edata, key, **kwargs):
+    def is_encrypted(self, edata, key, iv,  **kwargs):
         # if checksum is not used, there is in general no way to know if edata is encrypted
         if self.use_checksum:
             try:
-                self.decrypt(edata, key)
+                self.decrypt(edata, key, iv)
                 return True
             except CheckSumFailure:
                 log.error("Checksum failure. Unable to decrypt")
+
                 return False
 
     def check_sum_length(self, **kwargs):

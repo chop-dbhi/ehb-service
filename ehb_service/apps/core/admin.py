@@ -3,7 +3,7 @@ Created on May 17, 2011
 
 @author: masinoa
 '''
-from models.identities import (
+from .models.identities import (
     Subject,
     SubjectValidation,
     ExternalSystem,
@@ -17,7 +17,7 @@ from models.identities import (
     ExternalRecordLabel,
     SubjectFamRelation
 )
-from models.clients import MachineClient
+from .models.clients import MachineClient
 from django.contrib import admin
 
 class SubjectAdmin(admin.ModelAdmin):

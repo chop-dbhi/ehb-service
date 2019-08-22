@@ -6,11 +6,10 @@
 
 # Core requirements
 Django==1.11.16
-uWSGI
 django-environ==0.4.1
 djangorestframework==3.8.2
 tzlocal==1.5.1
-
+uWSGI
 # Database bindings - uncomment any of the below libraries depending on the
 # database that will be used for the project. Since Django 1.2, multi-database
 # support has been added, therefore Django can connect to multiple databases
@@ -23,14 +22,14 @@ psycopg2-binary==2.7.5
 # cx_Oracle
 
 # Cache backend support
-django-redis-sessions==0.5.6
+django-redis-sessions==0.6.1
 
 # For LDAP supoort, install python-ldap. If the PyPi version does not
 # install properly, try using the one in the src/ directory
-python-ldap
+python-ldap==3.2.0
 
 #encryption algorithms
-pycrypto==2.3
+pycryptodome==3.8.2
 
 # Testing
 mock

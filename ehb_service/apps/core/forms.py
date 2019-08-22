@@ -7,7 +7,7 @@ import re
 
 from django.forms import ModelForm
 from django.forms.utils import ErrorList
-from models.identities import Subject, ExternalRecord, ExternalSystem, \
+from .models.identities import Subject, ExternalRecord, ExternalSystem, \
     Organization, Group, ExternalRecordRelation, SubjectFamRelation
 
 
