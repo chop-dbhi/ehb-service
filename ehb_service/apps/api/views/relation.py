@@ -135,3 +135,33 @@ class SubjectFamRelationView(APIView):
                 }
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
             return Response(response)
+
+    def delete(self, request): 
+        """This methos is intended for deleteing new Protocol Relationships""""
+        content_type = request.META.get("CONTENT_TYPE")
+
+        if content_type == "application/json":
+            for relationship in request.data: 
+                pkval = relationship.get('id')
+
+                if not pkval: 
+                    log.error("Unable to update Subject relationship. No identifier provided")
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+                try:
+                    subj_relation = SubjectFamRelation.objects.get(pk=pkval)
+                    subj_relation.delete()
+                    return Response(status=status.HTTP_204_NO_CONTENT)
+                except SubjectFamRelatio.DoesNotExist:
+                    log.error("Unable to update Subject relationship. Subject relationship[{0}] does not exist".format(pkval))
+                response.append(
+                    {
+                        'id': pkval,
+                        'success': False,
+                        'errors': [
+                            {
+                                'id': ErrorConstants.ERROR_RECORD_ID_NOT_FOUND
+                            }
+                        ]
+                    }
+                )
+
