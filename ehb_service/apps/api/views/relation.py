@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework import permissions
+from .constants import ErrorConstants
 
 from core.models.identities import Relation, SubjectFamRelation
 from core.forms import SubjectFamRelationForm
@@ -26,6 +27,8 @@ class LinkRelationView(APIView):
 class SubjectFamRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.SubjectFamRelation'
+    http_method_names = ['get', 'post', 'put', 'delete']
+
 
     def output_relationship_types(self):
         return self.append_query_to_dict(Relation.objects.filter(typ__istartswith='familial'))
@@ -58,6 +61,7 @@ class SubjectFamRelationView(APIView):
         return dict
 
     def get(self, request, **kwargs):
+        logging.debug(kwargs)
         protocol_id = kwargs.pop("protocol_id", None)
         subject_id = kwargs.pop("subject_id", None)
         # get list of relationships based on protocol id
@@ -136,32 +140,31 @@ class SubjectFamRelationView(APIView):
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
             return Response(response)
 
-    def delete(self, request): 
-        """This methos is intended for deleteing new Protocol Relationships""""
+    def delete(self, request, **kwargs):
+        """This methos is intended for deleteing new Protocol Relationships"""
         content_type = request.META.get("CONTENT_TYPE")
-
+        response = []
         if content_type == "application/json":
-            for relationship in request.data: 
-                pkval = relationship.get('id')
 
-                if not pkval: 
-                    log.error("Unable to update Subject relationship. No identifier provided")
-                    return Response(status=status.HTTP_400_BAD_REQUEST)
-                try:
-                    subj_relation = SubjectFamRelation.objects.get(pk=pkval)
-                    subj_relation.delete()
-                    return Response(status=status.HTTP_204_NO_CONTENT)
-                except SubjectFamRelatio.DoesNotExist:
-                    log.error("Unable to update Subject relationship. Subject relationship[{0}] does not exist".format(pkval))
-                response.append(
-                    {
-                        'id': pkval,
-                        'success': False,
-                        'errors': [
-                            {
-                                'id': ErrorConstants.ERROR_RECORD_ID_NOT_FOUND
-                            }
-                        ]
-                    }
-                )
+            relationship_pk = kwargs.get('pk')
+            if not relationship_pk: 
+                log.error("Unable to update Subject relationship. No identifier provided")
+            try:
+                subj_relation = SubjectFamRelation.objects.get(pk=relationship_pk)
+                subj_relation.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            except SubjectFamRelation.DoesNotExist:
+                log.error("Unable to update Subject relationship. Subject relationship[{0}] does not exist".format(relationship_pk))
+            response.append(
+                {
+                    'id': relationship_pk,
+                    'success': False,
+                    'errors': [
+                        {
+                            'id': ErrorConstants.ERROR_RECORD_ID_NOT_FOUND
+                        }
+                    ]
+                }
+            )
+        return Response(response)
 
