@@ -141,20 +141,16 @@ class SubjectFamRelationView(APIView):
             return Response(response)
 
     def delete(self, request, **kwargs):
-        """This methos is intended for deleteing new Protocol Relationships"""
+        """This methos is intended for deleting new Protocol Relationships"""
         content_type = request.META.get("CONTENT_TYPE")
         response = []
-        if content_type == "application/json":
 
-            relationship_pk = kwargs.get('pk')
-            if not relationship_pk: 
-                log.error("Unable to update Subject relationship. No identifier provided")
-            try:
-                subj_relation = SubjectFamRelation.objects.get(pk=relationship_pk)
-                subj_relation.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            except SubjectFamRelation.DoesNotExist:
-                log.error("Unable to update Subject relationship. Subject relationship[{0}] does not exist".format(relationship_pk))
+        relationship_pk = kwargs.get('pk')
+        try:
+            subj_relation = SubjectFamRelation.objects.get(pk=relationship_pk)
+            subj_relation.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except SubjectFamRelation.DoesNotExist:
             response.append(
                 {
                     'id': relationship_pk,
@@ -163,8 +159,10 @@ class SubjectFamRelationView(APIView):
                         {
                             'id': ErrorConstants.ERROR_RECORD_ID_NOT_FOUND
                         }
-                    ]
+                     ]
                 }
             )
-        return Response(response)
+            log.error("Unable to update Subject relationship. Subject relationship[{0}] does not exist".format(relationship_pk))
+
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
 
