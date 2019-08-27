@@ -197,7 +197,8 @@ DELETE a subject with subject_id
 .. sourcecode:: http
 
     Host: example.com
-    DELETE /api/subject/id/5856
+    
+    /api/subject/id/5856
     Accept: application/json
     Api-token:
 
@@ -1631,7 +1632,7 @@ POST to add familial relationship to protocol
 ---------------------------------------------
 **URL**:
 
-.. http:post:: api/group/id/(int: group_id)/subjects/
+.. http:post:: api/famRelation/
 
 **Example Request**:
 
@@ -1677,3 +1678,77 @@ POST to add familial relationship to protocol
         "protocol_id": "1"
     }
    ]
+
+
+PUT to modify a familial relationship record 
+--------------------------------------------
+
+**URL**:
+
+.. http:put:: /api/famRelation/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+      PUT /api/famRelation/
+      Host: example.com
+      Content-Type: application/json
+      Api-token:
+      Body:
+      
+      [
+        {
+        "id": "6",
+        "subject_1" :  "2",
+        "subject_2" : "4",
+        "subject_1_role" : "1",
+        "subject_2_role" : "3",
+        "protocol_id" : "1"
+         } 
+      ]
+
+**Example Response**:
+
+.. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Vary: Accept
+      Content-Type: application/json
+      Body: 
+
+   [
+     {
+        "id": "6",
+        "success": true,
+        "modified": "2019-8-27 11:52:51",
+        "created": "2019-8-27 11:30:56"
+     }
+   ]
+   
+   
+DELETE a familaial relationship with id
+---------------------------------------------
+**URL**:
+
+.. http:delete:: /api/famRelation/id/(int:familial_relationship_id)/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+      DELETE /api/famRelation/id/6/
+      Host: example.com
+      Content-Type: application/json
+      Api-token:
+      Body: []
+      
+**Example Response**:
+
+.. sourcecode:: http
+
+      HTTP/1.1 204 NO CONTENT
+      Vary: Accept
+      Content-Type: application/json
+
+      
