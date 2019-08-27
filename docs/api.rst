@@ -1419,3 +1419,142 @@ PUT to modify an external record
         "modified": "2018-6-8 11:57:52"
     }
     ]
+    
+    
+
+Familial Relation Record
+===============
+
+GET a list of familial relation records with protocol id
+--------------------------------------------------------
+**URL**
+
+.. http:get:: /api/famRelation/protocol_id/(int: protocol_id)/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    GET /api/famRelation/protocol_id/2/
+    Host: example.com
+    Accept: application/json
+    Api-token:
+
+**Example Response**:
+
+.. sourcecode:: http
+    
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+
+  [
+    {
+        "id": 5,
+        "subject_1": {
+            "created": "2014-01-28 14:01:38.158000",
+            "modified": "2014-01-28 14:01:38.158000",
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "organization": 3,
+            "id": 4,
+            "organization_subject_id": "000000000",
+            "organization_id_label": "Record ID",
+            "dob": "2004-03-24"
+        },
+        "subject_2": {
+            "created": "2014-01-28 10:18:37.949000",
+            "modified": "2014-01-28 10:34:16.429000",
+            "first_name": "John",
+            "last_name": "Doe",
+            "organization": 3,
+            "id": 2,
+            "organization_subject_id": "123456",
+            "organization_id_label": "Record ID",
+            "dob": "2000-01-01"
+        },
+        "subject_1_role": {
+            "created": "2019-08-22 12:51:13.018421",
+            "modified": "2019-08-22 12:51:13.018441",
+            "id": "2",
+            "typ": "familial-child",
+            "desc": "None"
+        },
+        "subject_2_role": {
+            "created": "2019-08-22 12:51:13.018421",
+            "modified": "2019-08-22 12:51:13.018441",
+            "id": "2",
+            "typ": "familial-child",
+            "desc": "None"
+        }
+    }
+    ]
+    
+    
+GET a list of familial relation records with a subject id
+--------------------------------------------------------
+**URL**
+
+.. http:get:: /api/famRelation/subject_id/(int: subject_id)/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    GET /api/famRelation/subject_id/2/
+    Host: example.com
+    Accept: application/json
+    Api-token:
+
+**Example Response**:
+
+.. sourcecode:: http
+    
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+  
+  [
+    {
+        "id": 5,
+        "subject_1": {
+            "created": "2014-01-28 14:01:38.158000",
+            "modified": "2014-01-28 14:01:38.158000",
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "organization": 3,
+            "id": 4,
+            "organization_subject_id": "000000000",
+            "organization_id_label": "Record ID",
+            "dob": "2004-03-24"
+        },
+        "subject_2": {
+            "created": "2014-01-28 10:18:37.949000",
+            "modified": "2014-01-28 10:34:16.429000",
+            "first_name": "John",
+            "last_name": "Doe",
+            "organization": 3,
+            "id": 2,
+            "organization_subject_id": "123456",
+            "organization_id_label": "Record ID",
+            "dob": "2000-01-01"
+        },
+        "subject_1_role": {
+            "created": "2019-08-22 12:51:13.018421",
+            "modified": "2019-08-22 12:51:13.018441",
+            "id": "2",
+            "typ": "familial-child",
+            "desc": "None"
+        },
+        "subject_2_role": {
+            "created": "2019-08-22 12:51:13.018421",
+            "modified": "2019-08-22 12:51:13.018441",
+            "id": "2",
+            "typ": "familial-child",
+            "desc": "None"
+        }
+    }
+  ]
+    
+
+
