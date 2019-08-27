@@ -1555,6 +1555,43 @@ GET a list of familial relation records with a subject id
         }
     }
   ]
+
+
+GET a list of possible relationship types 
+--------------------------------------------------------
+**URL**
+
+.. http:get:: /api/famRelation/relationship_types/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    GET /api/famRelation/subject_id/2/
+    Host: example.com
+    Accept: application/json
+    Api-token:
+
+**Example Response**:
+
+.. sourcecode:: http
+    
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+  
+  [
+    {
+        "id": 1,
+        "typ": "familial-parent",
+        "desc": null
+    },
+    {
+        "id": 2,
+        "typ": "familial-child",
+        "desc": null
+    }
+   ]
     
 
 
