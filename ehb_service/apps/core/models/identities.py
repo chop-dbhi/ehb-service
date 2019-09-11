@@ -523,8 +523,8 @@ class UserAudit(CreatedModified):
     # is not a foreignKey because this could be a PK for many different tables
     change_type_ehb_pk = models.CharField(
         max_length=20, verbose_name='Change Type eHB PK', blank=True)
-    old_value = models.CharField(
+    old_value = EncryptCharField(
         max_length=128, verbose_name='Old Value', blank=True)
-    new_value = models.CharField(
+    new_value = EncryptCharField(
         max_length=128, verbose_name='New value', blank=True)
     subject = models.ForeignKey(Subject, verbose_name='Subject')
