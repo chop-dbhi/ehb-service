@@ -21,11 +21,13 @@ from .models.identities import (
 from .models.clients import MachineClient
 from django.contrib import admin
 
+
 class SubjectAdmin(admin.ModelAdmin):
     list_filter = ['organization', 'created', 'modified']
     # Search Field does not work due to encryption. need to override query
     search_fields = ['organization__name', 'last_name', 'organization_subject_id']
     list_display = ['last_name', 'first_name', 'organization', 'organization_subject_id']
+
 
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(SubjectValidation)
@@ -34,12 +36,15 @@ admin.site.register(Relation)
 admin.site.register(ExternalRecordLabel)
 admin.site.register(SubjectFamRelation)
 
+
 class ExternalSystemAdmin(admin.ModelAdmin):
     list_filter = ['created', 'modified']
     search_fields = ['name']
     list_display = ['name', 'url', 'description']
 
+
 admin.site.register(ExternalSystem, ExternalSystemAdmin)
+
 
 class ExternalRecordAdmin(admin.ModelAdmin):
     list_filter = ['external_system', 'created']
@@ -48,14 +53,18 @@ class ExternalRecordAdmin(admin.ModelAdmin):
     search_fields = ['subject__last_name']
     raw_id_fields = ['subject', 'external_system']
 
+
 admin.site.register(ExternalRecord, ExternalRecordAdmin)
+
 
 class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ['name']
     search_fields = ['name']
     list_display = ['name', 'subject_id_label']
 
+
 admin.site.register(Organization, OrganizationAdmin)
+
 
 class SubjectGroupAdmin(admin.ModelAdmin):
     list_filter = ['group']
@@ -68,7 +77,9 @@ class SubjectGroupAdmin(admin.ModelAdmin):
         '''prevent item level deletes'''
         return False
 
+
 admin.site.register(SubjectGroup, SubjectGroupAdmin)
+
 
 class ExternalRecordGroupAdmin(admin.ModelAdmin):
     list_filter = ['group']
@@ -76,7 +87,9 @@ class ExternalRecordGroupAdmin(admin.ModelAdmin):
     search_fields = ['group__name']
     list_display = ['group']
 
+
 admin.site.register(ExternalRecordGroup, ExternalRecordGroupAdmin)
+
 
 class GroupAdmin(admin.ModelAdmin):
     list_filter = ['name']
@@ -94,7 +107,9 @@ class GroupAdmin(admin.ModelAdmin):
         '''prevent item level deletes'''
         return False
 
+
 admin.site.register(Group, GroupAdmin)
+
 
 class MachineClientAdmin(admin.ModelAdmin):
     list_filter = ['ip_address', 'host_name']
