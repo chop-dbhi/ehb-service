@@ -8,7 +8,7 @@ import re
 from django.forms import ModelForm
 from django.forms.utils import ErrorList
 from .models.identities import Subject, ExternalRecord, ExternalSystem, \
-    Organization, Group, ExternalRecordRelation, SubjectFamRelation
+    Organization, Group, ExternalRecordRelation, SubjectFamRelation, UserAudit
 
 
 class SubjectForm(ModelForm):
@@ -184,3 +184,8 @@ class SubjectFamRelationForm(ModelForm):
     class Meta:
         fields = "__all__"
         model = SubjectFamRelation
+
+    class UserAuditForm(ModelForm):
+        class Meta:
+            fields = "__all__"
+            model = UserAudit
