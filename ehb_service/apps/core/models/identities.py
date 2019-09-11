@@ -509,3 +509,22 @@ class SubjectValidation(models.Model):
 
     class Meta:
         app_label = 'core'
+
+
+class UserAudit(CreatedModified):
+    """
+    This class will store User Audit data to track subject data changes.
+    """
+    user_name = models.CharField(
+        max_length=50, verbose_name='User Name', blank=True)
+    # Change type: SubjectFamRelation, external record, Subject ... should reference a table
+    change_type = models.CharField(
+        max_length=50, verbose_name='Change type', blank=True)
+    # is not a foreignKey because this could be a PK for many different tables
+    change_type_ehb_pk = models.CharField(
+        max_length=20, verbose_name='Change Type eHB PK', blank=True)
+    old_value = models.CharField(
+        max_length=128, verbose_name='Old Value', blank=True)
+    new_value = models.CharField(
+        max_length=128, verbose_name='New value', blank=True)
+    subject = models.ForeignKey(Subject, verbose_name='Subject')

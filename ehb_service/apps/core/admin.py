@@ -15,7 +15,8 @@ from .models.identities import (
     ExternalRecordRelation,
     Relation,
     ExternalRecordLabel,
-    SubjectFamRelation
+    SubjectFamRelation,
+    UserAudit
 )
 from .models.clients import MachineClient
 from django.contrib import admin
@@ -100,4 +101,13 @@ class MachineClientAdmin(admin.ModelAdmin):
     search_fields = list_filter
     list_display = list_filter
 
+
 admin.site.register(MachineClient, MachineClientAdmin)
+
+
+class UserAuditAdmin(admin.ModelAdmin):
+    list_display = ['user_name', 'change_type', 'subject']
+    search_fields = ['user_name', 'change_type', 'subject']
+
+
+admin.site.register(UserAudit, UserAuditAdmin)
