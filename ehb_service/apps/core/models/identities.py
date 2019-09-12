@@ -516,13 +516,16 @@ class UserAudit(CreatedModified):
     This class will store User Audit data to track subject data changes.
     """
     user_name = models.CharField(
-        max_length=50, verbose_name='User Name', blank=True)
+        max_length=50, verbose_name='User Name')
     # Change type: SubjectFamRelation, external record, Subject ... should reference a table
     change_type = models.CharField(
-        max_length=50, verbose_name='Change type', blank=True)
+        max_length=50, verbose_name='Change type')
     # is not a foreignKey because this could be a PK for many different tables
     change_type_ehb_pk = models.CharField(
         max_length=20, verbose_name='Change Type eHB PK', blank=True)
+    # Change Action: create, delete or update
+    change_action = models.CharField(
+        max_length=50, verbose_name='Change action', blank=True)
     old_value = EncryptCharField(
         max_length=128, verbose_name='Old Value', blank=True)
     new_value = EncryptCharField(

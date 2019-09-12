@@ -15,10 +15,15 @@ from core.forms import UserAuditForm
 log = logging.getLogger(__name__)
 
 
-class UserAuditView (APIView):
+class UserAuditView(APIView):
+
     def post(self, request):
         response = []
 
-        form = UserAuditForm(request.data)
-        FormHelpers.processFormJsonResponse(form, response)
+        for s in request.data:
+            form = UserAuditForm(s)
+            FormHelpers.processFormJsonResponse(form, response)
         return Response(response)
+
+    def get(self, request):
+        pass

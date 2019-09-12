@@ -185,7 +185,8 @@ class SubjectFamRelationForm(ModelForm):
         fields = "__all__"
         model = SubjectFamRelation
 
-    class UserAuditForm(ModelForm):
-        class Meta:
-            fields = "__all__"
-            model = UserAudit
+
+class UserAuditForm(ModelForm):
+    class Meta:
+        fields = "__all__"
+        model = UserAudit
