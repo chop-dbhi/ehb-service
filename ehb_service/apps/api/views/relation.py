@@ -27,7 +27,6 @@ class LinkRelationView(APIView):
 class SubjectFamRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.SubjectFamRelation'
-    http_method_names = ['get', 'post', 'put', 'delete']
 
 
     def output_relationship_types(self):
