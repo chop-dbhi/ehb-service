@@ -61,7 +61,6 @@ class SubjectFamRelationView(APIView):
         return dict
 
     def get(self, request, **kwargs):
-        logging.debug(kwargs)
         protocol_id = kwargs.pop("protocol_id", None)
         subject_id = kwargs.pop("subject_id", None)
         # get list of relationships based on protocol id

@@ -1727,7 +1727,7 @@ PUT to modify a familial relationship record
    ]
    
    
-DELETE a familaial relationship with id
+DELETE a familial relationship with id
 ---------------------------------------------
 **URL**:
 
