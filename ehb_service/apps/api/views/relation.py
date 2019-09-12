@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework import permissions
+from .constants import ErrorConstants
 
 from core.models.identities import Relation, SubjectFamRelation
 from core.forms import SubjectFamRelationForm
@@ -26,6 +27,7 @@ class LinkRelationView(APIView):
 class SubjectFamRelationView(APIView):
     supported_accept_types = ['application/json', 'application/xml']
     model = 'core.models.identities.SubjectFamRelation'
+
 
     def output_relationship_types(self):
         return self.append_query_to_dict(Relation.objects.filter(typ__istartswith='familial'))
@@ -135,3 +137,30 @@ class SubjectFamRelationView(APIView):
                 }
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
             return Response(response)
+
+    def delete(self, request, **kwargs):
+        """This methos is intended for deleting new Protocol Relationships"""
+        content_type = request.META.get("CONTENT_TYPE")
+        response = []
+
+        relationship_pk = kwargs.get('pk')
+        try:
+            subj_relation = SubjectFamRelation.objects.get(pk=relationship_pk)
+            subj_relation.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except SubjectFamRelation.DoesNotExist:
+            response.append(
+                {
+                    'id': relationship_pk,
+                    'success': False,
+                    'errors': [
+                        {
+                            'id': ErrorConstants.ERROR_RECORD_ID_NOT_FOUND
+                        }
+                     ]
+                }
+            )
+            log.error("Unable to update Subject relationship. Subject relationship[{0}] does not exist".format(relationship_pk))
+
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
+

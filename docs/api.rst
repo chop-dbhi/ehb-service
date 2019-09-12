@@ -96,7 +96,8 @@ GET a subject's info with id
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
-
+    Body: 
+    
     {
     "first_name": "Test",
     "last_name": "Sub",
@@ -132,6 +133,7 @@ GET a subject's info with organization ID and MRN
       HTTP/1.1 200 OK
       Vary: Accept
       Content-Type: application/json
+      Body: 
 
       {
       "first_name": "Test",
@@ -167,6 +169,7 @@ GET a subject with external record ID and external system ID
       HTTP/1.1 200 OK
       Vary: Accept
       Content-Type: application/json
+      Body: 
 
       {
       "first_name": "Test",
@@ -194,7 +197,8 @@ DELETE a subject with subject_id
 .. sourcecode:: http
 
     Host: example.com
-    DELETE /api/subject/id/5856
+    
+    /api/subject/id/5856
     Accept: application/json
     Api-token:
 
@@ -205,6 +209,7 @@ DELETE a subject with subject_id
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
+    Body: 
 
     {
     "first_name": "Test",
@@ -259,6 +264,7 @@ POST to create a subject
       HTTP/1.1 200 OK
       Vary: Accept
       Content-Type: application/json
+      Body: 
 
       [
       {
@@ -324,6 +330,7 @@ PUT to modify a subject
       HTTP/1.1 200 OK
       Vary: Accept
       Content-Type: application/json
+      Body: 
 
       [
       {
@@ -360,6 +367,7 @@ GET a list of subjects in a subject group
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
+    Body: 
 
     [
     {
@@ -444,6 +452,7 @@ POST to add subject to group
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
+    Body: 
 
     [
     {"id": 6738, "success": true}
@@ -532,6 +541,7 @@ GET to get Group info (group name)
   HTTP/1.1 200 OK
   Vary: Accept
   Content-Type: application/json
+  Body: 
 
   {
   "ehb_key": "ehb_key",
@@ -559,6 +569,7 @@ POST to create a group
   Content-Type: application/json
   Api-token:
   Body:
+  
   [
   {
     "name": "testforgroupost",
@@ -575,6 +586,7 @@ POST to create a group
   HTTP/1.1 200 OK
   Vary: Accept
   Content-Type: application/json
+  Body: 
 
   [
   {
@@ -602,6 +614,7 @@ PUT to modify a group
   Content-Type: application/json
   Api-token:
   Body:
+  
   [
   {
     "name": "testforgroupost",
@@ -618,6 +631,7 @@ PUT to modify a group
   HTTP/1.1 200 OK
   Vary: Accept
   Content-Type: application/json
+  Body: 
 
   [
   {
@@ -683,6 +697,7 @@ GET an organization's details with organization_id
     Vary: Accept
     Content-Type: application/json
     Api-token:
+    Body: 
 
     {
     "id": "2",
@@ -708,6 +723,7 @@ POST to create an organization
       Content-type: application/json
       Api-token:
       Body:
+      
       [
       {
         "name": "value",
@@ -723,6 +739,7 @@ POST to create an organization
     Vary: Accept
     Content-Type: application/json
     Api-token:
+    Body: 
 
     [
     {
@@ -750,6 +767,7 @@ POST (query) to obtain organization info
       Content-Type: application/json
       Api-token:
       Body:
+      
       [
       {
         "name": "value"
@@ -759,6 +777,8 @@ POST (query) to obtain organization info
 **Example Response**:
 
 .. sourcecode:: http
+
+    Body: 
 
     [
       {
@@ -879,6 +899,7 @@ GET an external system's information
       HTTP/1.1 200 OK
       Vary: Accept
       Content-Type: application/json
+      Body: 
 
       {
       "description": "Test Instance of REDCap",
@@ -912,6 +933,7 @@ GET a list of subjects in the external system
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
+    Body: 
 
     [
       {
@@ -960,6 +982,7 @@ GET a list of records in an external system
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
+    Body: 
 
     [
     {
@@ -1006,6 +1029,7 @@ GET a list of records in external system with specified organization
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
+    Body: 
 
     [
         {
@@ -1044,6 +1068,7 @@ POST to create External System(s)
       Host: example.com
       Content-Type: application/json
       Api-token:
+      Body: 
 
       [
        {
@@ -1066,7 +1091,8 @@ POST to create External System(s)
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
-
+    Body: 
+    
     [
      {
         "name": "test",
@@ -1110,6 +1136,7 @@ POST (query) to obtain external system info
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
+    Body: 
 
     [
      {
@@ -1155,6 +1182,7 @@ PUT to modify External System(s)
     Host: example.com
     Content-Type: application/json
     Api-token:
+    Body: 
 
     [
        {
@@ -1173,6 +1201,7 @@ PUT to modify External System(s)
   HTTP/1.1 200 OK
   Vary: Accept
   Content-Type: application/json
+  Body: 
 
   [
      {
@@ -1232,7 +1261,7 @@ GET an external record
       HTTP/1.1 200 OK
       Vary: Accept
       Content-Type: application/json
-
+      Body: 
       {
       "created": "2018-06-04 16:47:40.320305",
       "modified": "2018-06-04 16:47:40.320347",
@@ -1262,7 +1291,7 @@ GET an external record with label
 **Example Response**:
 
 .. sourcecode:: http
-
+    Body: 
       {
       "id": 82,
       "label": "This is a test"
@@ -1311,6 +1340,7 @@ POST (query) to obtain external record info
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
+    Body: 
 
     [
     {
@@ -1410,6 +1440,7 @@ PUT to modify an external record
     HTTP/1.1 200 OK
     Vary: Accept
     Content-Type: application/json
+    Body: 
 
     [
     {
@@ -1419,3 +1450,305 @@ PUT to modify an external record
         "modified": "2018-6-8 11:57:52"
     }
     ]
+    
+    
+
+Familial Relation Record
+===============
+
+GET a list of familial relation records with protocol id
+--------------------------------------------------------
+**URL**
+
+.. http:get:: /api/famRelation/protocol_id/(int: protocol_id)/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    GET /api/famRelation/protocol_id/2/
+    Host: example.com
+    Accept: application/json
+    Api-token:
+
+**Example Response**:
+
+.. sourcecode:: http
+    
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+    Body: 
+
+  [
+    {
+        "id": 5,
+        "subject_1": {
+            "created": "2014-01-28 14:01:38.158000",
+            "modified": "2014-01-28 14:01:38.158000",
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "organization": 3,
+            "id": 4,
+            "organization_subject_id": "000000000",
+            "organization_id_label": "Record ID",
+            "dob": "2004-03-24"
+        },
+        "subject_2": {
+            "created": "2014-01-28 10:18:37.949000",
+            "modified": "2014-01-28 10:34:16.429000",
+            "first_name": "John",
+            "last_name": "Doe",
+            "organization": 3,
+            "id": 2,
+            "organization_subject_id": "123456",
+            "organization_id_label": "Record ID",
+            "dob": "2000-01-01"
+        },
+        "subject_1_role": {
+            "created": "2019-08-22 12:51:13.018421",
+            "modified": "2019-08-22 12:51:13.018441",
+            "id": "2",
+            "typ": "familial-child",
+            "desc": "None"
+        },
+        "subject_2_role": {
+            "created": "2019-08-22 12:51:13.018421",
+            "modified": "2019-08-22 12:51:13.018441",
+            "id": "2",
+            "typ": "familial-child",
+            "desc": "None"
+        }
+    }
+    ]
+    
+    
+GET a list of familial relation records with a subject id
+---------------------------------------------------------
+**URL**
+
+.. http:get:: /api/famRelation/subject_id/(int: subject_id)/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    GET /api/famRelation/subject_id/2/
+    Host: example.com
+    Accept: application/json
+    Api-token:
+
+**Example Response**:
+
+.. sourcecode:: http
+    
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+    Body: 
+  
+  [
+    {
+        "id": 5,
+        "subject_1": {
+            "created": "2014-01-28 14:01:38.158000",
+            "modified": "2014-01-28 14:01:38.158000",
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "organization": 3,
+            "id": 4,
+            "organization_subject_id": "000000000",
+            "organization_id_label": "Record ID",
+            "dob": "2004-03-24"
+        },
+        "subject_2": {
+            "created": "2014-01-28 10:18:37.949000",
+            "modified": "2014-01-28 10:34:16.429000",
+            "first_name": "John",
+            "last_name": "Doe",
+            "organization": 3,
+            "id": 2,
+            "organization_subject_id": "123456",
+            "organization_id_label": "Record ID",
+            "dob": "2000-01-01"
+        },
+        "subject_1_role": {
+            "created": "2019-08-22 12:51:13.018421",
+            "modified": "2019-08-22 12:51:13.018441",
+            "id": "2",
+            "typ": "familial-child",
+            "desc": "None"
+        },
+        "subject_2_role": {
+            "created": "2019-08-22 12:51:13.018421",
+            "modified": "2019-08-22 12:51:13.018441",
+            "id": "2",
+            "typ": "familial-child",
+            "desc": "None"
+        }
+    }
+  ]
+
+
+GET a list of possible relationship types 
+------------------------------------------
+**URL**
+
+.. http:get:: /api/famRelation/relationship_types/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    GET /api/famRelation/subject_id/2/
+    Host: example.com
+    Accept: application/json
+    Api-token:
+
+**Example Response**:
+
+.. sourcecode:: http
+    
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+  
+  [
+    {
+        "id": 1,
+        "typ": "familial-parent",
+        "desc": null
+    },
+    {
+        "id": 2,
+        "typ": "familial-child",
+        "desc": null
+    }
+  ]
+    
+
+
+POST to add familial relationship to protocol
+---------------------------------------------
+**URL**:
+
+.. http:post:: api/famRelation/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+    POST /api/group/
+    Host: example.com
+    Content-Type: application/json
+    Api-token: (api token)
+    Group-Client-Key: (client key for subj group)
+    Body:
+    
+   [
+    {
+    "subject_1" :  "2",
+    "subject_2" : "4",
+    "subject_1_role" : "1",
+    "subject_2_role" : "2",
+    "protocol_id" : "1"
+    }
+   ]
+
+
+**Example Response**:
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Vary: Accept
+    Content-Type: application/json
+    Body: 
+
+   [
+    {
+        "id": "6",
+        "success": true,
+        "modified": "2019-8-27 11:30:56",
+        "created": "2019-8-27 11:30:56",
+        "subject_1": "2",
+        "subject_2": "4",
+        "subject_1_role": "1",
+        "subject_2_role": "2",
+        "protocol_id": "1"
+    }
+   ]
+
+
+PUT to modify a familial relationship record 
+--------------------------------------------
+
+**URL**:
+
+.. http:put:: /api/famRelation/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+      PUT /api/famRelation/
+      Host: example.com
+      Content-Type: application/json
+      Api-token:
+      Body:
+      
+      [
+        {
+        "id": "6",
+        "subject_1" :  "2",
+        "subject_2" : "4",
+        "subject_1_role" : "1",
+        "subject_2_role" : "3",
+        "protocol_id" : "1"
+         } 
+      ]
+
+**Example Response**:
+
+.. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Vary: Accept
+      Content-Type: application/json
+      Body: 
+
+   [
+     {
+        "id": "6",
+        "success": true,
+        "modified": "2019-8-27 11:52:51",
+        "created": "2019-8-27 11:30:56"
+     }
+   ]
+   
+   
+DELETE a familial relationship with id
+---------------------------------------------
+**URL**:
+
+.. http:delete:: /api/famRelation/id/(int:familial_relationship_id)/
+
+**Example Request**:
+
+.. sourcecode:: http
+
+      DELETE /api/famRelation/id/6/
+      Host: example.com
+      Content-Type: application/json
+      Api-token:
+      Body: []
+      
+**Example Response**:
+
+.. sourcecode:: http
+
+      HTTP/1.1 204 NO CONTENT
+      Vary: Accept
+      Content-Type: application/json
+
+      
