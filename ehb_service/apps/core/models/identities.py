@@ -515,6 +515,7 @@ class UserAudit(CreatedModified):
     """
     This class will store User Audit data to track subject data changes.
     """
+    id = models.AutoField(primary_key=True)
     user_name = models.CharField(
         max_length=50, verbose_name='User Name')
     # Change type: SubjectFamRelation, external record, Subject ... should reference a table
