@@ -44,9 +44,9 @@ group_patterns = ([
 
 famRelationship_patterns = ([
     url(r'^$', relation.SubjectFamRelationView.as_view()),
-    url(r'^id/(?P<pk>\d+)/$', relation.SubjectFamRelationView.as_view()), 
     url(r'^protocol_id/(?P<protocol_id>\d+)/$', relation.SubjectFamRelationView.as_view()),
     url(r'^subject_id/(?P<subject_id>\d+)/$', relation.SubjectFamRelationView.as_view()),
+    url(r'^relationship_id/(?P<relationship_id>\d+)/$', relation.SubjectFamRelationView.as_view()),
     url(r'^relationship_types', relation.SubjectFamRelationView.as_view()), ],
     'api')
 

@@ -70,9 +70,8 @@ class SubjectFamRelationView(APIView):
         elif subject_id:
             relationships = self.relationships_by_subject(subject_id)
         elif relationship_id:
-            relationships = SubjectFamRelation.objects.get(id=relationship_id)
-
-
+            relationship_obj = SubjectFamRelation.objects.filter(id=relationship_id)
+            relationships = self.output_relationships(relationship_obj)
         # get familial relationship types
         else:
             relationships = self.output_relationship_types()
@@ -143,20 +142,18 @@ class SubjectFamRelationView(APIView):
                 FormHelpers.processFormJsonResponse(form, response, valid_dict=args, invalid_dict=args)
             return Response(response)
 
-    def delete(self, request, **kwargs):
+    def delete(self, request, relationship_id):
         """This method is intended for deleting new Protocol Relationships"""
-        content_type = request.META.get("CONTENT_TYPE")
         response = []
 
-        relationship_pk = kwargs.get('pk')
         try:
-            subj_relation = SubjectFamRelation.objects.get(pk=relationship_pk)
+            subj_relation = SubjectFamRelation.objects.get(pk=relationship_id)
             subj_relation.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except SubjectFamRelation.DoesNotExist:
             response.append(
                 {
-                    'id': relationship_pk,
+                    'id': relationship_id,
                     'success': False,
                     'errors': [
                         {
