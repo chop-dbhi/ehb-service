@@ -62,12 +62,17 @@ class SubjectFamRelationView(APIView):
     def get(self, request, **kwargs):
         protocol_id = kwargs.pop("protocol_id", None)
         subject_id = kwargs.pop("subject_id", None)
+        relationship_id = kwargs.pop("relationship_id", None)
         # get list of relationships based on protocol id
         if protocol_id:
             relationships = self.relationships_by_protocol(protocol_id)
         # get list of relationships based on subject id
         elif subject_id:
             relationships = self.relationships_by_subject(subject_id)
+        elif relationship_id:
+            relationships = SubjectFamRelation.objects.get(id=relationship_id)
+
+
         # get familial relationship types
         else:
             relationships = self.output_relationship_types()
@@ -75,16 +80,16 @@ class SubjectFamRelationView(APIView):
         return Response(relationships)
 
     def put(self, request):
-        """This method is intended for updating an existing protocol relationship"""
-        # This API request will take in ID and subject relationship attributes
-        # {
-        #     "id": "x",              PK of subject relationship
-        #     "subject_1": 6738,      PK of subject
-        #     "subject_2": 6739,      PK of subject
-        #     "subject_1_role": 14,   PK of subject role
-        #     "subject_2_role": 15,   PK of subject role
-        #     "protocol_id": 1        PK of protocol in the BRP
-        # }
+        """This method is intended for updating an existing protocol relationship
+        This API request will take in ID and subject relationship attributes
+
+             "id": "x",              PK of subject relationship
+             "subject_1": 6738,      PK of subject
+             "subject_2": 6739,      PK of subject
+             "subject_1_role": 14,   PK of subject role
+             "subject_2_role": 15,   PK of subject role
+             "protocol_id": 1        PK of protocol in the BRP
+        """
         response = []
 
         for item in request.data:
@@ -139,7 +144,7 @@ class SubjectFamRelationView(APIView):
             return Response(response)
 
     def delete(self, request, **kwargs):
-        """This methos is intended for deleting new Protocol Relationships"""
+        """This method is intended for deleting new Protocol Relationships"""
         content_type = request.META.get("CONTENT_TYPE")
         response = []
 
@@ -163,4 +168,3 @@ class SubjectFamRelationView(APIView):
             log.error("Unable to update Subject relationship. Subject relationship[{0}] does not exist".format(relationship_pk))
 
             return Response(response, status=status.HTTP_404_NOT_FOUND)
-
