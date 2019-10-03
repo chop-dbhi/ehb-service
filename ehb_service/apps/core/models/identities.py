@@ -477,7 +477,8 @@ class SubjectFamRelation(CreatedModified):
           'subject_1': self.subject_1.responseFieldDict(),
           'subject_2': self.subject_2.responseFieldDict(),
           'subject_1_role': self.subject_1_role.responseFieldDict(),
-          'subject_2_role': self.subject_2_role.responseFieldDict()
+          'subject_2_role': self.subject_2_role.responseFieldDict(),
+          'protocol_id': self.protocol_id
         }
 
     def __str__(self):
@@ -527,8 +528,11 @@ class UserAudit(CreatedModified):
     # Change Action: create, delete or update
     change_action = models.CharField(
         max_length=50, verbose_name='Change action', blank=True)
+    # Change Field: updated field
+    change_field = models.CharField(
+        max_length=50, verbose_name='Change field', blank=True)
     old_value = EncryptCharField(
         max_length=128, verbose_name='Old Value', blank=True)
     new_value = EncryptCharField(
         max_length=128, verbose_name='New value', blank=True)
-    subject = models.ForeignKey(Subject, verbose_name='Subject')
+    subject = models.ForeignKey(Subject, verbose_name='Subject', on_delete=models.CASCADE)
