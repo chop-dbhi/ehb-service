@@ -69,9 +69,21 @@ class SubjectFamRelationView(APIView):
         # get list of relationships based on subject id
         elif subject_id:
             relationships = self.relationships_by_subject(subject_id)
+        # return all elements of a single relationship
         elif relationship_id:
-            relationship_obj = SubjectFamRelation.objects.filter(id=relationship_id)
-            relationships = self.output_relationships(relationship_obj)
+            try:
+                relationships = SubjectFamRelation.objects.filter(id=relationship_id)[0].to_dict()
+            except:
+                response = {
+                        'id': relationship_id,
+                        'success': False,
+                        'errors': [
+                            {
+                                'id': ErrorConstants.ERROR_SUBJ_FAM_RELATIONSHIP_NOT_FOUND
+                            }
+                        ]
+                    }
+                return Response(response, status=status.HTTP_404_NOT_FOUND)
         # get familial relationship types
         else:
             relationships = self.output_relationship_types()
