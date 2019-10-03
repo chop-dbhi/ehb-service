@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from collections import Counter
 import json
 import logging
 
@@ -194,15 +195,18 @@ class GroupView(ClientKeyView):
         if val:
             group = None
             try:
-
-                if not Group.objects.all():
-                    log.error('Unable to retrieve Groups from configured database')
-                    return Response(status=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
-
                 if key == 'id':
                     group = Group.objects.filter(pk=val)
                 else:
-                    groups = Group.objects.all()
+                    ''' if there is more than one ':' in the group name than we
+                    know that the group name is a subject Record Group. because
+                    we cannot filter encrypted fields this approach will be used
+                    to limit the need to use Group.objects.all()'''
+                    if (Counter(val)[':'] > 1):
+                        groups = Group.objects.filter(description="A BRP Protocol Subject Record Group")
+                    else:
+                        groups = Group.objects.filter(description="A BRP Protocol Group")
+
                     # search through django query set to get decrypted values for name
                     for g in groups:
                         if g.name == val:
@@ -219,7 +223,7 @@ class GroupView(ClientKeyView):
                     return Response(rd)
                 else:
                     log.error('Unable to find group with provided criteria')
-                    return Response(status=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
+                    return Response(status=status.HTTP_404_NOT_FOUND)
 
             except Exception:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
