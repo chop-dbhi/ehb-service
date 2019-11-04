@@ -14,3 +14,4 @@ class ErrorConstants(object):
     ERROR_GROUP_NAME_EXISTS = 12
     ERROR_ID_NOT_FOUND = 13
     ERROR_SUBJECT_ID_NOT_VALID = 'Subject identifier does not meet validation rules for this organization.'
+    ERROR_SUBJ_FAM_RELATIONSHIP_NOT_FOUND = 14
