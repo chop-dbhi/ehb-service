@@ -121,7 +121,7 @@ admin.site.register(MachineClient, MachineClientAdmin)
 
 
 class UserAuditAdmin(admin.ModelAdmin):
-    list_display = ['user_name', 'change_type', 'subject', 'change_action']
+    list_display = ['user_name', 'change_type', 'subject', 'change_action', 'created']
     search_fields = ['user_name', 'change_type', 'change_action', 'subject']
 
 
