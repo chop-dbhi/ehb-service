@@ -202,12 +202,7 @@ class GroupView(ClientKeyView):
                 if key == 'id':
                     group = Group.objects.filter(pk=val)
                 else:
-                    groups = Group.objects.all()
-                    # search through django query set to get decrypted values for name
-                    for g in groups:
-                        if g.name == val:
-                            groupId = g.id
-                    group = Group.objects.filter(pk=groupId)
+                    group = Group.objects.filter(name=val)
 
                 if group.__len__() == 1:
                     g = group[0]
