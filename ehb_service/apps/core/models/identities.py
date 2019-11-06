@@ -477,7 +477,8 @@ class SubjectFamRelation(CreatedModified):
           'subject_1': self.subject_1.responseFieldDict(),
           'subject_2': self.subject_2.responseFieldDict(),
           'subject_1_role': self.subject_1_role.responseFieldDict(),
-          'subject_2_role': self.subject_2_role.responseFieldDict()
+          'subject_2_role': self.subject_2_role.responseFieldDict(),
+          'protocol_id': self.protocol_id
         }
 
     def __str__(self):
@@ -509,3 +510,29 @@ class SubjectValidation(models.Model):
 
     class Meta:
         app_label = 'core'
+
+
+class UserAudit(CreatedModified):
+    """
+    This class will store User Audit data to track subject data changes.
+    """
+    id = models.AutoField(primary_key=True)
+    user_name = models.CharField(
+        max_length=50, verbose_name='User Name')
+    # Change type: SubjectFamRelation, external record, Subject ... should reference a table
+    change_type = models.CharField(
+        max_length=50, verbose_name='Change type')
+    # is not a foreignKey because this could be a PK for many different tables
+    change_type_ehb_pk = models.CharField(
+        max_length=20, verbose_name='Change Type eHB PK', blank=True)
+    # Change Action: create, delete or update
+    change_action = models.CharField(
+        max_length=50, verbose_name='Change action', blank=True)
+    # Change Field: updated field
+    change_field = models.CharField(
+        max_length=50, verbose_name='Change field', blank=True)
+    old_value = EncryptCharField(
+        max_length=128, verbose_name='Old Value', blank=True)
+    new_value = EncryptCharField(
+        max_length=128, verbose_name='New value', blank=True)
+    subject = models.ForeignKey(Subject, verbose_name='Subject', on_delete=models.CASCADE)

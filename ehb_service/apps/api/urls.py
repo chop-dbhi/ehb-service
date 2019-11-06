@@ -1,5 +1,5 @@
 from django.conf.urls import url, include  # noqa
-from api.views import subject, relation, organization, group, externalsystem, externalrecord
+from api.views import subject, relation, organization, group, externalsystem, externalrecord, userAudit
 
 subject_patterns = ([
     url(r'^$', subject.SubjectView.as_view()),
@@ -46,6 +46,7 @@ famRelationship_patterns = ([
     url(r'^$', relation.SubjectFamRelationView.as_view()),
     url(r'^protocol_id/(?P<protocol_id>\d+)/$', relation.SubjectFamRelationView.as_view()),
     url(r'^subject_id/(?P<subject_id>\d+)/$', relation.SubjectFamRelationView.as_view()),
+    url(r'^relationship_id/(?P<relationship_id>\d+)/$', relation.SubjectFamRelationView.as_view()),
     url(r'^relationship_types', relation.SubjectFamRelationView.as_view()), ],
     'api')
 
@@ -64,4 +65,5 @@ urlpatterns = [
     url(r'^famRelation/', include(famRelationship_patterns,
         namespace='famRelation')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^auditlog/', userAudit.UserAuditView.as_view()),
 ]

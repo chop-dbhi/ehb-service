@@ -198,20 +198,7 @@ class GroupView(ClientKeyView):
                 if key == 'id':
                     group = Group.objects.filter(pk=val)
                 else:
-                    ''' if there is more than one ':' in the group name than we
-                    know that the group name is a subject Record Group. because
-                    we cannot filter encrypted fields this approach will be used
-                    to limit the need to use Group.objects.all()'''
-                    if (Counter(val)[':'] > 1):
-                        groups = Group.objects.filter(description="A BRP Protocol Subject Record Group")
-                    else:
-                        groups = Group.objects.filter(description="A BRP Protocol Group")
-
-                    # search through django query set to get decrypted values for name
-                    for g in groups:
-                        if g.name == val:
-                            groupId = g.id
-                    group = Group.objects.filter(pk=groupId)
+                    group = Group.objects.filter(name=val)
 
                 if group.__len__() == 1:
                     g = group[0]
