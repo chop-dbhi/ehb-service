@@ -3,6 +3,9 @@ export APP_ENV=test
 export DEBUG=1
 export SECRET_KEY="test"
 export DATABASE_URL=sqlite:///ehb_service.db
+export ALLOWED_HOSTS=localhost
+export REDIS_HOST=
+export REDIS_PORT=
 
 export EMAIL_HOST=localhost
 export EMAIL_PORT=25
