@@ -1424,7 +1424,7 @@ class TestFamilialRelationships(TestCase):
     ("12","8", "role1=fetus role2=father")
     ])
 
- 
+
     def test_famRelation_add_positive(self,role_1,role_2,comment):
         pre_count = SubjectFamRelation.objects.count()
         famRelation = {
@@ -1511,7 +1511,7 @@ class TestFamilialRelationships(TestCase):
     ("12","10", "role1=fetus role2=daughter")
     ])
 
-    
+
     def test_famRelation_add_negative(self,role_1,role_2,comment):
         pre_count = SubjectFamRelation.objects.count()
         famRelation = {
@@ -1538,7 +1538,7 @@ class TestFamilialRelationships(TestCase):
         self.assertFalse(r['success'])
 
         self.assertTrue(pre_count == post_count)
-    
+
     @patch('api.views.relation.log')
     def test_famRelation_delete_pk_no_exist(self, mock_log):
         response = self.client.delete(
@@ -1546,7 +1546,7 @@ class TestFamilialRelationships(TestCase):
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json'
         )
-        
+
         self.assertTrue(response.status_code, 404)
 
     def test_famRelation_delete_no_pk_supplied(self):
@@ -1555,7 +1555,7 @@ class TestFamilialRelationships(TestCase):
             HTTP_API_TOKEN='secretkey123',
             content_type='application/json'
         )
-        
+
         self.assertTrue(response.status_code, 404)
 
 
@@ -1565,20 +1565,20 @@ class TestFamilialRelationships(TestCase):
              HTTP_API_TOKEN='secretkey123',
              content_type='application/json'
          )
-        
+
          self.assertTrue(response.status_code, 404)
 
     def test_famRelation_delete(self):
          pre_count = SubjectFamRelation.objects.count()
          response = self.client.delete(
-             '/api/famRelation/id/2/',
+             '/api/famRelation/relationship_id/2/',
              HTTP_API_TOKEN='secretkey123',
              content_type='application/json'
             )
          post_count = SubjectFamRelation.objects.count()
          self.assertTrue(response.status_code, 204)
-         self.assertTrue( post_count == (pre_count - 1)) 
-    
+         self.assertTrue(post_count == (pre_count - 1))
+
 
     # def test_get_relationships_for_protocol(self):
     #     relationship_count = SubjectFamRelation.objects.filter(
