@@ -159,7 +159,7 @@ class GroupEhbKey(GroupPropsKey):
             max_idx = 1e6
             while idx < max_idx:
                 uk = self._make_random_key(seed=seed, ja=jump + idx, l=ehb_key_length)
-                if not GroupEhbKey.objects.all():
+                if jump == 0:
                     idx = max_idx
                 else:
                     grps_using_uk = GroupEhbKey.objects.filter(key=uk)
