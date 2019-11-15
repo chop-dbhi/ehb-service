@@ -222,6 +222,7 @@ class GroupView(ClientKeyView):
     def post(self, request):
         '''This method is intended for creating Groups.'''
         response = []
+
         for g in request.data:
             form = GroupForm(g)
             args = {'name': g.get('name')}
@@ -230,7 +231,7 @@ class GroupView(ClientKeyView):
             if rd.get('success', False):
                 grp = Group.objects.get(pk=rd.get('id'))
                 rd['ehb_key'] = grp.ehb_key.key
-                
+
         return Response(response)
 
     def put(self, request):
