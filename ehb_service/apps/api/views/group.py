@@ -195,7 +195,7 @@ class GroupView(ClientKeyView):
             group = None
             try:
 
-                if not Group.objects.all():
+                if Group.objects.count() == 0:
                     log.error('Unable to retrieve Groups from configured database')
                     return Response(status=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
 
@@ -222,7 +222,6 @@ class GroupView(ClientKeyView):
     def post(self, request):
         '''This method is intended for creating Groups.'''
         response = []
-
         for g in request.data:
             form = GroupForm(g)
             args = {'name': g.get('name')}
@@ -231,7 +230,7 @@ class GroupView(ClientKeyView):
             if rd.get('success', False):
                 grp = Group.objects.get(pk=rd.get('id'))
                 rd['ehb_key'] = grp.ehb_key.key
-
+                
         return Response(response)
 
     def put(self, request):
