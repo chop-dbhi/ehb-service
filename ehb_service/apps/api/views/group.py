@@ -195,6 +195,10 @@ class GroupView(ClientKeyView):
         if val:
             group = None
             try:
+
+                if Group.objects.count() == 0:
+                    log.error('Unable to retrieve Groups from configured database')
+                    return Response(status=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
                 if key == 'id':
                     group = Group.objects.filter(pk=val)
                 else:

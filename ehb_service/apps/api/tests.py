@@ -5,7 +5,7 @@ import json
 from parameterized import parameterized
 from django.db.models import Q
 
-from django.test import TestCase
+from django.test import TestCase, tag
 from core.models.identities import Organization, Subject, Group, ExternalRecord, ExternalSystem, SubjectFamRelation, ExternalRecordGroup
 
 from mock import patch
@@ -1396,6 +1396,10 @@ class TestOrganization(TestCase):
 
 ##### for the famRelation feature #####
 
+class TestFamilialRelationships(TestCase):
+
+    fixtures = ['test_fixture.json']
+
     #Positive relationships
     @parameterized.expand([
     ("8","11","role1=father role2=son"),
@@ -1419,6 +1423,8 @@ class TestOrganization(TestCase):
     ("12","9", "role1=fetus role2=mother"),
     ("12","8", "role1=fetus role2=father")
     ])
+
+
     def test_famRelation_add_positive(self,role_1,role_2,comment):
         pre_count = SubjectFamRelation.objects.count()
         famRelation = {
@@ -1504,6 +1510,8 @@ class TestOrganization(TestCase):
     ("12","12", "role1=fetus role2=fetus"),
     ("12","10", "role1=fetus role2=daughter")
     ])
+
+
     def test_famRelation_add_negative(self,role_1,role_2,comment):
         pre_count = SubjectFamRelation.objects.count()
         famRelation = {
@@ -1530,6 +1538,47 @@ class TestOrganization(TestCase):
         self.assertFalse(r['success'])
 
         self.assertTrue(pre_count == post_count)
+
+    @patch('api.views.relation.log')
+    def test_famRelation_delete_pk_no_exist(self, mock_log):
+        response = self.client.delete(
+            '/api/famRelation/id/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json'
+        )
+
+        self.assertTrue(response.status_code, 404)
+
+    def test_famRelation_delete_no_pk_supplied(self):
+        response = self.client.delete(
+            '/api/famRelation/id/',
+            HTTP_API_TOKEN='secretkey123',
+            content_type='application/json'
+        )
+
+        self.assertTrue(response.status_code, 404)
+
+
+    def test_famRelation_delete_malformed_pk(self):
+         response = self.client.delete(
+             '/api/famRelation/id/#se7',
+             HTTP_API_TOKEN='secretkey123',
+             content_type='application/json'
+         )
+
+         self.assertTrue(response.status_code, 404)
+
+    def test_famRelation_delete(self):
+         pre_count = SubjectFamRelation.objects.count()
+         response = self.client.delete(
+             '/api/famRelation/relationship_id/2/',
+             HTTP_API_TOKEN='secretkey123',
+             content_type='application/json'
+            )
+         post_count = SubjectFamRelation.objects.count()
+         self.assertTrue(response.status_code, 204)
+         self.assertTrue(post_count == (pre_count - 1))
+
 
     # def test_get_relationships_for_protocol(self):
     #     relationship_count = SubjectFamRelation.objects.filter(
