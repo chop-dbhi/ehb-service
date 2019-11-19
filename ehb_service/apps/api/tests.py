@@ -398,7 +398,7 @@ class TestGroup(TestCase):
                 "HTTP_GROUP_CLIENT_KEY": 'testck',
                 'HTTP_API_TOKEN': 'secretkey123'})
         self.assertTrue(mock_log.error.called)
-        self.assertEqual(response.status_code, 416)
+        self.assertEqual(response.status_code, 404)
 
     def test_get_group_records(self):
         response = self.client.get(

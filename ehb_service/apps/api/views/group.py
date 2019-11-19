@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from collections import Counter
 import json
 import logging
 
@@ -198,7 +199,6 @@ class GroupView(ClientKeyView):
                 if Group.objects.count() == 0:
                     log.error('Unable to retrieve Groups from configured database')
                     return Response(status=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
-
                 if key == 'id':
                     group = Group.objects.filter(pk=val)
                 else:
@@ -214,7 +214,7 @@ class GroupView(ClientKeyView):
                     return Response(rd)
                 else:
                     log.error('Unable to find group with provided criteria')
-                    return Response(status=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
+                    return Response(status=status.HTTP_404_NOT_FOUND)
 
             except Exception:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
