@@ -38,8 +38,21 @@ class SubjectFamRelationView(APIView):
         return relationships_dict
 
     def relationships_by_protocol(self, protocol_id):
-        all_protocol_relationships = SubjectFamRelation.objects.filter(protocol_id=protocol_id)
-        return(self.output_relationships(all_protocol_relationships))
+        relationships_dict = []
+        all_protocol_relationships = list(SubjectFamRelation.objects.filter(protocol_id=protocol_id))
+        for relationship in all_protocol_relationships:
+            print(relationship.subject_1.id)
+            relationships_dict.append({
+                "subject_1_id": relationship.subject_1.id,
+                "subject_1_org_id": relationship.subject_1.organization_subject_id,
+                "subject_2_id": relationship.subject_2.id,
+                "subject_2_org_id": relationship.subject_2.organization_subject_id,
+                "subject_1_role": relationship.subject_1_role.desc,
+                "subject_2_role": relationship.subject_2_role.desc,
+                "protocol_id": relationship.protocol_id,
+                "id": relationship.id
+            })
+        return(relationships_dict)
 
     def relationships_by_subject(self, subject_id):
         relationships_dict = []
