@@ -5,9 +5,9 @@
 #     pip install -U -r requirements.txt
 
 # Core requirements
-Django==1.11.16
+Django>=1.11.27,<1.12
 django-environ==0.4.1
-djangorestframework==3.8.2
+djangorestframework>=3.9.1,<3.10
 tzlocal==1.5.1
 uWSGI
 # Database bindings - uncomment any of the below libraries depending on the
