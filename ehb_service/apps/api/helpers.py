@@ -151,7 +151,7 @@ class FormHelpers(object):
                 for key in keys_from_response_dict:
                     response_dict[key] = m.__dict__.get(key)
 
-        elif not form.isvalid():
+        elif not form.is_valid():
             log.error('Error in form validation')
             response_dict = {"success": False, "errors": FormHelpers.jsonErrors(form.errors)}
             if invalid_dict:
