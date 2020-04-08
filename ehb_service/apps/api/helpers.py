@@ -93,13 +93,21 @@ class FormHelpers(object):
 
     @staticmethod
     def processFormJsonResponse(form, response, valid_dict=None, invalid_dict=None, keys_from_response_dict=None):
+        form_save_success = False
 
         if form.is_valid():
-            m = form.save()
-            created = None
-            modified = None
-            isCreatedModified = False
+            try:
+                m = form.save()
+                created = None
+                modified = None
+                isCreatedModified = False
+                form_save_success = True
+            except:
+                log.error('There was an error with the database. Check the database logs for more info')
+                response_dict = {"success": False, "errors": "There was an error with the database"}
+                form_save_success = False
 
+        if (form.is_valid() and form_save_success):
             for c in type(m).__bases__:
                 if c.__name__ == 'CreatedModified':
                     isCreatedModified = True
@@ -142,8 +150,8 @@ class FormHelpers(object):
             if keys_from_response_dict:
                 for key in keys_from_response_dict:
                     response_dict[key] = m.__dict__.get(key)
-        else:
 
+        elif not form.isvalid():
             log.error('Error in form validation')
             response_dict = {"success": False, "errors": FormHelpers.jsonErrors(form.errors)}
             if invalid_dict:
