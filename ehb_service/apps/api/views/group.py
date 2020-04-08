@@ -271,7 +271,7 @@ class GroupView(ClientKeyView):
                     grp = Group.objects.get(pk=rd.get('id'))
                     rd['ehb_key'] = grp.ehb_key.key
                 else:
-                    return Response
+                    return Response({"success": True})
             except Group.DoesNotExist:
                 log.error("Unable to update group. Group does not exist.")
                 response.append(
